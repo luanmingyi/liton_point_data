@@ -18,3 +18,4 @@ test/Test_D1_RangeT/Release/
 test/Test_D1_SizeT/Debug/
 test/Test_D1_SizeT/Release/
 *.txt
+liton_cpp_snippets_subtree_push.bat
