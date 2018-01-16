@@ -83,16 +83,16 @@ int main(int argc, char** argv)
 	auto lam_sum = []PD_RF(double, x, xx) { xx += x; };
 	auto lam_max = []PD_RF(double, x, xx) { xx = x > xx ? x : xx; };
 	D1::Reduce_PD_1D(x3.size().range(RA::IN),
+		sum,
 	                 lam_sum,
-	                 [&x3]PD_F_i(i)->double { return x3(i, 0, FL::N); },
-	                 sum);
+	                 [&x3]PD_F_i(i)->double { return x3(i, 0, FL::N); });
 	lam_sum(x3(x3.size().end(0, RA::IN) - 1, 0, FL::P), sum);
 	D1::Reduce_PD_1D_N(x3.size().range(RA::ALL),
 	                   0, x3.N,
+		max,
 	                   lam_max,
-	                   [&x3]PD_F_i_n(i, n)->double { return x3(i, n, FL::N); },
-	                   max);
-	Reduce_N(0, x3.N, lam_max, [&x3]PD_F_n(n)->double { return x3(x3.size().end(0, RA::ALL) - 1, n, FL::P); }, max);
+	                   [&x3]PD_F_i_n(i, n)->double { return x3(i, n, FL::N); });
+	Reduce_N(0, x3.N, max, lam_max, [&x3]PD_F_n(n)->double { return x3(x3.size().end(0, RA::ALL) - 1, n, FL::P); });
 	out << sum << endl;
 	out << max << endl;
 

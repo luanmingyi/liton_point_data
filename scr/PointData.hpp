@@ -37,7 +37,7 @@ namespace liton_pd
 	}
 
 	template <typename T, typename Reducer, typename Function>
-	void Reduce_N(const unsigned &N_b, const unsigned &N_e, const Reducer &reduce, const Function &fun, T &ans)
+	void Reduce_N(const unsigned &N_b, const unsigned &N_e, T &ans, const Reducer &reduce, const Function &fun)
 	{
 		T temp = ans;
 		for (unsigned n = N_b; n != N_e; ++n)
