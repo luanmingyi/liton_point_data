@@ -17,3 +17,4 @@ test/Test_D1_RangeT/Debug/
 test/Test_D1_RangeT/Release/
 test/Test_D1_SizeT/Debug/
 test/Test_D1_SizeT/Release/
+*.txt

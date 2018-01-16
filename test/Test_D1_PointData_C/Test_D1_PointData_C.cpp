@@ -52,8 +52,8 @@ int main(int argc, char** argv)
 
 	exec([&]() {x1.alloc(0, 0, 0); }, out, err);
 	exec([&]() {x1.alloc(0, 1, 0); }, out, err);
-	out << 3u * 1024u * 1024u * 1024u / sizeof(float) / x1.N << endl;
-	exec([&]() {x1.alloc(3u * 1024u * 1024u * 1024u / sizeof(float) / x1.N, 2, 3); }, out, err);
+	out << 3 * 1024 / sizeof(float) / x1.N * 1024 * 1024  << endl;
+	exec([&]() {x1.alloc(3 * 1024 / sizeof(float) / x1.N * 1024 * 1024, 2, 3); }, out, err);
 	exec([&]() {x1.alloc(10, 5, 5); }, out, err);
 	exec([&]() {x1.alloc(10, 2, 3); }, out, err);
 	out << endl;
