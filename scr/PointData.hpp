@@ -1,7 +1,7 @@
 #ifndef POINTDATA_H
 #define POINTDATA_H
 
-namespace liton
+namespace liton_pd
 {
 	namespace LO
 	{

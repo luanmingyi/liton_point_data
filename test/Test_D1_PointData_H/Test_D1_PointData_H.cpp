@@ -10,22 +10,7 @@ using namespace std;
 #endif
 #include "../../scr/PointData.hpp"
 
-using namespace liton;
-
-template<typename Fun>
-void exec(Fun f, ostream &out_file, ostream &except_file)
-{
-	try
-	{
-		f();
-		out_file << "no exception" << endl;
-	}
-	catch (const std::exception &err)
-	{
-		out_file << "with exception" << endl;
-		except_file << err.what() << endl;
-	}
-}
+using namespace liton_pd;
 
 int main(int argc, char** argv)
 {
@@ -50,21 +35,21 @@ int main(int argc, char** argv)
 	//x3 = x2;
 	out << endl;
 
-	exec([&]() {x1.alloc(0, 0, 0); }, out, err);
-	exec([&]() {x1.alloc(0, 1, 0); }, out, err);
+	liton_sp::debug::exec_except([&]() {x1.alloc(0, 0, 0); }, out, err);
+	liton_sp::debug::exec_except([&]() {x1.alloc(0, 1, 0); }, out, err);
 	out << 3u * 1024u * 1024u * 1024u / sizeof(float) / x1.N << endl;
-	exec([&]() {x1.alloc(3u * 1024u * 1024u * 1024u / sizeof(float) / x1.N, 2, 3); }, out, err);
-	exec([&]() {x1.alloc(10, 5, 5); }, out, err);
-	exec([&]() {x1.alloc(10, 2, 3); }, out, err);
+	liton_sp::debug::exec_except([&]() {x1.alloc(3u * 1024u * 1024u * 1024u / sizeof(float) / x1.N, 2, 3); }, out, err);
+	liton_sp::debug::exec_except([&]() {x1.alloc(10, 5, 5); }, out, err);
+	liton_sp::debug::exec_except([&]() {x1.alloc(10, 2, 3); }, out, err);
 	out << endl;
 
-	exec([&]() {x1.realloc(10, 2, 3); }, out, err);
-	exec([&]() {x2.realloc(10, 2, 3); }, out, err);
+	liton_sp::debug::exec_except([&]() {x1.realloc(10, 2, 3); }, out, err);
+	liton_sp::debug::exec_except([&]() {x2.realloc(10, 2, 3); }, out, err);
 	out << endl;
 
-	exec([&]() {x2.clear(); }, out, err);
-	exec([&]() {x3.clear(); x3.alloc(10, 2, 3); }, out, err);
-	exec([&]() {x2.alloc(10, 2, 3); x3.alloc(10, 2, 3); }, out, err);
+	liton_sp::debug::exec_except([&]() {x2.clear(); }, out, err);
+	liton_sp::debug::exec_except([&]() {x3.clear(); x3.alloc(10, 2, 3); }, out, err);
+	liton_sp::debug::exec_except([&]() {x2.alloc(10, 2, 3); x3.alloc(10, 2, 3); }, out, err);
 	out << endl;
 
 	out << x3.size().disp() << endl;
@@ -76,10 +61,10 @@ int main(int argc, char** argv)
 	x1(x1.size().end(0, RA::ALL) - 1, 0, FL::P) = -10;
 	out << x1.disp_data() << endl;
 
-	exec([&]() {out << x1(-1, 0, FL::N) << endl; }, out, err);
-	exec([&]() {out << x1(-5, 0, FL::P) << endl; }, out, err);
-	exec([&]() {out << x1(120, 0, FL::N) << endl; }, out, err);
-	exec([&]() {out << x1(-1, 1, FL::P) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x1(-1, 0, FL::N) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x1(-5, 0, FL::P) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x1(120, 0, FL::N) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x1(-1, 1, FL::P) << endl; }, out, err);
 	out << endl;
 
 	D1::For_PD_1D_N(x2.size().range(RA::ALL), 0, x2.N, [&x1, &x2, &x3]PD_F_i_n(i, n)

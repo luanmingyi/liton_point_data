@@ -6,7 +6,7 @@
 #include <string>
 #include <sstream>
 
-namespace liton
+namespace liton_pd
 {
 	namespace D1
 	{

@@ -11,7 +11,7 @@ using namespace std;
 #endif
 #include "../../scr/PointData.hpp"
 
-using namespace liton;
+using namespace liton_pd;
 
 int main(int argc, char** argv)
 {
