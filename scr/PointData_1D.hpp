@@ -210,13 +210,13 @@ namespace liton_pd
 		};
 
 		template <typename Function>
-		void For_PD_1D(const RangeT &r, const Function &fun);
+		inline void For_PD_1D(const RangeT &r, const Function &fun);
 		template <typename Function>
-		void For_PD_1D_N(const RangeT &r, const unsigned &N_b, const unsigned &N_e, const Function &fun);
+		inline void For_PD_1D_N(const RangeT &r, const unsigned &N_b, const unsigned &N_e, const Function &fun);
 		template <typename T, typename Reducer, typename Function>
-		void Reduce_PD_1D(const RangeT &r, T &ans, const Reducer &reduce, const Function &fun);
+		inline void Reduce_PD_1D(const RangeT &r, T &ans, const Reducer &reduce, const Function &fun);
 		template <typename T, typename Reducer, typename Function>
-		void Reduce_PD_1D_N(const RangeT &r, const unsigned &N_b, const unsigned &N_e, T &ans, const Reducer &reduce, const Function &fun);
+		inline void Reduce_PD_1D_N(const RangeT &r, const unsigned &N_b, const unsigned &N_e, T &ans, const Reducer &reduce, const Function &fun);
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -328,7 +328,8 @@ namespace liton_pd
 		{
 			char loc_str[2][50] = { "center\0", "half\0" };
 			std::ostringstream displog;
-			displog << "location:[" << loc_str[_LOC] << "]"
+			displog << "dimension:" << DIM
+			        << "  location:[" << loc_str[_LOC] << "]"
 			        << "  type:[" << typeid(_NUMT).name() << "]"
 			        << "    N = " << _N
 			        << "  " << _size.disp();
@@ -360,7 +361,7 @@ namespace liton_pd
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		template <typename Function>
-		void For_PD_1D(const RangeT &r, const Function &fun)
+		inline void For_PD_1D(const RangeT &r, const Function &fun)
 		{
 			const int begin = r.begin(0);
 			const int end = r.end(0);
@@ -371,7 +372,7 @@ namespace liton_pd
 		}
 
 		template <typename Function>
-		void For_PD_1D_N(const RangeT &r, const unsigned &N_b, const unsigned &N_e, const Function &fun)
+		inline void For_PD_1D_N(const RangeT &r, const unsigned &N_b, const unsigned &N_e, const Function &fun)
 		{
 			const int begin = r.begin(0);
 			const int end = r.end(0);
@@ -385,7 +386,7 @@ namespace liton_pd
 		}
 
 		template <typename T, typename Reducer, typename Function>
-		void Reduce_PD_1D(const RangeT &r, T &ans, const Reducer &reduce, const Function &fun)
+		inline void Reduce_PD_1D(const RangeT &r, T &ans, const Reducer &reduce, const Function &fun)
 		{
 			T temp = ans;
 			int begin = r.begin(0);
@@ -398,7 +399,7 @@ namespace liton_pd
 		}
 
 		template <typename T, typename Reducer, typename Function>
-		void Reduce_PD_1D_N(const RangeT &r, const unsigned &N_b, const unsigned &N_e, T &ans, const Reducer &reduce, const Function &fun)
+		inline void Reduce_PD_1D_N(const RangeT &r, const unsigned &N_b, const unsigned &N_e, T &ans, const Reducer &reduce, const Function &fun)
 		{
 			T temp = ans;
 			int begin = r.begin(0);

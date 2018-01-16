@@ -22,7 +22,7 @@ int main(int argc, char** argv)
 
 	liton_sp::env::disp_env(out);
 	out << endl;
-
+	
 	D1::SizeT s1;
 	out << s1.disp() << endl;
 	D1::SizeT s2(10, 2, 3);
