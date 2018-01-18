@@ -1,2 +1,2 @@
 # TODO
-- [ ] change data structure from N arrays to one big array in D1
+- [x] change data structure from N arrays to one big array in D1
