@@ -2,7 +2,7 @@
 #include <fstream>
 #include <stdexcept>
 #include <cmath>
-#include<ctime>
+#include <ctime>
 using namespace std;
 #include "../dep/liton_cpp_snippets/lion_snippets.hpp"
 
@@ -39,18 +39,19 @@ int main(int argc, char** argv)
 		out << "N = " << N << endl;
 
 		clock_t clock_begin = clock();
-		double sum[2] = { 0, 0 };
-		For_N(0, f.N, [&]PD_F_n(n)
-		{
-			D1::Reduce_PD_1D(f.size().range(RA::ALL),
-				sum[n],
-			[]PD_RF(double, x, xx) { xx += x; },
-			[&]PD_F_i(i)->double { return f(i, n); });
-			sum[n] /= (N - 1);
-			out << "ans = " << sum[n] << endl;
+		double time = liton_sp::debug::exec_time(100, [&]() {
+			double sum[2] = { 0, 0 };
+			For_N(0, f.N, [&]PD_F_n(n)
+			{
+				D1::Reduce_PD_1D(f.size().range(RA::ALL),
+					sum[n],
+					[]PD_RF(double, x, xx) { xx += x; },
+					[&]PD_F_i(i)->double { return f(i, n); });
+				sum[n] /= (N - 1);
+				out << "ans = " << sum[n] << endl;
+			});
 		});
-		double time = double(clock() - clock_begin) / CLOCKS_PER_SEC;
-		out << "time used: " << time << endl;
+		out << "time used averaged: " << time << endl;
 
 		out.close();
 
