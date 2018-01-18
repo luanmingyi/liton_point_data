@@ -124,7 +124,7 @@ namespace liton_pd
 			const unsigned N = _N;
 		  protected:
 			SizeT _size;
-			_NUMT* data[_N];
+			_NUMT * data = nullptr;
 			_NUMT* pt0[_N];
 
 		  public:
@@ -229,7 +229,6 @@ namespace liton_pd
 			}
 			for(unsigned n = 0; n != _N; ++n)
 			{
-				data[n] = nullptr;
 				pt0[n] = nullptr;
 			}
 		}
@@ -243,7 +242,6 @@ namespace liton_pd
 			}
 			for(unsigned n = 0; n != _N; ++n)
 			{
-				data[n] = nullptr;
 				pt0[n] = nullptr;
 			}
 			alloc(iin, in, ip);
@@ -252,7 +250,7 @@ namespace liton_pd
 		template <typename _NUMT, LO::LOCATION _LOC, unsigned _N>
 		PointData<_NUMT, _LOC, _N>::~PointData()
 		{
-			if(data[0] != nullptr)
+			if(data != nullptr)
 			{
 				clear();
 			}
@@ -261,7 +259,7 @@ namespace liton_pd
 		template<typename _NUMT, LO::LOCATION _LOC, unsigned _N>
 		void PointData<_NUMT, _LOC, _N>::alloc(const unsigned &iin, const unsigned &in, const unsigned &ip)
 		{
-			if(data[0] != nullptr)
+			if(data != nullptr)
 			{
 				throw(std::runtime_error("allocating memory do not allowed when data is not empty"));
 			}
@@ -269,15 +267,12 @@ namespace liton_pd
 			{
 				SizeT s0(iin, in, ip);
 				s0.check();
-				unsigned size_all = (s0.sum(0) + _LOC);
-				if(size_all != 0)
+				unsigned size_point = (s0.sum(0) + _LOC);
+				if(size_point != 0)
 				{
 					try
 					{
-						for(unsigned n = 0; n != _N; ++n)
-						{
-							data[n] = new _NUMT[size_all];
-						}
+						data = new _NUMT[size_point*_N];
 						_size = s0;
 					}
 					catch(const std::bad_alloc &)
@@ -291,7 +286,7 @@ namespace liton_pd
 				}
 				for(unsigned n = 0; n != _N; ++n)
 				{
-					pt0[n] = data[n] + s0.n(0);
+					pt0[n] = data + n*size_point + s0.n(0);
 				}
 			}
 		}
@@ -307,16 +302,16 @@ namespace liton_pd
 		template<typename _NUMT, LO::LOCATION _LOC, unsigned _N>
 		void PointData<_NUMT, _LOC, _N>::clear()
 		{
-			if(data[0] == nullptr)
+			if(data == nullptr)
 			{
 				throw(std::runtime_error("clearing data do not allowed when data is empty"));
 			}
 			else
 			{
+				delete[] data;
+				data = nullptr;
 				for(unsigned n = 0; n != _N; ++n)
 				{
-					delete[] data[n];
-					data[n] = nullptr;
 					pt0[n] = nullptr;
 				}
 				_size = SizeT();
