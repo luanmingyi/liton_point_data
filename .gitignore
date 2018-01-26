@@ -7,9 +7,7 @@
 *.iobj
 *.opendb
 *.txt
-
-liton_cpp_snippets_subtree_push.bat
-liton_point_data_subtree_push.bat
+*.bat
 
 test/.vs/
 test/Example_D1_integration/Debug/
@@ -24,3 +22,7 @@ test/Test_D1_SizeT/Debug/
 test/Test_D1_SizeT/Release/
 test/Test_D0_PointData_C/Debug/
 test/Test_D0_PointData_C/Release/
+test/Test_D2_PointData_C/Debug/
+test/Test_D2_RangeT/Debug/
+test/Test_D2_RangeT/Release/
+test/Test_D2_SizeT/Debug/
