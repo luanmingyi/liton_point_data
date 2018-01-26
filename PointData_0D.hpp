@@ -104,7 +104,7 @@ namespace liton_pd
 			displog << "dimension:" << DIM
 			        << "  location:[" << loc_str[_LOC] << "]"
 			        << "  type:[" << typeid(_NUMT).name() << "]"
-			        << "    N = " << _N;
+			        << "  N = " << _N;
 			return displog.str();
 		}
 
@@ -114,7 +114,7 @@ namespace liton_pd
 			std::ostringstream displog;
 			for(unsigned n = 0; n != _N; ++n)
 			{
-				displog << pt0[n] << " , ";
+				displog << pt0[n] << ", ";
 			}
 			displog << std::endl;
 			return displog.str();

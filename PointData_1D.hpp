@@ -48,7 +48,7 @@ namespace liton_pd
 			{
 				std::ostringstream displog;
 				displog << "range_0 = [" << _begin << " , " << _end << "]  "
-				        << "size_0 = [" << _size << "]";
+				        << "size_0 = " << _size;
 				return displog.str();
 			}
 		};
@@ -98,7 +98,7 @@ namespace liton_pd
 			{
 				if(_in == 0 && _n + _p != 0)
 				{
-					throw(std::runtime_error("size_in can not be zero when size_n or size_p is non-zero"));
+					throw(std::runtime_error("dim 0: size_in can not be zero when size_n or size_p is non-zero"));
 				}
 			}
 
@@ -265,15 +265,15 @@ namespace liton_pd
 			}
 			else
 			{
-				SizeT s0(iin, in, ip);
-				s0.check();
-				unsigned size_point = (s0.sum(0) + _LOC);
+				SizeT s(iin, in, ip);
+				s.check();
+				unsigned size_point = (s.sum(0) + _LOC);
 				if(size_point != 0)
 				{
 					try
 					{
 						data = new _NUMT[size_point*_N];
-						_size = s0;
+						_size = s;
 					}
 					catch(const std::bad_alloc &)
 					{
@@ -286,7 +286,7 @@ namespace liton_pd
 				}
 				for(unsigned n = 0; n != _N; ++n)
 				{
-					pt0[n] = data + n*size_point + s0.n(0);
+					pt0[n] = data + n*size_point + s.n(0);
 				}
 			}
 		}
@@ -326,7 +326,7 @@ namespace liton_pd
 			displog << "dimension:" << DIM
 			        << "  location:[" << loc_str[_LOC] << "]"
 			        << "  type:[" << typeid(_NUMT).name() << "]"
-			        << "    N = " << _N
+			        << "  N = " << _N
 			        << "  " << _size.disp();
 			return displog.str();
 		}
@@ -337,10 +337,10 @@ namespace liton_pd
 			std::ostringstream displog;
 			auto lam = [&](const int &i)
 			{
-				displog << i << " , ";
+				displog << i << ", ";
 				for(unsigned n = 0; n != _N; ++n)
 				{
-					displog << pt0[n][i] << " , ";
+					displog << pt0[n][i] << ", ";
 				}
 				displog << std::endl;
 			};
