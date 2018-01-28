@@ -39,14 +39,15 @@ int main(int argc, char** argv)
 		out << "N = " << N << endl;
 
 		clock_t clock_begin = clock();
-		double time = liton_sp::debug::exec_time(100, [&]() {
+		double time = liton_sp::debug::exec_time(100, [&]()
+		{
 			double sum[2] = { 0, 0 };
 			For_N(0, f.N, [&]PD_F_n(n)
 			{
 				D1::Reduce_PD_1D(f.size().range(RA::ALL),
-					sum[n],
-					[]PD_RF(double, x, xx) { xx += x; },
-					[&]PD_F_i(i)->double { return f(i, n); });
+				                 sum[n],
+				[]PD_RF(double, x, xx) { xx += x; },
+				[&]PD_F_i(i)->double { return f(i, n); });
 				sum[n] /= (N - 1);
 				out << "ans = " << sum[n] << endl;
 			});

@@ -77,10 +77,10 @@ int main(int argc, char** argv)
 
 	double sum = 0;
 	double max = -100;
-	D1::Reduce_PD_1D(x3.size().range(RA::IN),sum,
+	D1::Reduce_PD_1D(x3.size().range(RA::IN), sum,
 	[]PD_RF(double, x, xx) { xx += x; },
 	[&x3]PD_F_i(i)->double { return x3(i, 0) / 2; });
-	D1::Reduce_PD_1D_N(x3.size().range(RA::ALL), 0, x3.N,max,
+	D1::Reduce_PD_1D_N(x3.size().range(RA::ALL), 0, x3.N, max,
 	[]PD_RF(double, x, xx) { xx = x > xx ? x : xx; },
 	[&x3]PD_F_i_n(i, n)->double { return x3(i, n); });
 	out << sum << endl;

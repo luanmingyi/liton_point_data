@@ -23,13 +23,13 @@ int main(int argc, char** argv)
 	liton_sp::env::disp_env(out);
 	out << endl;
 
-	D0::PointData_C<float> x1;
+	D0::PointData_0<float> x1;
 	out << x1.disp() << endl;
-	D0::PointData_C<double, 10> x2;
+	D0::PointData_0<double, 10> x2;
 	out << x2.disp() << endl;
-	//D0::PointData_C<double, 0> x3;
-	//D0::PointData_C<double, -1> x4;
-	//D0::PointData_C<float, 1> x5(x1);
+	//D0::PointData_0<double, 0> x3;
+	//D0::PointData_0<double, -1> x4;
+	//D0::PointData_0<float, 1> x5(x1);
 	//x1 = x2;
 	out << endl;
 
@@ -44,9 +44,9 @@ int main(int argc, char** argv)
 	out << endl;
 
 	double sum = 0;
-	D0::Reduce_PD_0D_N(0,x2.N,sum,
-		[]PD_RF(double, x, xx) { xx += x; },
-		[&x2]PD_F_n(n)->double { return x2(n) / 2; });
+	D0::Reduce_PD_0D_N(0, x2.N, sum,
+	[]PD_RF(double, x, xx) { xx += x; },
+	[&x2]PD_F_n(n)->double { return x2(n) / 2; });
 	out << sum << endl;
 
 	out.close();
