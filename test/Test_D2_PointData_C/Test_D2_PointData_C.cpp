@@ -23,12 +23,12 @@ int main(int argc, char** argv)
 	liton_sp::env::disp_env(out);
 	out << endl;
 
-	D2::PointData_C<float> x1;
+	D2::PointData_CC<float> x1;
 	out << x1.disp() << endl;
 	out << x1.disp_data() << endl;
-	D2::PointData_C<double, 2> x2;
+	D2::PointData_CC<double, 2> x2;
 	out << x2.disp() << endl;
-	D2::PointData_C<double, 2> x3(5, 10, 1, 1, 2, 3);
+	D2::PointData_CC<double, 2> x3(5, 10, 1, 1, 2, 3);
 	out << x3.disp() << endl;
 	//D2::PointData_C<double, 0> x4;
 	//D2::PointData_C<double, -1> x5;
