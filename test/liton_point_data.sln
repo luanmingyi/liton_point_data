@@ -21,6 +21,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test_D2_SizeT", "Test_D2_Si
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test_D2_PointData_C", "Test_D2_PointData_C\Test_D2_PointData_C.vcxproj", "{97E24CCF-AEEF-4657-950A-B2CCFF107527}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test_D2_PointData_H", "Test_D2_PointData_H\Test_D2_PointData_H.vcxproj", "{2B26AA8D-2286-467F-BECD-5F4BA18D5426}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -101,6 +103,14 @@ Global
 		{97E24CCF-AEEF-4657-950A-B2CCFF107527}.Release|x64.Build.0 = Release|x64
 		{97E24CCF-AEEF-4657-950A-B2CCFF107527}.Release|x86.ActiveCfg = Release|Win32
 		{97E24CCF-AEEF-4657-950A-B2CCFF107527}.Release|x86.Build.0 = Release|Win32
+		{2B26AA8D-2286-467F-BECD-5F4BA18D5426}.Debug|x64.ActiveCfg = Debug|x64
+		{2B26AA8D-2286-467F-BECD-5F4BA18D5426}.Debug|x64.Build.0 = Debug|x64
+		{2B26AA8D-2286-467F-BECD-5F4BA18D5426}.Debug|x86.ActiveCfg = Debug|Win32
+		{2B26AA8D-2286-467F-BECD-5F4BA18D5426}.Debug|x86.Build.0 = Debug|Win32
+		{2B26AA8D-2286-467F-BECD-5F4BA18D5426}.Release|x64.ActiveCfg = Release|x64
+		{2B26AA8D-2286-467F-BECD-5F4BA18D5426}.Release|x64.Build.0 = Release|x64
+		{2B26AA8D-2286-467F-BECD-5F4BA18D5426}.Release|x86.ActiveCfg = Release|Win32
+		{2B26AA8D-2286-467F-BECD-5F4BA18D5426}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

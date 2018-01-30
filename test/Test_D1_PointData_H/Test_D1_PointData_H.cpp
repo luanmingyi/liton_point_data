@@ -29,9 +29,9 @@ int main(int argc, char** argv)
 	out << x2.disp() << endl;
 	D1::PointData<double, LO::half, 2> x3(10, 2, 3);
 	out << x3.disp() << endl;
-	//D1::PointData_C<double, 0> x4;
-	//D1::PointData_C<double, -1> x5;
-	//D1::PointData_C<float, 1> x6(x1);
+	//D1::PointData<double, LO::half, 0> x4;
+	//D1::PointData<double, LO::half, -1> x5;
+	//D1::PointData<float, LO::half, 1> x6(x1);
 	//x3 = x2;
 	out << endl;
 

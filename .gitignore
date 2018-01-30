@@ -26,3 +26,5 @@ test/Test_D2_PointData_C/Debug/
 test/Test_D2_RangeT/Debug/
 test/Test_D2_RangeT/Release/
 test/Test_D2_SizeT/Debug/
+test/Test_D2_PointData_H/Debug/
+test/Test_D2_PointData_H/Release/
