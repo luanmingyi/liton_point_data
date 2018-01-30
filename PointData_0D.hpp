@@ -41,6 +41,14 @@ namespace liton_pd
 
 			std::string disp() const;
 			std::string disp_data() const;
+
+			inline _NUMT &operator()(const unsigned &n)
+			{
+				this->check_n(n);
+				return pt0[n];
+			}
+			inline const _NUMT &operator()(const unsigned &n) const { return *this(n); }
+
 		  protected:
 			inline void check_n(const unsigned &n) const
 			{
@@ -54,34 +62,6 @@ namespace liton_pd
 #endif
 			}
 		};
-
-		template <typename _NUMT, unsigned _N = 1>
-		class PointData_0 : public PointData<_NUMT, _N>
-		{
-		  public:
-			using PointData<_NUMT, _N>::num_type;
-			using PointData<_NUMT, _N>::N;
-		  protected:
-			using PointData<_NUMT, _N>::pt0;
-		  public:
-			PointData_0(): PointData<_NUMT, _N>() {}
-
-			inline _NUMT &operator()(const unsigned &n)
-			{
-				this->check_n(n);
-				return pt0[n];
-			}
-			inline const _NUMT &operator()(const int &i, const unsigned &n) const { return *this(n); }
-		};
-
-		template <typename Function>
-		inline void For_PD_0D_N(const unsigned &N_b, const unsigned &N_e, const Function &fun)
-		{For_N(N_b, N_e, fun);}
-		template <typename T, typename Reducer, typename Function>
-		inline void Reduce_PD_0D_N(const unsigned &N_b, const unsigned &N_e, T &ans, const Reducer &reduce, const Function &fun)
-		{Reduce_N(N_b, N_e, ans, reduce, fun);}
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		template <typename _NUMT, unsigned _N>
 		PointData<_NUMT, _N>::PointData()
