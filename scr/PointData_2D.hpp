@@ -176,6 +176,17 @@ namespace liton_pd
 
 			inline SizeT size() const { return _size; }
 
+			template<typename F0, typename F1>
+			inline _NUMT &operator()(const int &i, const int &j, const unsigned &n, const F0 &flag0, const F1 &flag1)
+			{
+				check_n(n);
+				check_flag(flag0, flag1);
+				_size.check_range(i, j);
+				return pt0[n][i + _size.n(0) + F0::offset][j + F1::offset];
+			}
+			template<typename F0, typename F1>
+			inline const _NUMT &operator()(const int &i, const int &j, const unsigned &n, const F0 &flag0, const F1 &flag1) const { return *this(i, j, n, flag0, flag1); }
+
 		  protected:
 			inline void check_n(const unsigned &n) const
 			{
@@ -188,126 +199,30 @@ namespace liton_pd
 				}
 #endif
 			}
-		};
 
-		template <typename _NUMT, unsigned _N = 1>
-		class PointData_CC : public PointData<_NUMT, LO::center, LO::center, _N>
-		{
-		  public:
-			using PointData<_NUMT, LO::center, LO::center, _N>::num_type;
-			using PointData<_NUMT, LO::center, LO::center, _N>::LOC0;
-			using PointData<_NUMT, LO::center, LO::center, _N>::LOC1;
-			using PointData<_NUMT, LO::center, LO::center, _N>::N;
-		  protected:
-			using PointData<_NUMT, LO::center, LO::center, _N>::_size;
-			using PointData<_NUMT, LO::center, LO::center, _N>::pt0;
-		  public:
-			PointData_CC(): PointData<_NUMT, LO::center, LO::center, _N>() {}
-			PointData_CC(const unsigned &iin0, const unsigned &iin1,
-			             const unsigned &in0, const unsigned &in1,
-			             const unsigned &ip0, const unsigned &ip1):
-				PointData<_NUMT, LO::center, LO::center, _N>(iin0, iin1, in0, in1, ip0, ip1) {}
-
-			inline _NUMT &operator()(const int &i, const int &j, const unsigned &n)
+			template<typename F0, typename F1>
+			inline void check_flag(const F0 &flag0, const F1 &flag1)
 			{
-				this->check_n(n);
-				_size.check_range(i, j);
-				return pt0[n][i + _size.n(0)][j];
+#ifdef _CHECK_POINTDATA_RANGE
+				if (_LOC0 == LO::center && typeid(F0) != typeid(FL::_C))
+				{
+					throw(std::runtime_error("dim 0: flag must be [C] when location is [center]"));
+				}
+				if (_LOC0 == LO::half && typeid(F0) == typeid(FL::_C))
+				{
+					throw(std::runtime_error("dim 0: flag must be [N] or [P] when location is [half]"));
+				}
+				if (_LOC1 == LO::center && typeid(F1) != typeid(FL::_C))
+				{
+					throw(std::runtime_error("dim 1: flag must be [C] when location is [center]"));
+				}
+				if (_LOC1 == LO::half && typeid(F1) == typeid(FL::_C))
+				{
+					throw(std::runtime_error("dim 1: flag must be [N] or [P] when location is [half]"));
+				}
+#endif
 			}
-			inline const _NUMT &operator()(const int &i, const int &j, const unsigned &n) const { return *this(i, j, n); }
 		};
-
-		template <typename _NUMT, unsigned _N = 1>
-		class PointData_CH : public PointData<_NUMT, LO::center, LO::half, _N>
-		{
-		  public:
-			using PointData<_NUMT, LO::center, LO::half, _N>::num_type;
-			using PointData<_NUMT, LO::center, LO::half, _N>::LOC0;
-			using PointData<_NUMT, LO::center, LO::half, _N>::LOC1;
-			using PointData<_NUMT, LO::center, LO::half, _N>::N;
-		  protected:
-			using PointData<_NUMT, LO::center, LO::half, _N>::_size;
-			using PointData<_NUMT, LO::center, LO::half, _N>::pt0;
-		  public:
-			PointData_CH() : PointData<_NUMT, LO::center, LO::half, _N>() {}
-			PointData_CH(const unsigned &iin0, const unsigned &iin1,
-			             const unsigned &in0, const unsigned &in1,
-			             const unsigned &ip0, const unsigned &ip1) :
-				PointData<_NUMT, LO::center, LO::half, _N>(iin0, iin1, in0, in1, ip0, ip1) {}
-
-			inline _NUMT &operator()(const int &i, const int &j, const unsigned &n, const FL::FLAG &flag1)
-			{
-				this->check_n(n);
-				_size.check_range(i, j);
-				return pt0[n][i + _size.n(0)][j + flag1];
-			}
-			inline const _NUMT &operator()(const int &i, const int &j, const unsigned &n, const FL::FLAG &flag1) const { return *this(i, j, n, flag1); }
-		};
-
-		template <typename _NUMT, unsigned _N = 1>
-		class PointData_HC : public PointData<_NUMT, LO::half, LO::center, _N>
-		{
-		  public:
-			using PointData<_NUMT, LO::half, LO::center, _N>::num_type;
-			using PointData<_NUMT, LO::half, LO::center, _N>::LOC0;
-			using PointData<_NUMT, LO::half, LO::center, _N>::LOC1;
-			using PointData<_NUMT, LO::half, LO::center, _N>::N;
-		  protected:
-			using PointData<_NUMT, LO::half, LO::center, _N>::_size;
-			using PointData<_NUMT, LO::half, LO::center, _N>::pt0;
-		  public:
-			PointData_HC() : PointData<_NUMT, LO::half, LO::center, _N>() {}
-			PointData_HC(const unsigned &iin0, const unsigned &iin1,
-			             const unsigned &in0, const unsigned &in1,
-			             const unsigned &ip0, const unsigned &ip1) :
-				PointData<_NUMT, LO::half, LO::center, _N>(iin0, iin1, in0, in1, ip0, ip1) {}
-
-			inline _NUMT &operator()(const int &i, const int &j, const unsigned &n, const FL::FLAG &flag0)
-			{
-				this->check_n(n);
-				_size.check_range(i, j);
-				return pt0[n][i + _size.n(0) + flag0][j];
-			}
-			inline const _NUMT &operator()(const int &i, const int &j, const unsigned &n, const FL::FLAG &flag0) const { return *this(i, j, n, flag0); }
-		};
-
-		template <typename _NUMT, unsigned _N = 1>
-		class PointData_HH : public PointData<_NUMT, LO::half, LO::half, _N>
-		{
-		  public:
-			using PointData<_NUMT, LO::half, LO::half, _N>::num_type;
-			using PointData<_NUMT, LO::half, LO::half, _N>::LOC0;
-			using PointData<_NUMT, LO::half, LO::half, _N>::LOC1;
-			using PointData<_NUMT, LO::half, LO::half, _N>::N;
-		  protected:
-			using PointData<_NUMT, LO::half, LO::half, _N>::_size;
-			using PointData<_NUMT, LO::half, LO::half, _N>::pt0;
-		  public:
-			PointData_HH() : PointData<_NUMT, LO::half, LO::half, _N>() {}
-			PointData_HH(const unsigned &iin0, const unsigned &iin1,
-			             const unsigned &in0, const unsigned &in1,
-			             const unsigned &ip0, const unsigned &ip1) :
-				PointData<_NUMT, LO::half, LO::half, _N>(iin0, iin1, in0, in1, ip0, ip1) {}
-
-			inline _NUMT &operator()(const int &i, const int &j, const unsigned &n, const FL::FLAG flag0, const FL::FLAG flag1)
-			{
-				this->check_n(n);
-				_size.check_range(i, j);
-				return pt0[n][i + _size.n(0) + flag0][j + flag1];
-			}
-			inline const _NUMT &operator()(const int &i, const int &j, const unsigned &n, const FL::FLAG flag0, const FL::FLAG flag1) const { return *this(i, j, n, flag0, flag1); }
-		};
-
-		template <typename Function>
-		inline void For_PD_2D(const RangeT &r, const Function &fun);
-		template <typename Function>
-		inline void For_PD_2D_N(const RangeT &r, const unsigned &N_b, const unsigned &N_e, const Function &fun);
-		template <typename T, typename Reducer, typename Function>
-		inline void Reduce_PD_2D(const RangeT &r, T &ans, const Reducer &reduce, const Function &fun);
-		template <typename T, typename Reducer, typename Function>
-		inline void Reduce_PD_2D_N(const RangeT &r, const unsigned &N_b, const unsigned &N_e, T &ans, const Reducer &reduce, const Function &fun);
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		template <typename _NUMT, LO::LOCATION _LOC0, LO::LOCATION _LOC1, unsigned _N>
 		PointData<_NUMT, _LOC0, _LOC1, _N>::PointData()

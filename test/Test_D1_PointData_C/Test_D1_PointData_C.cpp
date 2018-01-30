@@ -23,15 +23,15 @@ int main(int argc, char** argv)
 	liton_sp::env::disp_env(out);
 	out << endl;
 
-	D1::PointData_C<float> x1;
+	D1::PointData<float, LO::center, 1> x1;
 	out << x1.disp() << endl;
-	D1::PointData_C<double, 2> x2;
+	D1::PointData<double, LO::center, 2> x2;
 	out << x2.disp() << endl;
-	D1::PointData_C<double, 2> x3(10, 2, 3);
+	D1::PointData<double, LO::center, 2> x3(10, 2, 3);
 	out << x3.disp() << endl;
-	//D1::PointData_C<double, 0> x4;
-	//D1::PointData_C<double, -1> x5;
-	//D1::PointData_C<float, 1> x6(x1);
+	//D1::PointData<double, LO::center, 0> x4;
+	//D1::PointData<double, LO::center, -1> x5;
+	//D1::PointData<float, LO::center, 1> x6(x1);
 	//x3 = x2;
 	out << endl;
 
@@ -55,21 +55,22 @@ int main(int argc, char** argv)
 	out << x3.size().disp() << endl;
 	out << endl;
 
-	D1::For_PD_1D(x1.size().range(RA::IN), [&x1]PD_F_i(i) { x1(i, 0) = static_cast<float>(i); });
-	D1::For_PD_1D(x1.size().range(RA::N), [&x1]PD_F_i(i) { x1(i, 0) = static_cast<float>(i - 5); });
-	D1::For_PD_1D(x1.size().range(RA::P), [&x1]PD_F_i(i) { x1(i, 0) = static_cast<float>(i + 6); });
+	D1::For_PD_1D(x1.size().range(RA::IN), [&x1]PD_F_i(i) { x1(i, 0, FL::C) = static_cast<float>(i); });
+	D1::For_PD_1D(x1.size().range(RA::N), [&x1]PD_F_i(i) { x1(i, 0, FL::C) = static_cast<float>(i - 5); });
+	D1::For_PD_1D(x1.size().range(RA::P), [&x1]PD_F_i(i) { x1(i, 0, FL::C) = static_cast<float>(i + 6); });
 	out << x1.disp_data() << endl;
 
-	liton_sp::debug::exec_except([&]() {out << x1(-1, 0) << endl; }, out, err);
-	liton_sp::debug::exec_except([&]() {out << x1(-5, 0) << endl; }, out, err);
-	liton_sp::debug::exec_except([&]() {out << x1(120, 0) << endl; }, out, err);
-	liton_sp::debug::exec_except([&]() {out << x1(-1, 1) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x1(-1, 0, FL::C) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x1(-5, 0, FL::C) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x1(120, 0, FL::C) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x1(-1, 1, FL::C) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x1(-1, 0, FL::P) << endl; }, out, err);
 	out << endl;
 
 	D1::For_PD_1D_N(x2.size().range(RA::ALL), 0, x2.N, [&x1, &x2, &x3]PD_F_i_n(i, n)
 	{
-		x2(i, n) = static_cast<double>(i) * static_cast<double>(n + 1);
-		x3(i, n) = x2(i, n) + x1(i, 0);
+		x2(i, n, FL::C) = static_cast<double>(i) * static_cast<double>(n + 1);
+		x3(i, n, FL::C) = x2(i, n, FL::C) + x1(i, 0, FL::C);
 	});
 	out << x2.disp_data() << endl;
 	out << x3.disp_data() << endl;
@@ -79,10 +80,10 @@ int main(int argc, char** argv)
 	double max = -100;
 	D1::Reduce_PD_1D(x3.size().range(RA::IN), sum,
 	[]PD_RF(double, x, xx) { xx += x; },
-	[&x3]PD_F_i(i)->double { return x3(i, 0) / 2; });
+	[&x3]PD_F_i(i)->double { return x3(i, 0, FL::C) / 2; });
 	D1::Reduce_PD_1D_N(x3.size().range(RA::ALL), 0, x3.N, max,
 	[]PD_RF(double, x, xx) { xx = x > xx ? x : xx; },
-	[&x3]PD_F_i_n(i, n)->double { return x3(i, n); });
+	[&x3]PD_F_i_n(i, n)->double { return x3(i, n, FL::C); });
 	out << sum << endl;
 	out << max << endl;
 

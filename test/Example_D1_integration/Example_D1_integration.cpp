@@ -27,13 +27,13 @@ int main(int argc, char** argv)
 		double x1 = 1;
 		double h = (x1 - x0) / (N - 1);
 
-		D1::PointData_C<double> x(N, 0, 0);
-		D1::PointData_C<double, 2> f(N, 0, 0);
+		D1::PointData<double, LO::center, 1> x(N, 0, 0);
+		D1::PointData<double, LO::center, 2> f(N, 0, 0);
 		D1::For_PD_1D(x.size().range(RA::ALL), [&x, &f, &h]PD_F_i(i)
 		{
-			x(i, 0) = static_cast<double>(i) * h;
-			f(i, 0) = x(i, 0);
-			f(i, 1) = pow(x(i, 0), 0.5);
+			x(i, 0, FL::C) = static_cast<double>(i) * h;
+			f(i, 0, FL::C) = x(i, 0, FL::C);
+			f(i, 1, FL::C) = pow(x(i, 0, FL::C), 0.5);
 		});
 
 		out << "N = " << N << endl;
@@ -42,12 +42,12 @@ int main(int argc, char** argv)
 		double time = liton_sp::debug::exec_time(100, [&]()
 		{
 			double sum[2] = { 0, 0 };
-			For_N(0, f.N, [&]PD_F_n(n)
+			For_PD_N(0, f.N, [&]PD_F_n(n)
 			{
 				D1::Reduce_PD_1D(f.size().range(RA::ALL),
 				                 sum[n],
 				[]PD_RF(double, x, xx) { xx += x; },
-				[&]PD_F_i(i)->double { return f(i, n); });
+				[&]PD_F_i(i)->double { return f(i, n, FL::C); });
 				sum[n] /= (N - 1);
 				out << "ans = " << sum[n] << endl;
 			});

@@ -13,11 +13,9 @@ namespace liton_pd
 	}
 	namespace FL
 	{
-		enum FLAG
-		{
-			N = 0,
-			P = 1
-		};
+		class _C { public:static const int offset = 0; } C;
+		class _N { public:static const int offset = 0; } N;
+		class _P { public:static const int offset = 1; } P;
 	}
 	namespace RA
 	{
@@ -28,7 +26,7 @@ namespace liton_pd
 	}
 
 	template <typename Function>
-	inline void For_N(const unsigned &N_b, const unsigned &N_e, const Function &fun)
+	inline void For_PD_N(const unsigned &N_b, const unsigned &N_e, const Function &fun)
 	{
 		for (unsigned n = N_b; n != N_e; ++n)
 		{
@@ -37,7 +35,7 @@ namespace liton_pd
 	}
 
 	template <typename T, typename Reducer, typename Function>
-	inline void Reduce_N(const unsigned &N_b, const unsigned &N_e, T &ans, const Reducer &reduce, const Function &fun)
+	inline void Reduce_PD_N(const unsigned &N_b, const unsigned &N_e, T &ans, const Reducer &reduce, const Function &fun)
 	{
 		T temp = ans;
 		for (unsigned n = N_b; n != N_e; ++n)

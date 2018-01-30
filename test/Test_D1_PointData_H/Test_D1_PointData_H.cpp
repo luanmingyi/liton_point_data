@@ -23,11 +23,11 @@ int main(int argc, char** argv)
 	liton_sp::env::disp_env(out);
 	out << endl;
 
-	D1::PointData_H<float> x1;
+	D1::PointData<float, LO::half, 1> x1;
 	out << x1.disp() << endl;
-	D1::PointData_H<double, 2> x2;
+	D1::PointData<double, LO::half, 2> x2;
 	out << x2.disp() << endl;
-	D1::PointData_H<double, 2> x3(10, 2, 3);
+	D1::PointData<double, LO::half, 2> x3(10, 2, 3);
 	out << x3.disp() << endl;
 	//D1::PointData_C<double, 0> x4;
 	//D1::PointData_C<double, -1> x5;
@@ -65,6 +65,7 @@ int main(int argc, char** argv)
 	liton_sp::debug::exec_except([&]() {out << x1(-5, 0, FL::P) << endl; }, out, err);
 	liton_sp::debug::exec_except([&]() {out << x1(120, 0, FL::N) << endl; }, out, err);
 	liton_sp::debug::exec_except([&]() {out << x1(-1, 1, FL::P) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x1(-1, 0, FL::C) << endl; }, out, err);
 	out << endl;
 
 	D1::For_PD_1D_N(x2.size().range(RA::ALL), 0, x2.N, [&x1, &x2, &x3]PD_F_i_n(i, n)
@@ -72,8 +73,8 @@ int main(int argc, char** argv)
 		x2(i, n, FL::N) = (x1(i, 0, FL::N) + x1(i, 0, FL::P)) / 2;
 		x3(i, n, FL::N) = x2(i, n, FL::N) + x1(i, 0, FL::P);
 	});
-	For_N(0, x2.N, [&x2]PD_F_n(n) { x2(x2.size().end(0, RA::ALL) - 1, n, FL::P) = -5; });
-	For_N(0, x3.N, [&x3]PD_F_n(n) { x3(x3.size().end(0, RA::ALL) - 1, n, FL::P) = 100; });
+	For_PD_N(0, x2.N, [&x2]PD_F_n(n) { x2(x2.size().end(0, RA::ALL) - 1, n, FL::P) = -5; });
+	For_PD_N(0, x3.N, [&x3]PD_F_n(n) { x3(x3.size().end(0, RA::ALL) - 1, n, FL::P) = 100; });
 	out << x2.disp_data() << endl;
 	out << x3.disp_data() << endl;
 	out << endl;
@@ -92,7 +93,7 @@ int main(int argc, char** argv)
 	                   max,
 	                   lam_max,
 	                   [&x3]PD_F_i_n(i, n)->double { return x3(i, n, FL::N); });
-	Reduce_N(0, x3.N, max, lam_max, [&x3]PD_F_n(n)->double { return x3(x3.size().end(0, RA::ALL) - 1, n, FL::P); });
+	Reduce_PD_N(0, x3.N, max, lam_max, [&x3]PD_F_n(n)->double { return x3(x3.size().end(0, RA::ALL) - 1, n, FL::P); });
 	out << sum << endl;
 	out << max << endl;
 
