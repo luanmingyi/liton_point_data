@@ -1,4 +1,4 @@
-subfolder = Test_D0_PointData_C Test_D1_SizeT Test_D1_RangeT Test_D1_PointData_C Test_D1_PointData_H Example_D1_integration Test_D2_SizeT Test_D2_RangeT Test_D2_PointData_C
+subfolder = Test_D0_PointData_C Test_D1_SizeT Test_D1_RangeT Test_D1_PointData_C Test_D1_PointData_H Example_D1_integration Test_D2_SizeT Test_D2_RangeT Test_D2_PointData_C Test_D2_PointData_H
 
 out_flag = $(foreach n,$(subfolder),$(n).out_flag)
 %.out_flag:

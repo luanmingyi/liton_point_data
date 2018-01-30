@@ -22,7 +22,7 @@ out_debug: $(proname).o_debug
 .PHONY: run_debug
 run_debug: out_debug
 	./out_debug
-	cat example.txt
+	cat *.txt
 
 .PHONY: clean
 clean:

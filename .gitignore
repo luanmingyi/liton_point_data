@@ -10,8 +10,10 @@
 *.bat
 
 test/.vs/
-test/Example_D1_integration/Debug/
-test/Example_D1_integration/Release/
+
+test/Test_D0_PointData_C/Debug/
+test/Test_D0_PointData_C/Release/
+
 test/Test_D1_PointData_C/Debug/
 test/Test_D1_PointData_C/Release/
 test/Test_D1_PointData_H/Debug/
@@ -20,11 +22,14 @@ test/Test_D1_RangeT/Debug/
 test/Test_D1_RangeT/Release/
 test/Test_D1_SizeT/Debug/
 test/Test_D1_SizeT/Release/
-test/Test_D0_PointData_C/Debug/
-test/Test_D0_PointData_C/Release/
-test/Test_D2_PointData_C/Debug/
+test/Example_D1_integration/Debug/
+test/Example_D1_integration/Release/
+
 test/Test_D2_RangeT/Debug/
 test/Test_D2_RangeT/Release/
 test/Test_D2_SizeT/Debug/
+test/Test_D2_SizeT/Release/
+test/Test_D2_PointData_C/Debug/
+test/Test_D2_PointData_C/Release/
 test/Test_D2_PointData_H/Debug/
 test/Test_D2_PointData_H/Release/

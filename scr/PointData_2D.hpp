@@ -71,9 +71,8 @@ namespace liton_pd
 
 		  public:
 			SizeT() = default;
-			SizeT(const unsigned &iin0, const unsigned &iin1,
-			      const unsigned &in0, const unsigned &in1,
-			      const unsigned &ip0, const unsigned &ip1):
+			SizeT(const unsigned &in0, const unsigned &iin0, const unsigned &ip0,
+				const unsigned &in1, const unsigned &iin1, const unsigned &ip1):
 				_in{ static_cast<int>(iin0), static_cast<int>(iin1) },
 				_n{ static_cast<int>(in0), static_cast<int>(in1) },
 				_p{ static_cast<int>(ip0), static_cast<int>(ip1) } {}
@@ -141,7 +140,7 @@ namespace liton_pd
 			}
 		};
 
-		template <typename _NUMT, LO::LOCATION _LOC0, LO::LOCATION _LOC1, unsigned _N>
+		template <typename _NUMT, unsigned _N, LO::LOCATION _LOC0, LO::LOCATION _LOC1>
 		class PointData
 		{
 		  public:
@@ -156,19 +155,16 @@ namespace liton_pd
 
 		  public:
 			PointData();
-			PointData(const unsigned &iin0, const unsigned &iin1,
-			          const unsigned &in0, const unsigned &in1,
-			          const unsigned &ip0, const unsigned &ip1);
-			PointData(const PointData<_NUMT, _LOC0, _LOC1, _N> &) = delete;
-			const PointData<_NUMT, _LOC0, _LOC1, _N> &operator=(const PointData<_NUMT, _LOC0, _LOC1, _N> &) = delete;
+			PointData(const unsigned &in0, const unsigned &iin0, const unsigned &ip0,
+				const unsigned &in1, const unsigned &iin1, const unsigned &ip1);
+			PointData(const PointData<_NUMT, _N, _LOC0, _LOC1> &) = delete;
+			const PointData<_NUMT, _N, _LOC0, _LOC1> &operator=(const PointData<_NUMT, _N, _LOC0, _LOC1> &) = delete;
 			~PointData();
 
-			void alloc(const unsigned &iin0, const unsigned &iin1,
-			           const unsigned &in0, const unsigned &in1,
-			           const unsigned &ip0, const unsigned &ip1);
-			void realloc(const unsigned &iin0, const unsigned &iin1,
-			             const unsigned &in0, const unsigned &in1,
-			             const unsigned &ip0, const unsigned &ip1);
+			void alloc(const unsigned &in0, const unsigned &iin0, const unsigned &ip0,
+				const unsigned &in1, const unsigned &iin1, const unsigned &ip1);
+			void realloc(const unsigned &in0, const unsigned &iin0, const unsigned &ip0,
+				const unsigned &in1, const unsigned &iin1, const unsigned &ip1);
 			void clear();
 
 			std::string disp() const;
@@ -177,7 +173,7 @@ namespace liton_pd
 			inline SizeT size() const { return _size; }
 
 			template<typename F0, typename F1>
-			inline _NUMT &operator()(const int &i, const int &j, const unsigned &n, const F0 &flag0, const F1 &flag1)
+			inline _NUMT &operator()(const unsigned &n, const int &i, const int &j, const F0 &flag0, const F1 &flag1)
 			{
 				check_n(n);
 				check_flag(flag0, flag1);
@@ -185,7 +181,7 @@ namespace liton_pd
 				return pt0[n][i + _size.n(0) + F0::offset][j + F1::offset];
 			}
 			template<typename F0, typename F1>
-			inline const _NUMT &operator()(const int &i, const int &j, const unsigned &n, const F0 &flag0, const F1 &flag1) const { return *this(i, j, n, flag0, flag1); }
+			inline const _NUMT &operator()(const unsigned &n, const int &i, const int &j, const F0 &flag0, const F1 &flag1) const { return *this(i, j, n, flag0, flag1); }
 
 		  protected:
 			inline void check_n(const unsigned &n) const
@@ -224,8 +220,8 @@ namespace liton_pd
 			}
 		};
 
-		template <typename _NUMT, LO::LOCATION _LOC0, LO::LOCATION _LOC1, unsigned _N>
-		PointData<_NUMT, _LOC0, _LOC1, _N>::PointData()
+		template <typename _NUMT, unsigned _N, LO::LOCATION _LOC0, LO::LOCATION _LOC1>
+		PointData<_NUMT, _N, _LOC0, _LOC1>::PointData()
 		{
 			if(_N == 0)
 			{
@@ -237,10 +233,9 @@ namespace liton_pd
 			}
 		}
 
-		template <typename _NUMT, LO::LOCATION _LOC0, LO::LOCATION _LOC1, unsigned _N>
-		PointData<_NUMT, _LOC0, _LOC1, _N>::PointData(const unsigned &iin0, const unsigned &iin1,
-		        const unsigned &in0, const unsigned &in1,
-		        const unsigned &ip0, const unsigned &ip1)
+		template <typename _NUMT, unsigned _N, LO::LOCATION _LOC0, LO::LOCATION _LOC1>
+		PointData<_NUMT, _N, _LOC0, _LOC1>::PointData(const unsigned &in0, const unsigned &iin0, const unsigned &ip0,
+			const unsigned &in1, const unsigned &iin1, const unsigned &ip1)
 		{
 			if(_N == 0)
 			{
@@ -250,11 +245,11 @@ namespace liton_pd
 			{
 				pt0[n] = nullptr;
 			}
-			alloc(iin0, iin1, in0, in1, ip0, ip1);
+			alloc(in0, iin0, ip0, in1, iin1, ip1);
 		}
 
-		template <typename _NUMT, LO::LOCATION _LOC0, LO::LOCATION _LOC1, unsigned _N>
-		PointData<_NUMT, _LOC0, _LOC1, _N>::~PointData()
+		template <typename _NUMT, unsigned _N, LO::LOCATION _LOC0, LO::LOCATION _LOC1>
+		PointData<_NUMT, _N, _LOC0, _LOC1>::~PointData()
 		{
 			if(data != nullptr)
 			{
@@ -262,10 +257,9 @@ namespace liton_pd
 			}
 		}
 
-		template <typename _NUMT, LO::LOCATION _LOC0, LO::LOCATION _LOC1, unsigned _N>
-		void PointData<_NUMT, _LOC0, _LOC1, _N>::alloc(const unsigned &iin0, const unsigned &iin1,
-		        const unsigned &in0, const unsigned &in1,
-		        const unsigned &ip0, const unsigned &ip1)
+		template <typename _NUMT, unsigned _N, LO::LOCATION _LOC0, LO::LOCATION _LOC1>
+		void PointData<_NUMT, _N, _LOC0, _LOC1>::alloc(const unsigned &in0, const unsigned &iin0, const unsigned &ip0,
+			const unsigned &in1, const unsigned &iin1, const unsigned &ip1)
 		{
 			if(data != nullptr)
 			{
@@ -273,7 +267,7 @@ namespace liton_pd
 			}
 			else
 			{
-				SizeT s(iin0, iin1, in0, in1, ip0, ip1);
+				SizeT s(in0, iin0, ip0, in1, iin1, ip1);
 				s.check();
 				unsigned size_point = (s.sum(0) + _LOC0) * (s.sum(1) + _LOC1);
 				if(size_point != 0)
@@ -303,18 +297,17 @@ namespace liton_pd
 			}
 		}
 
-		template <typename _NUMT, LO::LOCATION _LOC0, LO::LOCATION _LOC1, unsigned _N>
-		void PointData<_NUMT, _LOC0, _LOC1, _N>::realloc(const unsigned &iin0, const unsigned &iin1,
-		        const unsigned &in0, const unsigned &in1,
-		        const unsigned &ip0, const unsigned &ip1)
+		template <typename _NUMT, unsigned _N, LO::LOCATION _LOC0, LO::LOCATION _LOC1>
+		void PointData<_NUMT, _N, _LOC0, _LOC1>::realloc(const unsigned &in0, const unsigned &iin0, const unsigned &ip0,
+			const unsigned &in1, const unsigned &iin1, const unsigned &ip1)
 		{
-			SizeT(iin0, iin1, in0, in1, ip0, ip1).check();
+			SizeT(in0, iin0, ip0, in1, iin1, ip1).check();
 			clear();
-			alloc(iin0, iin1, in0, in1, ip0, ip1);
+			alloc(in0, iin0, ip0, in1, iin1, ip1);
 		}
 
-		template <typename _NUMT, LO::LOCATION _LOC0, LO::LOCATION _LOC1, unsigned _N>
-		void PointData<_NUMT, _LOC0, _LOC1, _N>::clear()
+		template <typename _NUMT, unsigned _N, LO::LOCATION _LOC0, LO::LOCATION _LOC1>
+		void PointData<_NUMT, _N, _LOC0, _LOC1>::clear()
 		{
 			if(data == nullptr)
 			{
@@ -333,8 +326,8 @@ namespace liton_pd
 			}
 		}
 
-		template <typename _NUMT, LO::LOCATION _LOC0, LO::LOCATION _LOC1, unsigned _N>
-		inline std::string PointData<_NUMT, _LOC0, _LOC1, _N>::disp() const
+		template <typename _NUMT, unsigned _N, LO::LOCATION _LOC0, LO::LOCATION _LOC1>
+		inline std::string PointData<_NUMT, _N, _LOC0, _LOC1>::disp() const
 		{
 			char loc_str[2][50] = { "center\0", "half\0" };
 			std::ostringstream displog;
@@ -346,8 +339,8 @@ namespace liton_pd
 			return displog.str();
 		}
 
-		template <typename _NUMT, LO::LOCATION _LOC0, LO::LOCATION _LOC1, unsigned _N>
-		inline std::string PointData<_NUMT, _LOC0, _LOC1, _N>::disp_data() const
+		template <typename _NUMT, unsigned _N, LO::LOCATION _LOC0, LO::LOCATION _LOC1>
+		inline std::string PointData<_NUMT, _N, _LOC0, _LOC1>::disp_data() const
 		{
 			std::ostringstream displog;
 			const int begin0 = _size.begin(0, RA::ALL);
@@ -372,7 +365,7 @@ namespace liton_pd
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		template <typename Function>
-		inline void For_PD_2D(const RangeT &r, const Function &fun)
+		inline void PD_For_2D(const RangeT &r, const Function &fun)
 		{
 			const int begin0 = r.begin(0);
 			const int end0 = r.end(0);
@@ -388,7 +381,7 @@ namespace liton_pd
 		}
 
 		template <typename Function>
-		inline void For_PD_2D_N(const RangeT &r, const unsigned &N_b, const unsigned &N_e, const Function &fun)
+		inline void PD_For_N_2D(const unsigned &N_b, const unsigned &N_e, const RangeT &r, const Function &fun)
 		{
 			const int begin0 = r.begin(0);
 			const int end0 = r.end(0);
@@ -400,14 +393,14 @@ namespace liton_pd
 				{
 					for (int j = begin1; j != end1; ++j)
 					{
-						fun(i, j, n);
+						fun(n, i, j);
 					}
 				}
 			}
 		}
 
 		template <typename T, typename Reducer, typename Function>
-		inline void Reduce_PD_2D(const RangeT &r, T &ans, const Reducer &reduce, const Function &fun)
+		inline void PD_Reduce_2D(const RangeT &r, T &ans, const Reducer &reduce, const Function &fun)
 		{
 			T temp = ans;
 			const int begin0 = r.begin(0);
@@ -425,7 +418,7 @@ namespace liton_pd
 		}
 
 		template <typename T, typename Reducer, typename Function>
-		inline void Reduce_PD_2D_N(const RangeT &r, const unsigned &N_b, const unsigned &N_e, T &ans, const Reducer &reduce, const Function &fun)
+		inline void PD_Reduce_N_2D(const unsigned &N_b, const unsigned &N_e, const RangeT &r, T &ans, const Reducer &reduce, const Function &fun)
 		{
 			T temp = ans;
 			const int begin0 = r.begin(0);
@@ -438,7 +431,7 @@ namespace liton_pd
 				{
 					for (int j = begin1; j != end1; ++j)
 					{
-						reduce(fun(i, j, n), temp);
+						reduce(fun(n, i, j), temp);
 					}
 				}
 			}
@@ -446,7 +439,7 @@ namespace liton_pd
 		}
 
 		template <typename Function>
-		inline void For_PD_1D(const RangeT &r, const unsigned &d0, const Function &fun)
+		inline void PD_For_1D(const unsigned &d0, const RangeT &r, const Function &fun)
 		{
 			const int begin0 = r.begin(d0);
 			const int end0 = r.end(d0);
@@ -457,7 +450,7 @@ namespace liton_pd
 		}
 
 		template <typename Function>
-		inline void For_PD_1D_N(const RangeT &r, const unsigned &d0, const unsigned &N_b, const unsigned &N_e, const Function &fun)
+		inline void PD_For_N_1D(const unsigned &N_b, const unsigned &N_e, const unsigned &d0, const RangeT &r, const Function &fun)
 		{
 			const int begin0 = r.begin(d0);
 			const int end0 = r.end(d0);
@@ -465,13 +458,13 @@ namespace liton_pd
 			{
 				for (int ii = begin0; ii != end0; ++ii)
 				{
-					fun(ii, n);
+					fun(n, ii);
 				}
 			}
 		}
 
 		template <typename T, typename Reducer, typename Function>
-		inline void Reduce_PD_1D(const RangeT &r, const unsigned &d0, T &ans, const Reducer &reduce, const Function &fun)
+		inline void PD_Reduce_1D(const unsigned &d0, const RangeT &r, T &ans, const Reducer &reduce, const Function &fun)
 		{
 			T temp = ans;
 			const int begin0 = r.begin(d0);
@@ -484,7 +477,7 @@ namespace liton_pd
 		}
 
 		template <typename T, typename Reducer, typename Function>
-		inline void Reduce_PD_1D_N(const RangeT &r, const unsigned &d0, const unsigned &N_b, const unsigned &N_e, T &ans, const Reducer &reduce, const Function &fun)
+		inline void PD_Reduce_N_1D(const unsigned &N_b, const unsigned &N_e, const unsigned &d0, const RangeT &r, T &ans, const Reducer &reduce, const Function &fun)
 		{
 			T temp = ans;
 			const int begin0 = r.begin(d0);
@@ -493,7 +486,7 @@ namespace liton_pd
 			{
 				for (int ii = begin0; ii != end0; ++ii)
 				{
-					reduce(fun(ii, n), temp);
+					reduce(fun(n, ii), temp);
 				}
 			}
 			reduce(temp, ans);

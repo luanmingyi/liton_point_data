@@ -25,7 +25,7 @@ int main(int argc, char** argv)
 
 	D1::SizeT s1;
 	out << s1.disp() << endl;
-	D1::SizeT s2(10, 2, 3);
+	D1::SizeT s2(2, 10, 3);
 	out << s2.disp() << endl;
 	out << endl;
 
@@ -57,7 +57,7 @@ int main(int argc, char** argv)
 
 	liton_sp::debug::exec_except([&]() {s1.check(); }, out, err);
 	liton_sp::debug::exec_except([&]() {s2.check(); }, out, err);
-	liton_sp::debug::exec_except([&]() {D1::SizeT(0, 1, 0).check(); }, out, err);
+	liton_sp::debug::exec_except([&]() {D1::SizeT(1, 0, 0).check(); }, out, err);
 	out << endl;
 
 	liton_sp::debug::exec_except([&]() {s2.check_range(0); }, out, err);

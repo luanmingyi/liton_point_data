@@ -17,7 +17,10 @@ int main(int argc, char** argv)
 {
 	try
 	{
-		ofstream out("example.txt");
+		string name(__FILE__);
+		name.erase(name.find_last_of('.'));
+		cout << name << endl;
+		ofstream out((name + "_out.txt").c_str());
 
 		liton_sp::env::disp_env(out);
 		out << endl;
@@ -27,13 +30,13 @@ int main(int argc, char** argv)
 		double x1 = 1;
 		double h = (x1 - x0) / (N - 1);
 
-		D1::PointData<double, LO::center, 1> x(N, 0, 0);
-		D1::PointData<double, LO::center, 2> f(N, 0, 0);
-		D1::For_PD_1D(x.size().range(RA::ALL), [&x, &f, &h]PD_F_i(i)
+		D1::PointData<double, 1, LO::center> x(0, N, 0);
+		D1::PointData<double, 2, LO::center> f(0, N, 0);
+		D1::PD_For_1D(x.size().range(RA::ALL), [&x, &f, &h]PD_F_i(i)
 		{
-			x(i, 0, FL::C) = static_cast<double>(i) * h;
-			f(i, 0, FL::C) = x(i, 0, FL::C);
-			f(i, 1, FL::C) = pow(x(i, 0, FL::C), 0.5);
+			x(0, i, FL::C) = static_cast<double>(i) * h;
+			f(0, i, FL::C) = x(0, i, FL::C);
+			f(1, i, FL::C) = pow(x(0, i, FL::C), 0.5);
 		});
 
 		out << "N = " << N << endl;
@@ -42,12 +45,12 @@ int main(int argc, char** argv)
 		double time = liton_sp::debug::exec_time(100, [&]()
 		{
 			double sum[2] = { 0, 0 };
-			For_PD_N(0, f.N, [&]PD_F_n(n)
+			PD_For_N(0, f.N, [&]PD_F_n(n)
 			{
-				D1::Reduce_PD_1D(f.size().range(RA::ALL),
-				                 sum[n],
+				D1::PD_Reduce_1D(f.size().range(RA::ALL),
+				sum[n],
 				[]PD_RF(double, x, xx) { xx += x; },
-				[&]PD_F_i(i)->double { return f(i, n, FL::C); });
+				[&]PD_F_i(i)->double { return f(n, i, FL::C); });
 				sum[n] /= (N - 1);
 				out << "ans = " << sum[n] << endl;
 			});

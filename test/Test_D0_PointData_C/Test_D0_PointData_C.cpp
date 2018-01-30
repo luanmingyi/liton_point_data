@@ -33,9 +33,9 @@ int main(int argc, char** argv)
 	//x1 = x2;
 	out << endl;
 
-	For_PD_N(0, x1.N, [&x1]PD_F_n(n) { x1(n) = 10; });
+	PD_For_N(0, x1.N, [&x1]PD_F_n(n) { x1(n) = 10; });
 	out << x1.disp_data() << endl;
-	For_PD_N(0, x2.N, [&x2]PD_F_n(n) { x2(n) = n; });
+	PD_For_N(0, x2.N, [&x2]PD_F_n(n) { x2(n) = n; });
 	out << x2.disp_data() << endl;
 	out << endl;
 
@@ -44,7 +44,7 @@ int main(int argc, char** argv)
 	out << endl;
 
 	double sum = 0;
-	Reduce_PD_N(0, x2.N, sum,
+	PD_Reduce_N(0, x2.N, sum,
 	[]PD_RF(double, x, xx) { xx += x; },
 	[&x2]PD_F_n(n)->double { return x2(n) / 2; });
 	out << sum << endl;
