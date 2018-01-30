@@ -26,7 +26,7 @@ namespace liton_pd
 	}
 
 	template <typename Function>
-	inline void For_PD_N(const unsigned &N_b, const unsigned &N_e, const Function &fun)
+	inline void PD_For_N(const unsigned &N_b, const unsigned &N_e, const Function &fun)
 	{
 		for (unsigned n = N_b; n != N_e; ++n)
 		{
@@ -35,7 +35,7 @@ namespace liton_pd
 	}
 
 	template <typename T, typename Reducer, typename Function>
-	inline void Reduce_PD_N(const unsigned &N_b, const unsigned &N_e, T &ans, const Reducer &reduce, const Function &fun)
+	inline void PD_Reduce_N(const unsigned &N_b, const unsigned &N_e, T &ans, const Reducer &reduce, const Function &fun)
 	{
 		T temp = ans;
 		for (unsigned n = N_b; n != N_e; ++n)
@@ -50,9 +50,9 @@ namespace liton_pd
 #define PD_F_i(i_name) (const int &i_name)
 #define PD_F_ij(i_name, j_name) (const int &i_name, const int &j_name)
 #define PD_F_ijk(i_name, j_name, k_name) (const int &i_name, const int &j_name, const int &k_name)
-#define PD_F_i_n(i_name, n_name) (const int &i_name, const unsigned &n_name)
-#define PD_F_ij_n(i_name, j_name, n_name) (const int &i_name, const int &j_name, const unsigned &n_name)
-#define PD_F_ijk_n(i_name, j_name, k_name, n_name) (const int &i_name, const int &j_name, const int &k_name, const unsigned &n_name)
+#define PD_F_n_i(n_name, i_name) (const unsigned &n_name, const int &i_name)
+#define PD_F_n_ij(n_name, i_name, j_name) (const unsigned &n_name, const int &i_name, const int &j_name)
+#define PD_F_n_ijk(n_name, i_name, j_name, k_name) (const unsigned &n_name, const int &i_name, const int &j_name, const int &k_name)
 
 #define PD_RF(type, x_name, xx_name) (const type &x_name, type &xx_name)
 
