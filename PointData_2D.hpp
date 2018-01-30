@@ -295,7 +295,7 @@ namespace liton_pd
 				for(unsigned n = 0; n != _N; ++n)
 				{
 					pt0[n] = new _NUMT*[s.sum(0) + _LOC0];
-					for (unsigned ii = 0; ii != s.sum(0); ++ii)
+					for (unsigned ii = 0; ii != s.sum(0) + _LOC0; ++ii)
 					{
 						pt0[n][ii] = data + n * size_point + ii * (s.sum(1) + _LOC1) + s.n(1);
 					}
