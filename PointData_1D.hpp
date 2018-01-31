@@ -86,6 +86,9 @@ namespace liton_pd
 
 			template<typename T0>
 			inline int last(const unsigned &d, T0 r) const { return end(d, r) - 1; }
+			inline int mirror(const unsigned &d, FL::_N fl, int ii) const { return 2 * begin(d, RA::IN) - ii; }
+			inline int mirror(const unsigned &d, FL::_P fl, int ii) const { return 2 * last(d, RA::IN) - ii; }
+
 			template<typename T0>
 			inline RangeT range(T0 r) const { return RangeT(begin(0, r), size(0, r)); }
 
@@ -143,7 +146,7 @@ namespace liton_pd
 			std::string disp() const;
 			std::string disp_data() const;
 
-			inline SizeT size() const { return _size; }
+			inline const SizeT & size() const { return _size; }
 
 			template<typename F0>
 			inline _NUMT &operator()(const unsigned &n, const int &i, const F0 &flag0)
