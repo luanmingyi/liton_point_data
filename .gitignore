@@ -33,3 +33,5 @@ test/Test_D2_PointData_C/Debug/
 test/Test_D2_PointData_C/Release/
 test/Test_D2_PointData_H/Debug/
 test/Test_D2_PointData_H/Release/
+test/Example_D1_heat/Debug/
+test/Example_D1_heat/Release/
