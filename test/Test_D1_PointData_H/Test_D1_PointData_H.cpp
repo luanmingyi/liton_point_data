@@ -61,11 +61,11 @@ int main(int argc, char** argv)
 	x1(0, x1.size().last(0,RA::ALL), FL::P) = -10;
 	out << x1.disp_data() << endl;
 
-	liton_sp::debug::exec_except([&]() {out << x1(-1, 0, FL::N) << endl; }, out, err);
-	liton_sp::debug::exec_except([&]() {out << x1(-5, 0, FL::P) << endl; }, out, err);
-	liton_sp::debug::exec_except([&]() {out << x1(120, 0, FL::N) << endl; }, out, err);
-	liton_sp::debug::exec_except([&]() {out << x1(-1, 1, FL::P) << endl; }, out, err);
-	liton_sp::debug::exec_except([&]() {out << x1(-1, 0, FL::C) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x1(0, -1, FL::N) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x1(0, -5, FL::P) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x1(0, 13, FL::N) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x1(1, -1, FL::P) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x1(0, -1, FL::C) << endl; }, out, err);
 	out << endl;
 
 	D1::PD_For_N_1D(0, x2.N, x2.size().range(RA::ALL), [&x1, &x2, &x3]PD_F_n_i(n, i)

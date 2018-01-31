@@ -83,18 +83,18 @@ namespace liton_pd
 
 			inline int sum(const unsigned &d) const { check_d(d); return _in[d] + _n[d] + _p[d]; }
 
-			inline int begin(const unsigned &d, RA::_ALL r) const { check_d(d); return -static_cast<int>(_n[d]); }
-			inline int end(const unsigned &d, RA::_ALL r) const { check_d(d); return static_cast<int>(_in[d] + _p[d]); }
-			inline int size(const unsigned &d, RA::_ALL r) const { check_d(d); return static_cast<int>(_in[d] + _n[d] + _p[d]); }
+			inline int begin(const unsigned &d, RA::_ALL r) const { check_d(d); return -_n[d]; }
+			inline int end(const unsigned &d, RA::_ALL r) const { check_d(d); return _in[d] + _p[d]; }
+			inline int size(const unsigned &d, RA::_ALL r) const { check_d(d); return _in[d] + _n[d] + _p[d]; }
 			inline int begin(const unsigned &d, RA::_IN r) const { check_d(d); return 0; }
-			inline int end(const unsigned &d, RA::_IN r) const { check_d(d); return static_cast<int>(_in[d]); }
-			inline int size(const unsigned &d, RA::_IN r) const { check_d(d); return static_cast<int>(_in[d]); }
-			inline int begin(const unsigned &d, RA::_N r) const { check_d(d); return -static_cast<int>(_n[d]); }
+			inline int end(const unsigned &d, RA::_IN r) const { check_d(d); return _in[d]; }
+			inline int size(const unsigned &d, RA::_IN r) const { check_d(d); return _in[d]; }
+			inline int begin(const unsigned &d, RA::_N r) const { check_d(d); return -_n[d]; }
 			inline int end(const unsigned &d, RA::_N r) const { check_d(d); return 0; }
-			inline int size(const unsigned &d, RA::_N r) const { check_d(d); return static_cast<int>(_n[d]); }
-			inline int begin(const unsigned &d, RA::_P r) const { check_d(d); return static_cast<int>(_in[d]); }
-			inline int end(const unsigned &d, RA::_P r) const { check_d(d); return static_cast<int>(_in[d] + _p[d]); }
-			inline int size(const unsigned &d, RA::_P r) const { check_d(d); return static_cast<int>(_p[d]); }
+			inline int size(const unsigned &d, RA::_N r) const { check_d(d); return _n[d]; }
+			inline int begin(const unsigned &d, RA::_P r) const { check_d(d); return _in[d]; }
+			inline int end(const unsigned &d, RA::_P r) const { check_d(d); return _in[d] + _p[d]; }
+			inline int size(const unsigned &d, RA::_P r) const { check_d(d); return _p[d]; }
 
 			template<typename T0>
 			inline int last(const unsigned &d, T0 r) const { return end(d, r) - 1; }
@@ -124,16 +124,16 @@ namespace liton_pd
 			inline void check_range(const int &i, const int &j) const
 			{
 #ifdef _CHECK_POINTDATA_RANGE
-				if (i < -static_cast<int>(_n[0]) || i >= static_cast<int>(_in[0] + _p[0]))
+				if (i < -_n[0] || i >= _in[0] + _p[0])
 				{
 					std::ostringstream errlog;
-					errlog << "out of sub range: i:[" << i << "] range:[" << -static_cast<int>(_n[0]) << "," << static_cast<int>(_in[0] + _p[0]) - 1 << "]";
+					errlog << "out of sub range: i:[" << i << "] range:[" << -_n[0] << "," << _in[0] + _p[0] - 1 << "]";
 					throw(std::runtime_error(errlog.str()));
 				}
-				if (j < -static_cast<int>(_n[1]) || j >= static_cast<int>(_in[1] + _p[1]))
+				if (j < -_n[1] || j >= _in[1] + _p[1])
 				{
 					std::ostringstream errlog;
-					errlog << "out of sub range: j:[" << j << "] range:[" << -static_cast<int>(_n[1]) << "," << static_cast<int>(_in[1] + _p[1]) - 1 << "]";
+					errlog << "out of sub range: j:[" << j << "] range:[" << -_n[1] << "," << _in[1] + _p[1] - 1 << "]";
 					throw(std::runtime_error(errlog.str()));
 				}
 #endif
