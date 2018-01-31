@@ -69,6 +69,13 @@ int main(int argc, char** argv)
 	out << x1.disp_data() << endl;
 	out << endl;
 
+	D2::PD_For_2D(x1.size().range(RA::IN, RA::N), [&x1]PD_F_ij(i, j) { x1(0, i, j, FL::C, FL::C) = -x1(0, i, x1.size().mirror(1, FL::N, j), FL::C, FL::C); });
+	D2::PD_For_2D(x1.size().range(RA::IN, RA::P), [&x1]PD_F_ij(i, j) { x1(0, i, j, FL::C, FL::C) = -x1(0, i, x1.size().mirror(1, FL::P, j), FL::C, FL::C); });
+	D2::PD_For_2D(x1.size().range(RA::N, RA::IN), [&x1]PD_F_ij(i, j) { x1(0, i, j, FL::C, FL::C) = -x1(0, x1.size().mirror(0, FL::N, i), j, FL::C, FL::C); });
+	D2::PD_For_2D(x1.size().range(RA::P, RA::IN), [&x1]PD_F_ij(i, j) { x1(0, i, j, FL::C, FL::C) = -x1(0, x1.size().mirror(0, FL::P, i), j, FL::C, FL::C); });
+	out << x1.disp_data() << endl;
+	out << endl;
+
 	liton_sp::debug::exec_except([&]() {out << x1(0, -1, 0, FL::C, FL::C) << endl; }, out, err);
 	liton_sp::debug::exec_except([&]() {out << x1(0, -2, 0, FL::C, FL::C) << endl; }, out, err);
 	liton_sp::debug::exec_except([&]() {out << x1(0, 7, 0, FL::C, FL::C) << endl; }, out, err);

@@ -60,6 +60,10 @@ int main(int argc, char** argv)
 	D1::PD_For_1D(x1.size().range(RA::P), [&x1]PD_F_i(i) { x1(0, i, FL::C) = static_cast<float>(i + 6); });
 	out << x1.disp_data() << endl;
 
+	D1::PD_For_1D(x1.size().range(RA::N), [&x1]PD_F_i(i) { x1(0, i, FL::C) = -x1(0, x1.size().mirror(0, FL::N, i), FL::C); });
+	D1::PD_For_1D(x1.size().range(RA::P), [&x1]PD_F_i(i) { x1(0, i, FL::C) = -x1(0, x1.size().mirror(0, FL::P, i), FL::C); });
+	out << x1.disp_data() << endl;
+
 	liton_sp::debug::exec_except([&]() {out << x1(0, -1, FL::C) << endl; }, out, err);
 	liton_sp::debug::exec_except([&]() {out << x1(0, -5, FL::C) << endl; }, out, err);
 	liton_sp::debug::exec_except([&]() {out << x1(0, 13, FL::C) << endl; }, out, err);
