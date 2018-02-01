@@ -186,6 +186,7 @@ namespace liton_pd
 			template<typename F0, typename F1>
 			inline const _NUMT &operator()(const unsigned &n, const int &i, const int &j, const F0 &flag0, const F1 &flag1) const { return *this(i, j, n, flag0, flag1); }
 
+			inline const _NUMT *data_pt(const unsigned &n) const { check_n(n); return pt0[n][-_size.n(0)] - _size.n(1); }
 		  protected:
 			inline void check_n(const unsigned &n) const
 			{
