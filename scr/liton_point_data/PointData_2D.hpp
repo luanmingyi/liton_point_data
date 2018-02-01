@@ -181,7 +181,7 @@ namespace liton_pd
 				check_n(n);
 				check_flag(flag0, flag1);
 				_size.check_range(i, j);
-				return pt0[n][i + _size.n(0) + F0::offset][j + F1::offset];
+				return pt0[n][i + F0::offset][j + F1::offset];
 			}
 			template<typename F0, typename F1>
 			inline const _NUMT &operator()(const unsigned &n, const int &i, const int &j, const F0 &flag0, const F1 &flag1) const { return *this(i, j, n, flag0, flag1); }
@@ -296,6 +296,7 @@ namespace liton_pd
 					{
 						pt0[n][ii] = data + n * size_point + ii * (s.sum(1) + _LOC1) + s.n(1);
 					}
+					pt0[n] += in0;
 				}
 			}
 		}
@@ -322,6 +323,7 @@ namespace liton_pd
 				data = nullptr;
 				for(unsigned n = 0; n != _N; ++n)
 				{
+					pt0[n] -= _size.n(0);
 					delete[] pt0[n];
 					pt0[n] = nullptr;
 				}
@@ -356,7 +358,7 @@ namespace liton_pd
 				{
 					for (int j = begin1; j != end1; ++j)
 					{
-						displog << pt0[n][i + _size.n(0)][j] << ", ";
+						displog << pt0[n][i][j] << ", ";
 					}
 					displog << std::endl;
 				}

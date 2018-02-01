@@ -23,6 +23,7 @@ int main(int argc, char** argv)
 	liton_sp::env::disp_env(out);
 	out << endl;
 
+	out << "line: " << __LINE__ << endl;
 	D2::PointData<float, 1, LO::center, LO::center> x1;
 	out << x1.disp() << endl;
 	out << x1.disp_data() << endl;
@@ -36,6 +37,7 @@ int main(int argc, char** argv)
 	//x3 = x2;
 	out << endl;
 
+	out << "line: " << __LINE__ << endl;
 	liton_sp::debug::exec_except([&]() {x1.alloc(0, 0, 0, 0, 0, 0); }, out, err);
 	liton_sp::debug::exec_except([&]() {x1.alloc(0, 0, 0, 1, 0, 0); }, out, err);
 	const unsigned big = 0.1 * 1024 / sizeof(float) / x1.N * 1024 * 1024;
@@ -54,9 +56,11 @@ int main(int argc, char** argv)
 	liton_sp::debug::exec_except([&]() {x2.alloc(1, 5, 2, 1, 10, 3); x3.alloc(1, 5, 2, 1, 10, 3); }, out, err);
 	out << endl;
 
+	out << "line: " << __LINE__ << endl;
 	out << x3.size().disp() << endl;
 	out << endl;
 
+	out << "line: " << __LINE__ << endl;
 	D2::PD_For_2D(x1.size().range(RA::IN, RA::IN), [&x1]PD_F_ij(i, j) { x1(0, i, j, FL::C, FL::C) = static_cast<float>(i) + static_cast<float>(j); });
 	D2::PD_For_2D(x1.size().range(RA::N, RA::N), [&x1]PD_F_ij(i, j) { x1(0, i, j, FL::C, FL::C) = 1; });
 	D2::PD_For_2D(x1.size().range(RA::N, RA::P), [&x1]PD_F_ij(i, j) { x1(0, i, j, FL::C, FL::C) = 2; });
@@ -69,6 +73,7 @@ int main(int argc, char** argv)
 	out << x1.disp_data() << endl;
 	out << endl;
 
+	out << "line: " << __LINE__ << endl;
 	D2::PD_For_2D(x1.size().range(RA::IN, RA::N), [&x1]PD_F_ij(i, j) { x1(0, i, j, FL::C, FL::C) = -x1(0, i, x1.size().mirror(1, FL::N, j), FL::C, FL::C); });
 	D2::PD_For_2D(x1.size().range(RA::IN, RA::P), [&x1]PD_F_ij(i, j) { x1(0, i, j, FL::C, FL::C) = -x1(0, i, x1.size().mirror(1, FL::P, j), FL::C, FL::C); });
 	D2::PD_For_2D(x1.size().range(RA::N, RA::IN), [&x1]PD_F_ij(i, j) { x1(0, i, j, FL::C, FL::C) = -x1(0, x1.size().mirror(0, FL::N, i), j, FL::C, FL::C); });
@@ -76,6 +81,7 @@ int main(int argc, char** argv)
 	out << x1.disp_data() << endl;
 	out << endl;
 
+	out << "line: " << __LINE__ << endl;
 	liton_sp::debug::exec_except([&]() {out << x1(0, -1, 0, FL::C, FL::C) << endl; }, out, err);
 	liton_sp::debug::exec_except([&]() {out << x1(0, -2, 0, FL::C, FL::C) << endl; }, out, err);
 	liton_sp::debug::exec_except([&]() {out << x1(0, 7, 0, FL::C, FL::C) << endl; }, out, err);
@@ -86,6 +92,7 @@ int main(int argc, char** argv)
 	liton_sp::debug::exec_except([&]() {out << x1(0, -1, 0, FL::C, FL::P) << endl; }, out, err);
 	out << endl;
 
+	out << "line: " << __LINE__ << endl;
 	D2::PD_For_N_2D(0, x2.N, x2.size().range(RA::ALL, RA::ALL), [&x1, &x2]PD_F_n_ij(n, i, j)
 	{
 		x2(n, i, j, FL::C, FL::C) = x1(0, i, j, FL::C, FL::C) * static_cast<double>(n + 1) + 5;
@@ -93,6 +100,7 @@ int main(int argc, char** argv)
 	out << x2.disp_data() << endl;
 	out << endl;
 
+	out << "line: " << __LINE__ << endl;
 	D2::PD_For_1D(1, x1.size().range(RA::N, RA::ALL), [&x1]PD_F_i(i)
 	{
 		x1(0, -1, i, FL::C, FL::C) = 1;
@@ -106,6 +114,7 @@ int main(int argc, char** argv)
 	out << x1.disp_data() << endl;
 	out << endl;
 
+	out << "line: " << __LINE__ << endl;
 	D2::PD_For_N_1D(0, x2.N, 1, x2.size().range(RA::N, RA::ALL), [&x2]PD_F_n_i(n, i)
 	{
 		x2(n, -1, i, FL::C, FL::C) = 10 + n + i;
@@ -119,6 +128,7 @@ int main(int argc, char** argv)
 	out << x2.disp_data() << endl;
 	out << endl;
 
+	out << "line: " << __LINE__ << endl;
 	float min = 10000;
 	D2::PD_Reduce_2D(x1.size().range(RA::IN, RA::IN), min,
 	[]PD_RF(float, x, xx) { xx = x < xx ? x : xx; },
@@ -126,6 +136,7 @@ int main(int argc, char** argv)
 	                );
 	out << "min " << min << endl;
 
+	out << "line: " << __LINE__ << endl;
 	double max = 0;
 	D2::PD_Reduce_N_2D(0, x2.N, x2.size().range(RA::IN, RA::IN), max,
 	[]PD_RF(double, x, xx) { xx = x > xx ? x : xx; },
@@ -133,6 +144,7 @@ int main(int argc, char** argv)
 	                  );
 	out << "max " << max << endl;
 
+	out << "line: " << __LINE__ << endl;
 	float sum_1 = 0;
 	D2::PD_Reduce_1D(1, x1.size().range(RA::IN, RA::IN), sum_1,
 	[]PD_RF(float, x, xx) { xx += x; },
@@ -140,6 +152,7 @@ int main(int argc, char** argv)
 	                );
 	out << "sum_1 " << sum_1 << endl;
 
+	out << "line: " << __LINE__ << endl;
 	double sum_2 = 0;
 	D2::PD_Reduce_N_1D(0, x2.N, 1, x2.size().range(RA::IN, RA::IN), sum_2,
 	[]PD_RF(double, x, xx) { xx += x; },
