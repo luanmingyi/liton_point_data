@@ -9,7 +9,7 @@ using namespace std;
 #ifdef _DEBUG
 	#define _CHECK_POINTDATA_RANGE
 #endif
-#include "../../scr/PointData.hpp"
+#include "../../scr/liton_point_data/PointData.hpp"
 
 using namespace liton_pd;
 
