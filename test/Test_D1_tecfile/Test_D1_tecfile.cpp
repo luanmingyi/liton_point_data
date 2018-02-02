@@ -3,7 +3,7 @@
 #include <string>
 #include <stdexcept>
 using namespace std;
-//#include "../dep/liton_cpp_snippets/lion_snippets.hpp"
+#include "../dep/liton_cpp_snippets/lion_snippets.hpp"
 #define _CRT_SECURE_NO_WARNINGS
 #include "../dep/liton_ordered_tec/ordered_tec.h"
 
@@ -24,8 +24,8 @@ int main(int argc, char** argv)
 		cout << name << endl;
 		ofstream out((name + "_out.txt").c_str());
 
-		//liton_sp::env::disp_env(out);
-		//out << endl;
+		liton_sp::env::disp_env(out);
+		out << endl;
 
 		D1::PointData<double, 1, LO::center> x(3, 100, 3);
 		D1::PointData<double, 2, LO::center> y(3, 100, 3);
