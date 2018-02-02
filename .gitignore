@@ -40,3 +40,6 @@ test/Test_D1_tecfile/Debug/
 test/Test_D1_tecfile/Release/
 test/Test_D2_tecfile/Debug/
 test/Test_D2_tecfile/Release/
+
+test/Test_HPP/Debug/
+test/Test_HPP/Release/

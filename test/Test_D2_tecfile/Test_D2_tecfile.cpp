@@ -36,11 +36,11 @@ int main(int argc, char** argv)
 		tecfile.Variables.push_back("u1");
 		tecfile.Variables.push_back("u2");
 		tecfile.Zones.push_back(TEC_ZONE());
-		for (unsigned d = 0; d != D2::DIM; ++d)
+		for (unsigned d = 0; d != D2::DIM::D; ++d)
 		{
-			tecfile.Zones[0].Max_C(D2::DIM, d) = x.size().size(d, RA::ALL);
-			tecfile.Zones[0].Begin_C(D2::DIM, d) = x.size().size(d, RA::N);
-			tecfile.Zones[0].End_C(D2::DIM, d) = x.size().size(d, RA::P);
+			tecfile.Zones[0].Max_C(D2::DIM::D, d) = x.size().size(d, RA::ALL);
+			tecfile.Zones[0].Begin_C(D2::DIM::D, d) = x.size().size(d, RA::N);
+			tecfile.Zones[0].End_C(D2::DIM::D, d) = x.size().size(d, RA::P);
 		}
 		tecfile.Zones[0].Data.push_back(TEC_DATA(x.data_pt(0)));
 		tecfile.Zones[0].Data.push_back(TEC_DATA(x.data_pt(1)));
