@@ -12,7 +12,7 @@ namespace liton_pd
 	{
 		static const int DIM = 1;
 
-		inline void check_d(const unsigned &d)
+		inline void check_d(const unsigned d)
 		{
 #ifdef _CHECK_POINTDATA_RANGE
 			if(d >= DIM)
@@ -34,11 +34,11 @@ namespace liton_pd
 
 		  public:
 			RangeT() = default;
-			RangeT(const int &b, const unsigned &s): _begin(b), _size(static_cast<int>(s)) { _end = _begin + _size; }
+			RangeT(const int b, const unsigned s): _begin(b), _size(static_cast<int>(s)) { _end = _begin + _size; }
 
-			inline int begin(const unsigned &d) const { check_d(d); return _begin; }
-			inline int end(const unsigned &d) const { check_d(d); return _end; }
-			inline int size(const unsigned &d) const { check_d(d); return _size; }
+			inline int begin(const unsigned d) const { check_d(d); return _begin; }
+			inline int end(const unsigned d) const { check_d(d); return _end; }
+			inline int size(const unsigned d) const { check_d(d); return _size; }
 
 			inline const int* begin_pt() const { return &_begin; }
 			inline const int* end_pt() const { return &_end; }
@@ -62,32 +62,30 @@ namespace liton_pd
 
 		  public:
 			SizeT() = default;
-			SizeT(const unsigned &in, const unsigned &iin, const unsigned &ip)
+			SizeT(const unsigned in, const unsigned iin, const unsigned ip)
 				: _in(static_cast<int>(iin)), _n(static_cast<int>(in)), _p(static_cast<int>(ip)) {}
 
-			inline int in(const unsigned &d) const { check_d(d); return _in; }
-			inline int n(const unsigned &d) const { check_d(d); return _n; }
-			inline int p(const unsigned &d) const { check_d(d); return _p; }
+			inline int in(const unsigned d) const { check_d(d); return _in; }
+			inline int n(const unsigned d) const { check_d(d); return _n; }
+			inline int p(const unsigned d) const { check_d(d); return _p; }
 
-			inline int sum(const unsigned &d) const { check_d(d); return _in + _n + _p; }
-
-			inline int begin(const unsigned &d, RA::_ALL r) const { check_d(d); return -_n; }
-			inline int end(const unsigned &d, RA::_ALL r) const { check_d(d); return _in + _p; }
-			inline int size(const unsigned &d, RA::_ALL r) const { check_d(d); return _in + _n + _p; }
-			inline int begin(const unsigned &d, RA::_IN r) const { check_d(d); return 0; }
-			inline int end(const unsigned &d, RA::_IN r) const { check_d(d); return _in; }
-			inline int size(const unsigned &d, RA::_IN r) const { check_d(d); return _in; }
-			inline int begin(const unsigned &d, RA::_N r) const { check_d(d); return -_n; }
-			inline int end(const unsigned &d, RA::_N r) const { check_d(d); return 0; }
-			inline int size(const unsigned &d, RA::_N r) const { check_d(d); return _n; }
-			inline int begin(const unsigned &d, RA::_P r) const { check_d(d); return _in; }
-			inline int end(const unsigned &d, RA::_P r) const { check_d(d); return _in + _p; }
-			inline int size(const unsigned &d, RA::_P r) const { check_d(d); return _p; }
+			inline int begin(const unsigned d, RA::_ALL r) const { check_d(d); return -_n; }
+			inline int end(const unsigned d, RA::_ALL r) const { check_d(d); return _in + _p; }
+			inline int size(const unsigned d, RA::_ALL r) const { check_d(d); return _in + _n + _p; }
+			inline int begin(const unsigned d, RA::_IN r) const { check_d(d); return 0; }
+			inline int end(const unsigned d, RA::_IN r) const { check_d(d); return _in; }
+			inline int size(const unsigned d, RA::_IN r) const { check_d(d); return _in; }
+			inline int begin(const unsigned d, RA::_N r) const { check_d(d); return -_n; }
+			inline int end(const unsigned d, RA::_N r) const { check_d(d); return 0; }
+			inline int size(const unsigned d, RA::_N r) const { check_d(d); return _n; }
+			inline int begin(const unsigned d, RA::_P r) const { check_d(d); return _in; }
+			inline int end(const unsigned d, RA::_P r) const { check_d(d); return _in + _p; }
+			inline int size(const unsigned d, RA::_P r) const { check_d(d); return _p; }
 
 			template<typename T0>
-			inline int last(const unsigned &d, T0 r) const { return end(d, r) - 1; }
-			inline int mirror(const unsigned &d, FL::_N fl, int ii) const { return 2 * begin(d, RA::IN) - ii; }
-			inline int mirror(const unsigned &d, FL::_P fl, int ii) const { return 2 * last(d, RA::IN) - ii; }
+			inline int last(const unsigned d, T0 r) const { return end(d, r) - 1; }
+			inline int mirror(const unsigned d, FL::_N fl, int ii) const { return 2 * begin(d, RA::IN) - ii; }
+			inline int mirror(const unsigned d, FL::_P fl, int ii) const { return 2 * last(d, RA::IN) - ii; }
 
 			template<typename T0>
 			inline RangeT range(T0 r) const { return RangeT(begin(0, r), size(0, r)); }
@@ -107,7 +105,7 @@ namespace liton_pd
 				}
 			}
 
-			inline void check_range(const int &i) const
+			inline void check_range(const int i) const
 			{
 #ifdef _CHECK_POINTDATA_RANGE
 				if(i < -_n || i >= _in + _p)
@@ -134,22 +132,22 @@ namespace liton_pd
 
 		  public:
 			PointData();
-			PointData(const unsigned &in, const unsigned &iin, const unsigned &ip);
+			PointData(const unsigned in, const unsigned iin, const unsigned ip);
 			PointData(const PointData<_NUMT, _N, _LOC0> &) = delete;
 			const PointData<_NUMT, _N, _LOC0> &operator=(const PointData<_NUMT, _N, _LOC0> &) = delete;
 			~PointData();
 
-			void alloc(const unsigned &in, const unsigned &iin, const unsigned &ip);
-			void realloc(const unsigned &in, const unsigned &iin, const unsigned &ip);
+			void alloc(const unsigned in, const unsigned iin, const unsigned ip);
+			void realloc(const unsigned in, const unsigned iin, const unsigned ip);
 			void clear();
 
 			std::string disp() const;
 			std::string disp_data() const;
 
-			inline const SizeT & size() const { return _size; }
+			inline SizeT size() const { return _size; }
 
 			template<typename F0>
-			inline _NUMT &operator()(const unsigned &n, const int &i, const F0 &flag0)
+			inline _NUMT &operator()(const unsigned n, const int i, const F0 flag0)
 			{
 				check_n(n);
 				check_flag(flag0);
@@ -157,12 +155,12 @@ namespace liton_pd
 				return pt0[n][i + F0::offset];
 			}
 			template<typename F0>
-			inline const _NUMT &operator()(const unsigned &n, const int &i, const F0 &flag0) const { return *this(i, n, flag0); }
+			inline const _NUMT &operator()(const unsigned n, const int i, const F0 flag0) const { return *this(i, n, flag0); }
 
-			inline const _NUMT *data_pt(const unsigned &n) const { check_n(n); return pt0[n] - _size.n(0); }
+			inline const _NUMT *data_pt(const unsigned n) const { check_n(n); return pt0[n] - _size.n(0); }
 
 		  protected:
-			inline void check_n(const unsigned &n) const
+			inline void check_n(const unsigned n) const
 			{
 #ifdef _CHECK_POINTDATA_RANGE
 				if(n >= _N)
@@ -175,7 +173,7 @@ namespace liton_pd
 			}
 
 			template<typename F0>
-			inline void check_flag(const F0 &flag0)
+			inline void check_flag(const F0 flag0)
 			{
 #ifdef _CHECK_POINTDATA_RANGE
 				if (_LOC0 == LO::center && typeid(F0) != typeid(FL::_C))
@@ -204,7 +202,7 @@ namespace liton_pd
 		}
 
 		template <typename _NUMT, unsigned _N, LO::LOCATION _LOC0>
-		PointData<_NUMT, _N, _LOC0>::PointData(const unsigned &in, const unsigned &iin, const unsigned &ip)
+		PointData<_NUMT, _N, _LOC0>::PointData(const unsigned in, const unsigned iin, const unsigned ip)
 		{
 			if(_N == 0)
 			{
@@ -227,7 +225,7 @@ namespace liton_pd
 		}
 
 		template<typename _NUMT, unsigned _N, LO::LOCATION _LOC0>
-		void PointData<_NUMT, _N, _LOC0>::alloc(const unsigned &in, const unsigned &iin, const unsigned &ip)
+		void PointData<_NUMT, _N, _LOC0>::alloc(const unsigned in, const unsigned iin, const unsigned ip)
 		{
 			if(data != nullptr)
 			{
@@ -237,7 +235,7 @@ namespace liton_pd
 			{
 				SizeT s(in, iin, ip);
 				s.check();
-				unsigned size_point = (s.sum(0) + _LOC0);
+				unsigned size_point = (s.size(0,RA::ALL) + _LOC0);
 				if(size_point != 0)
 				{
 					try
@@ -262,7 +260,7 @@ namespace liton_pd
 		}
 
 		template<typename _NUMT, unsigned _N, LO::LOCATION _LOC0>
-		void PointData<_NUMT, _N, _LOC0>::realloc(const unsigned &in, const unsigned &iin, const unsigned &ip)
+		void PointData<_NUMT, _N, _LOC0>::realloc(const unsigned in, const unsigned iin, const unsigned ip)
 		{
 			SizeT(in, iin, ip).check();
 			clear();
@@ -321,7 +319,7 @@ namespace liton_pd
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		template <typename Function>
-		inline void PD_For_1D(const RangeT &r, const Function &fun)
+		inline void PD_For_1D(const RangeT r, const Function fun)
 		{
 			const int begin = r.begin(0);
 			const int end = r.end(0);
@@ -332,7 +330,7 @@ namespace liton_pd
 		}
 
 		template <typename Function>
-		inline void PD_For_N_1D(const unsigned &N_b, const unsigned &N_e, const RangeT &r, const Function &fun)
+		inline void PD_For_N_1D(const unsigned N_b, const unsigned N_e, const RangeT r, const Function fun)
 		{
 			const int begin = r.begin(0);
 			const int end = r.end(0);
@@ -346,7 +344,7 @@ namespace liton_pd
 		}
 
 		template <typename T, typename Reducer, typename Function>
-		inline void PD_Reduce_1D(const RangeT &r, T &ans, const Reducer &reduce, const Function &fun)
+		inline void PD_Reduce_1D(const RangeT r, T &ans, const Reducer reduce, const Function fun)
 		{
 			T temp = ans;
 			int begin = r.begin(0);
@@ -359,7 +357,7 @@ namespace liton_pd
 		}
 
 		template <typename T, typename Reducer, typename Function>
-		inline void PD_Reduce_N_1D(const unsigned &N_b, const unsigned &N_e, const RangeT &r, T &ans, const Reducer &reduce, const Function &fun)
+		inline void PD_Reduce_N_1D(const unsigned N_b, const unsigned N_e, const RangeT r, T &ans, const Reducer reduce, const Function fun)
 		{
 			T temp = ans;
 			int begin = r.begin(0);

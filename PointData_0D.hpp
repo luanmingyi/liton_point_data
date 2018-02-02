@@ -12,7 +12,7 @@ namespace liton_pd
 	{
 		static const int DIM = 0;
 
-		inline void check_d(const unsigned &d)
+		inline void check_d(const unsigned d)
 		{
 #ifdef _CHECK_POINTDATA_RANGE
 			if(d >= DIM)
@@ -42,15 +42,15 @@ namespace liton_pd
 			std::string disp() const;
 			std::string disp_data() const;
 
-			inline _NUMT &operator()(const unsigned &n)
+			inline _NUMT &operator()(const unsigned n)
 			{
 				this->check_n(n);
 				return pt0[n];
 			}
-			inline const _NUMT &operator()(const unsigned &n) const { return *this(n); }
+			inline const _NUMT &operator()(const unsigned n) const { return *this(n); }
 
 		  protected:
-			inline void check_n(const unsigned &n) const
+			inline void check_n(const unsigned n) const
 			{
 #ifdef _CHECK_POINTDATA_RANGE
 				if(n >= _N)
