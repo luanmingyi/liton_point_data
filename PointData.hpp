@@ -13,16 +13,23 @@ namespace liton_pd
 	}
 	namespace FL
 	{
-		class _C { public:static const int offset = 0; } C;
-		class _N { public:static const int offset = 0; } N;
-		class _P { public:static const int offset = 1; } P;
+		class _C { public:static const int offset = 0; };
+		class _N { public:static const int offset = 0; };
+		class _P { public:static const int offset = 1; };
+		const _C C;
+		const _N N;
+		const _P P;
 	}
 	namespace RA
 	{
-		class _N {} N;
-		class _P {} P;
-		class _ALL {} ALL;
-		class _IN {} IN;
+		class _N {};
+		class _P {};
+		class _ALL {};
+		class _IN {};
+		const _N N;
+		const _P P;
+		const _ALL ALL;
+		const _IN IN;
 	}
 
 	template <typename Function>

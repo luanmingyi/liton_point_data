@@ -10,20 +10,24 @@ namespace liton_pd
 {
 	namespace D1
 	{
-		static const int DIM = 1;
-
-		inline void check_d(const unsigned d)
+		class DIM
 		{
-#ifdef _CHECK_POINTDATA_RANGE
-			if(d >= DIM)
+		  public:
+			static const int D = 1;
+
+			inline static void check_d(const unsigned d)
 			{
-				std::ostringstream errlog;
-				errlog << "out of DIM range: d:[" << d << "] range:[" << 0 << "," << static_cast<int>
-				       (DIM) - 1 << "]";
-				throw(std::runtime_error(errlog.str()));
-			}
+#ifdef _CHECK_POINTDATA_RANGE
+				if (d >= D)
+				{
+					std::ostringstream errlog;
+					errlog << "out of DIM range: d:[" << d << "] range:[" << 0 << "," << static_cast<int>
+					       (D) - 1 << "]";
+					throw(std::runtime_error(errlog.str()));
+				}
 #endif
-		}
+			}
+		};
 
 		class RangeT
 		{
@@ -36,9 +40,9 @@ namespace liton_pd
 			RangeT() = default;
 			RangeT(const int b, const unsigned s): _begin(b), _size(static_cast<int>(s)) { _end = _begin + _size; }
 
-			inline int begin(const unsigned d) const { check_d(d); return _begin; }
-			inline int end(const unsigned d) const { check_d(d); return _end; }
-			inline int size(const unsigned d) const { check_d(d); return _size; }
+			inline int begin(const unsigned d) const { DIM::check_d(d); return _begin; }
+			inline int end(const unsigned d) const { DIM::check_d(d); return _end; }
+			inline int size(const unsigned d) const { DIM::check_d(d); return _size; }
 
 			inline const int* begin_pt() const { return &_begin; }
 			inline const int* end_pt() const { return &_end; }
@@ -65,22 +69,22 @@ namespace liton_pd
 			SizeT(const unsigned in, const unsigned iin, const unsigned ip)
 				: _in(static_cast<int>(iin)), _n(static_cast<int>(in)), _p(static_cast<int>(ip)) {}
 
-			inline int in(const unsigned d) const { check_d(d); return _in; }
-			inline int n(const unsigned d) const { check_d(d); return _n; }
-			inline int p(const unsigned d) const { check_d(d); return _p; }
+			inline int in(const unsigned d) const { DIM::check_d(d); return _in; }
+			inline int n(const unsigned d) const { DIM::check_d(d); return _n; }
+			inline int p(const unsigned d) const { DIM::check_d(d); return _p; }
 
-			inline int begin(const unsigned d, RA::_ALL r) const { check_d(d); return -_n; }
-			inline int end(const unsigned d, RA::_ALL r) const { check_d(d); return _in + _p; }
-			inline int size(const unsigned d, RA::_ALL r) const { check_d(d); return _in + _n + _p; }
-			inline int begin(const unsigned d, RA::_IN r) const { check_d(d); return 0; }
-			inline int end(const unsigned d, RA::_IN r) const { check_d(d); return _in; }
-			inline int size(const unsigned d, RA::_IN r) const { check_d(d); return _in; }
-			inline int begin(const unsigned d, RA::_N r) const { check_d(d); return -_n; }
-			inline int end(const unsigned d, RA::_N r) const { check_d(d); return 0; }
-			inline int size(const unsigned d, RA::_N r) const { check_d(d); return _n; }
-			inline int begin(const unsigned d, RA::_P r) const { check_d(d); return _in; }
-			inline int end(const unsigned d, RA::_P r) const { check_d(d); return _in + _p; }
-			inline int size(const unsigned d, RA::_P r) const { check_d(d); return _p; }
+			inline int begin(const unsigned d, RA::_ALL r) const { DIM::check_d(d); return -_n; }
+			inline int end(const unsigned d, RA::_ALL r) const { DIM::check_d(d); return _in + _p; }
+			inline int size(const unsigned d, RA::_ALL r) const { DIM::check_d(d); return _in + _n + _p; }
+			inline int begin(const unsigned d, RA::_IN r) const { DIM::check_d(d); return 0; }
+			inline int end(const unsigned d, RA::_IN r) const { DIM::check_d(d); return _in; }
+			inline int size(const unsigned d, RA::_IN r) const { DIM::check_d(d); return _in; }
+			inline int begin(const unsigned d, RA::_N r) const { DIM::check_d(d); return -_n; }
+			inline int end(const unsigned d, RA::_N r) const { DIM::check_d(d); return 0; }
+			inline int size(const unsigned d, RA::_N r) const { DIM::check_d(d); return _n; }
+			inline int begin(const unsigned d, RA::_P r) const { DIM::check_d(d); return _in; }
+			inline int end(const unsigned d, RA::_P r) const { DIM::check_d(d); return _in + _p; }
+			inline int size(const unsigned d, RA::_P r) const { DIM::check_d(d); return _p; }
 
 			template<typename T0>
 			inline int last(const unsigned d, T0 r) const { return end(d, r) - 1; }
@@ -157,7 +161,7 @@ namespace liton_pd
 			template<typename F0>
 			inline const _NUMT &operator()(const unsigned n, const int i, const F0 flag0) const { return *this(i, n, flag0); }
 
-			inline const _NUMT *data_pt(const unsigned n) const { check_n(n); return pt0[n] - _size.n(0); }
+			inline const _NUMT* data_pt(const unsigned n) const { check_n(n); return pt0[n] - _size.n(0); }
 
 		  protected:
 			inline void check_n(const unsigned n) const
@@ -235,7 +239,7 @@ namespace liton_pd
 			{
 				SizeT s(in, iin, ip);
 				s.check();
-				unsigned size_point = (s.size(0,RA::ALL) + _LOC0);
+				unsigned size_point = (s.size(0, RA::ALL) + _LOC0);
 				if(size_point != 0)
 				{
 					try
@@ -291,7 +295,7 @@ namespace liton_pd
 		{
 			char loc_str[2][50] = { "center\0", "half\0" };
 			std::ostringstream displog;
-			displog << "dimension:" << DIM
+			displog << "dimension:" << DIM::D
 			        << "  location:[" << loc_str[_LOC0] << "]"
 			        << "  type:[" << typeid(_NUMT).name() << "]"
 			        << "  N = " << _N

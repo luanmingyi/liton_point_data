@@ -10,20 +10,24 @@ namespace liton_pd
 {
 	namespace D0
 	{
-		static const int DIM = 0;
-
-		inline void check_d(const unsigned d)
+		class DIM
 		{
-#ifdef _CHECK_POINTDATA_RANGE
-			if(d >= DIM)
+		  public:
+			static const int D = 0;
+
+			inline static void check_d(const unsigned d)
 			{
-				std::ostringstream errlog;
-				errlog << "out of DIM range: d:[" << d << "] range:[" << 0 << "," << static_cast<int>
-				       (DIM) - 1 << "]";
-				throw(std::runtime_error(errlog.str()));
-			}
+#ifdef _CHECK_POINTDATA_RANGE
+				if (d >= D)
+				{
+					std::ostringstream errlog;
+					errlog << "out of DIM range: d:[" << d << "] range:[" << 0 << "," << static_cast<int>
+					       (D) - 1 << "]";
+					throw(std::runtime_error(errlog.str()));
+				}
 #endif
-		}
+			}
+		};
 
 		template <typename _NUMT, unsigned _N>
 		class PointData
@@ -76,7 +80,7 @@ namespace liton_pd
 		inline std::string PointData<_NUMT, _N>::disp() const
 		{
 			std::ostringstream displog;
-			displog << "dimension:" << DIM
+			displog << "dimension:" << DIM::D
 			        << "  type:[" << typeid(_NUMT).name() << "]"
 			        << "  N = " << _N;
 			return displog.str();
