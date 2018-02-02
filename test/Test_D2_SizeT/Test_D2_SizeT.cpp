@@ -41,11 +41,6 @@ int main(int argc, char** argv)
 	liton_sp::debug::exec_except([&]() {out << s2.in(2) << endl; }, out, err);
 	out << endl;
 
-	liton_sp::debug::exec_except([&]() {out << s2.sum(0) << endl; }, out, err);
-	liton_sp::debug::exec_except([&]() {out << s2.sum(1) << endl; }, out, err);
-	liton_sp::debug::exec_except([&]() {out << s2.sum(2) << endl; }, out, err);
-	out << endl;
-
 	liton_sp::debug::exec_except([&]() {out << s2.begin(0, RA::ALL) << " " << s2.end(0, RA::ALL) << " " << s2.size(0, RA::ALL) << endl; }, out, err);
 	liton_sp::debug::exec_except([&]() {out << s2.begin(0, RA::IN) << " " << s2.end(0, RA::IN) << " " << s2.size(0, RA::IN) << endl; }, out, err);
 	liton_sp::debug::exec_except([&]() {out << s2.begin(0, RA::N) << " " << s2.end(0, RA::N) << " " << s2.size(0, RA::N) << endl; }, out, err);
