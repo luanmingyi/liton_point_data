@@ -31,6 +31,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test_D2_tecfile", "Test_D2_
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test_HPP", "Test_HPP\Test_HPP.vcxproj", "{C5AE88E4-F9CC-4C92-ADE9-B7609654F821}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Example_D2_heat", "Example_D2_heat\Example_D2_heat.vcxproj", "{32115BFA-734E-414B-9581-83547E03E5F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -151,6 +153,14 @@ Global
 		{C5AE88E4-F9CC-4C92-ADE9-B7609654F821}.Release|x64.Build.0 = Release|x64
 		{C5AE88E4-F9CC-4C92-ADE9-B7609654F821}.Release|x86.ActiveCfg = Release|Win32
 		{C5AE88E4-F9CC-4C92-ADE9-B7609654F821}.Release|x86.Build.0 = Release|Win32
+		{32115BFA-734E-414B-9581-83547E03E5F6}.Debug|x64.ActiveCfg = Debug|x64
+		{32115BFA-734E-414B-9581-83547E03E5F6}.Debug|x64.Build.0 = Debug|x64
+		{32115BFA-734E-414B-9581-83547E03E5F6}.Debug|x86.ActiveCfg = Debug|Win32
+		{32115BFA-734E-414B-9581-83547E03E5F6}.Debug|x86.Build.0 = Debug|Win32
+		{32115BFA-734E-414B-9581-83547E03E5F6}.Release|x64.ActiveCfg = Release|x64
+		{32115BFA-734E-414B-9581-83547E03E5F6}.Release|x64.Build.0 = Release|x64
+		{32115BFA-734E-414B-9581-83547E03E5F6}.Release|x86.ActiveCfg = Release|Win32
+		{32115BFA-734E-414B-9581-83547E03E5F6}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
