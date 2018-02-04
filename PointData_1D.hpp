@@ -21,7 +21,7 @@ namespace liton_pd
 				if (d >= D)
 				{
 					std::ostringstream errlog;
-					errlog << "out of DIM range: d:[" << d << "] range:[" << 0 << "," << static_cast<int>
+					errlog << "out of DIM range: " << d << " range:[" << 0 << "," << static_cast<int>
 					       (D) - 1 << "]";
 					throw(std::runtime_error(errlog.str()));
 				}
@@ -51,8 +51,8 @@ namespace liton_pd
 			inline std::string disp() const
 			{
 				std::ostringstream displog;
-				displog << "range_0 = [" << _begin << " , " << _end << "]  "
-				        << "size_0 = " << _size;
+				displog << "range[0] = [" << _begin << " , " << _end << "]  "
+				        << "size[0] = " << _size;
 				return displog.str();
 			}
 		};
@@ -97,7 +97,7 @@ namespace liton_pd
 			std::string disp() const
 			{
 				std::ostringstream displog;
-				displog << "size_0 = [" << _n << " " << _in << " " << _p << "]";
+				displog << "size[0] = [" << _n << " " << _in << " " << _p << "]";
 				return displog.str();
 			}
 
@@ -105,7 +105,7 @@ namespace liton_pd
 			{
 				if(_in == 0 && _n + _p != 0)
 				{
-					throw(std::runtime_error("dim 0: size_in can not be zero when size_n or size_p is non-zero"));
+					throw(std::runtime_error("dim[0]: size_in can not be zero when size_n or size_p is non-zero"));
 				}
 			}
 
@@ -115,7 +115,7 @@ namespace liton_pd
 				if(i < -_n || i >= _in + _p)
 				{
 					std::ostringstream errlog;
-					errlog << "out of sub range: i:[" << i << "] range:[" << -_n << "," << _in + _p - 1 << "]";
+					errlog << "out of i range: " << i << " range:[" << -_n << "," << _in + _p - 1 << "]";
 					throw(std::runtime_error(errlog.str()));
 				}
 #endif
@@ -170,7 +170,7 @@ namespace liton_pd
 				if(n >= _N)
 				{
 					std::ostringstream errlog;
-					errlog << "out of N range: n:[" << n << "] range:[" << 0 << "," << static_cast<int>(_N) - 1 << "]";
+					errlog << "out of N range: " << n << " range:[" << 0 << "," << static_cast<int>(_N) - 1 << "]";
 					throw(std::runtime_error(errlog.str()));
 				}
 #endif
@@ -182,11 +182,11 @@ namespace liton_pd
 #ifdef _CHECK_POINTDATA_RANGE
 				if (_LOC0 == LO::center && typeid(F0) != typeid(FL::_C))
 				{
-					throw(std::runtime_error("dim 0: flag must be [C] when location is [center]"));
+					throw(std::runtime_error("dim[0]: flag must be [C] when location is [center]"));
 				}
 				if (_LOC0 == LO::half && typeid(F0) == typeid(FL::_C))
 				{
-					throw(std::runtime_error("dim 0: flag must be [N] or [P] when location is [half]"));
+					throw(std::runtime_error("dim[0]: flag must be [N] or [P] when location is [half]"));
 				}
 #endif
 			}

@@ -21,7 +21,7 @@ namespace liton_pd
 				if (d >= D)
 				{
 					std::ostringstream errlog;
-					errlog << "out of DIM range: d:[" << d << "] range:[" << 0 << "," << static_cast<int>
+					errlog << "out of DIM range: " << d << " range:[" << 0 << "," << static_cast<int>
 					       (D) - 1 << "]";
 					throw(std::runtime_error(errlog.str()));
 				}
@@ -60,7 +60,7 @@ namespace liton_pd
 				if(n >= _N)
 				{
 					std::ostringstream errlog;
-					errlog << "out of N range: n:[" << n << "] range:[" << 0 << "," << static_cast<int>(_N) - 1 << "]";
+					errlog << "out of N range: " << n << " range:[" << 0 << "," << static_cast<int>(_N) - 1 << "]";
 					throw(std::runtime_error(errlog.str()));
 				}
 #endif
