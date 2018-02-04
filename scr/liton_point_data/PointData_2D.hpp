@@ -21,7 +21,7 @@ namespace liton_pd
 				if (d >= D)
 				{
 					std::ostringstream errlog;
-					errlog << "out of DIM range: d:[" << d << "] range:[" << 0 << "," << static_cast<int>
+					errlog << "out of DIM range: " << d << " range:[" << 0 << "," << static_cast<int>
 					       (D) - 1 << "]";
 					throw(std::runtime_error(errlog.str()));
 				}
@@ -58,10 +58,10 @@ namespace liton_pd
 			inline std::string disp() const
 			{
 				std::ostringstream displog;
-				displog << "range_0 = [" << _begin[0] << " , " << _end[0] << "]  "
-				        << "size_0 = " << _size[0] << "    ";
-				displog << "range_1 = [" << _begin[1] << " , " << _end[1] << "]  "
-				        << "size_1 = " << _size[1] ;
+				displog << "range[0] = [" << _begin[0] << " , " << _end[0] << "]  "
+				        << "size[0] = " << _size[0] << "    ";
+				displog << "range[1] = [" << _begin[1] << " , " << _end[1] << "]  "
+				        << "size[1] = " << _size[1] ;
 				return displog.str();
 			}
 		};
@@ -109,8 +109,8 @@ namespace liton_pd
 			std::string disp() const
 			{
 				std::ostringstream displog;
-				displog << "size_0 = [" << _n[0] << " " << _in[0] << " " << _p[0] << "]" << "  ";
-				displog << "size_1 = [" << _n[1] << " " << _in[1] << " " << _p[1] << "]";
+				displog << "size[0] = [" << _n[0] << " " << _in[0] << " " << _p[0] << "]" << "  ";
+				displog << "size[1] = [" << _n[1] << " " << _in[1] << " " << _p[1] << "]";
 				return displog.str();
 			}
 
@@ -118,11 +118,11 @@ namespace liton_pd
 			{
 				if (_in[0] == 0 && _n[0] + _p[0] != 0)
 				{
-					throw(std::runtime_error("dim 0: size_in can not be zero when size_n or size_p is non-zero"));
+					throw(std::runtime_error("dim[0]: size_in can not be zero when size_n or size_p is non-zero"));
 				}
 				if (_in[1] == 0 && _n[1] + _p[1] != 0)
 				{
-					throw(std::runtime_error("dim 1: size_in can not be zero when size_n or size_p is non-zero"));
+					throw(std::runtime_error("dim[1]: size_in can not be zero when size_n or size_p is non-zero"));
 				}
 			}
 
@@ -132,13 +132,13 @@ namespace liton_pd
 				if (i < -_n[0] || i >= _in[0] + _p[0])
 				{
 					std::ostringstream errlog;
-					errlog << "out of sub range: i:[" << i << "] range:[" << -_n[0] << "," << _in[0] + _p[0] - 1 << "]";
+					errlog << "out of i range: " << i << " range:[" << -_n[0] << "," << _in[0] + _p[0] - 1 << "]";
 					throw(std::runtime_error(errlog.str()));
 				}
 				if (j < -_n[1] || j >= _in[1] + _p[1])
 				{
 					std::ostringstream errlog;
-					errlog << "out of sub range: j:[" << j << "] range:[" << -_n[1] << "," << _in[1] + _p[1] - 1 << "]";
+					errlog << "out of j range: " << j << " range:[" << -_n[1] << "," << _in[1] + _p[1] - 1 << "]";
 					throw(std::runtime_error(errlog.str()));
 				}
 #endif
@@ -196,7 +196,7 @@ namespace liton_pd
 				if(n >= _N)
 				{
 					std::ostringstream errlog;
-					errlog << "out of N range: n:[" << n << "] range:[" << 0 << "," << static_cast<int>(_N) - 1 << "]";
+					errlog << "out of N range: " << n << " range:[" << 0 << "," << static_cast<int>(_N) - 1 << "]";
 					throw(std::runtime_error(errlog.str()));
 				}
 #endif
@@ -208,19 +208,19 @@ namespace liton_pd
 #ifdef _CHECK_POINTDATA_RANGE
 				if (_LOC0 == LO::center && typeid(F0) != typeid(FL::_C))
 				{
-					throw(std::runtime_error("dim 0: flag must be [C] when location is [center]"));
+					throw(std::runtime_error("dim[0]: flag must be [C] when location is [center]"));
 				}
 				if (_LOC0 == LO::half && typeid(F0) == typeid(FL::_C))
 				{
-					throw(std::runtime_error("dim 0: flag must be [N] or [P] when location is [half]"));
+					throw(std::runtime_error("dim[0]: flag must be [N] or [P] when location is [half]"));
 				}
 				if (_LOC1 == LO::center && typeid(F1) != typeid(FL::_C))
 				{
-					throw(std::runtime_error("dim 1: flag must be [C] when location is [center]"));
+					throw(std::runtime_error("dim[1]: flag must be [C] when location is [center]"));
 				}
 				if (_LOC1 == LO::half && typeid(F1) == typeid(FL::_C))
 				{
-					throw(std::runtime_error("dim 1: flag must be [N] or [P] when location is [half]"));
+					throw(std::runtime_error("dim[1]: flag must be [N] or [P] when location is [half]"));
 				}
 #endif
 			}

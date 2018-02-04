@@ -112,7 +112,8 @@ int main(int argc, char** argv)
 	liton_sp::debug::exec_except([&]() {out << x1(0, 0, 7, 0, FL::C, FL::C, FL::C) << endl; }, out, err);
 	liton_sp::debug::exec_except([&]() {out << x1(0, 0, 0, -2, FL::C, FL::C, FL::C) << endl; }, out, err);
 	liton_sp::debug::exec_except([&]() {out << x1(0, 0, 0, 13, FL::C, FL::C, FL::C) << endl; }, out, err);
-	liton_sp::debug::exec_except([&]() {out << x1(0, 0, 7, 13, FL::C, FL::C, FL::C) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x1(0, 3, 7, 13, FL::C, FL::C, FL::C) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x1(1, 0, 0, 0, FL::C, FL::C, FL::C) << endl; }, out, err);
 	liton_sp::debug::exec_except([&]() {out << x1(0, 0, -1, 0, FL::C, FL::N, FL::C) << endl; }, out, err);
 	liton_sp::debug::exec_except([&]() {out << x1(0, 0, -1, 0, FL::C, FL::C, FL::P) << endl; }, out, err);
 	out << endl;
