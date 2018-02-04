@@ -357,6 +357,7 @@ namespace liton_pd
 			const int end1 = _size.end(1, RA::ALL) + _LOC1;;
 			for (unsigned n = 0; n != _N; ++n)
 			{
+				displog << "N = " << n << std::endl;
 				for (int i = begin0; i != end0; ++i)
 				{
 					for (int j = begin1; j != end1; ++j)
@@ -485,7 +486,7 @@ namespace liton_pd
 		}
 
 		template <typename T, typename Reducer, typename Function>
-		inline void PD_Reduce_N_1D(const unsigned N_b, const unsigned N_e, const unsigned d0, const RangeT &r, T ans, const Reducer reduce, const Function fun)
+		inline void PD_Reduce_N_1D(const unsigned N_b, const unsigned N_e, const unsigned d0, const RangeT &r, T &ans, const Reducer reduce, const Function fun)
 		{
 			T temp = ans;
 			const int begin0 = r.begin(d0);

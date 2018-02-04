@@ -12,17 +12,22 @@
 
 test/.vs/
 
+test/Test_HPP/Debug/
+test/Test_HPP/Release/
+
 test/Test_D0_PointData_C/Debug/
 test/Test_D0_PointData_C/Release/
 
-test/Test_D1_PointData_C/Debug/
-test/Test_D1_PointData_C/Release/
-test/Test_D1_PointData_H/Debug/
-test/Test_D1_PointData_H/Release/
 test/Test_D1_RangeT/Debug/
 test/Test_D1_RangeT/Release/
 test/Test_D1_SizeT/Debug/
 test/Test_D1_SizeT/Release/
+test/Test_D1_PointData_C/Debug/
+test/Test_D1_PointData_C/Release/
+test/Test_D1_PointData_H/Debug/
+test/Test_D1_PointData_H/Release/
+test/Test_D1_tecfile/Debug/
+test/Test_D1_tecfile/Release/
 test/Example_D1_integration/Debug/
 test/Example_D1_integration/Release/
 test/Example_D1_heat/Debug/
@@ -36,12 +41,18 @@ test/Test_D2_PointData_C/Debug/
 test/Test_D2_PointData_C/Release/
 test/Test_D2_PointData_H/Debug/
 test/Test_D2_PointData_H/Release/
-test/Test_D1_tecfile/Debug/
-test/Test_D1_tecfile/Release/
 test/Test_D2_tecfile/Debug/
 test/Test_D2_tecfile/Release/
 test/Example_D2_heat/Debug/
 test/Example_D2_heat/Release/
 
-test/Test_HPP/Debug/
-test/Test_HPP/Release/
+test/Test_D3_RangeT/Debug/
+test/Test_D3_RangeT/Release/
+test/Test_D3_SizeT/Debug/
+test/Test_D3_SizeT/Release/
+test/Test_D3_PointData_C/Debug/
+test/Test_D3_PointData_C/Release/
+test/Test_D3_PointData_H/Debug/
+test/Test_D3_PointData_H/Release/
+test/Test_D3_tecfile/Debug/
+test/Test_D3_tecfile/Release/

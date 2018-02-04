@@ -66,5 +66,6 @@ namespace liton_pd
 #include "PointData_0D.hpp"
 #include "PointData_1D.hpp"
 #include "PointData_2D.hpp"
+#include "PointData_3D.hpp"
 
 #endif
