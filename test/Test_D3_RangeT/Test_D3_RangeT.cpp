@@ -25,7 +25,7 @@ int main(int argc, char** argv)
 
 	D3::RangeT a;
 	out << a.disp() << endl;
-	D3::RangeT b(2, 10, 0, 6, 1, 20);
+	D3::RangeT b(2, 6, 10, 1, 0, 20);
 	out << b.disp() << endl;
 	out << endl;
 

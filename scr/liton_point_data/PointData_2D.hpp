@@ -38,8 +38,8 @@ namespace liton_pd
 
 		  public:
 			RangeT() = default;
-			RangeT(const int b0, const int b1,
-			       const unsigned s0, const unsigned s1):
+			RangeT(const int b0, const unsigned s0,
+			       const int b1, const unsigned s1):
 				_begin{ b0, b1 },
 				_size{ static_cast<int>(s0), static_cast<int>(s1) }
 			{
@@ -104,7 +104,7 @@ namespace liton_pd
 			inline int mirror(const unsigned d, FL::_P fl, int ii) const { return 2 * last(d, RA::IN) - ii; }
 
 			template<typename T0, typename T1>
-			inline RangeT range(T0 r0, T1 r1) const { return RangeT(begin(0, r0), begin(1, r1), size(0, r0), size(1, r1)); }
+			inline RangeT range(T0 r0, T1 r1) const { return RangeT(begin(0, r0), size(0, r0), begin(1, r1), size(1, r1)); }
 
 			std::string disp() const
 			{

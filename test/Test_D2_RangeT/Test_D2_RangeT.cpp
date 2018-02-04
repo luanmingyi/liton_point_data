@@ -25,7 +25,7 @@ int main(int argc, char** argv)
 
 	D2::RangeT a;
 	out << a.disp() << endl;
-	D2::RangeT b(2, 10, 0, 6);
+	D2::RangeT b(0, 2, 10, 6);
 	out << b.disp() << endl;
 	out << endl;
 

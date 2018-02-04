@@ -38,8 +38,9 @@ namespace liton_pd
 
 		  public:
 			RangeT() = default;
-			RangeT(const int b0, const int b1, const int b2,
-			       const unsigned s0, const unsigned s1, const unsigned s2):
+			RangeT(const int b0, const unsigned s0,
+			       const int b1, const unsigned s1,
+			       const int b2, const unsigned s2):
 				_begin{ b0, b1, b2 },
 				_size{ static_cast<int>(s0), static_cast<int>(s1), static_cast<int>(s2) }
 			{
@@ -103,12 +104,11 @@ namespace liton_pd
 			inline int size(const unsigned d, RA::_P r) const { DIM::check_d(d); return _p[d]; }
 
 			template<typename T0>
-			inline int last(const unsigned d, T0 r) const { return end(d, r) - 1; }
-			inline int mirror(const unsigned d, FL::_N fl, int ii) const { return 2 * begin(d, RA::IN) - ii; }
+			inline int last(const unsigned d, T0 r) const { return end(d, r) - 1; }			inline int mirror(const unsigned d, FL::_N fl, int ii) const { return 2 * begin(d, RA::IN) - ii; }
 			inline int mirror(const unsigned d, FL::_P fl, int ii) const { return 2 * last(d, RA::IN) - ii; }
 
 			template<typename T0, typename T1, typename T2>
-			inline RangeT range(T0 r0, T1 r1, T2 r2) const { return RangeT(begin(0, r0), begin(1, r1), begin(2, r2), size(0, r0), size(1, r1), size(2, r2)); }
+			inline RangeT range(T0 r0, T1 r1, T2 r2) const { return RangeT(begin(0, r0), size(0, r0), begin(1, r1), size(1, r1), begin(2, r2), size(2, r2)); }
 
 			std::string disp() const
 			{
