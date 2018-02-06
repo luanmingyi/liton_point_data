@@ -41,6 +41,9 @@ int main(int argc, char** argv)
 
 	liton_sp::debug::exec_except([&]() {out << x1(0) << endl; }, out, err);
 	liton_sp::debug::exec_except([&]() {out << x1(1) << endl; }, out, err);
+
+	const D0::PointData<double, 1> xc;
+	liton_sp::debug::exec_except([&]() {out << xc(0) << endl; }, out, err);
 	out << endl;
 
 	double sum = 0;

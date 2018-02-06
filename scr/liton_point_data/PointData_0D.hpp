@@ -48,10 +48,14 @@ namespace liton_pd
 
 			inline _NUMT &operator()(const unsigned n)
 			{
-				this->check_n(n);
+				check_n(n);
 				return pt0[n];
 			}
-			inline const _NUMT &operator()(const unsigned n) const { return *this(n); }
+			inline const _NUMT &operator()(const unsigned n) const
+			{
+				check_n(n);
+				return pt0[n];
+			}
 
 		  protected:
 			inline void check_n(const unsigned n) const

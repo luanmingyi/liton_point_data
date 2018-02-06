@@ -48,11 +48,11 @@ int main(int argc, char** argv)
 		tecfile.Zones[0].Data.push_back(TEC_DATA(u.data_pt(1)));
 
 		D3::PD_For_3D(x.size().range(RA::ALL, RA::ALL, RA::ALL), [&]PD_F_ijk(i, j, k) {
-			x(0, i, j, k, FL::C, FL::C, FL::C) = static_cast<double>(i) / (x.size().size(0, RA::IN) - 1);
-			x(1, i, j, k, FL::C, FL::C, FL::C) = static_cast<double>(j) / (x.size().size(1, RA::IN) - 1);
-			x(2, i, j, k, FL::C, FL::C, FL::C) = static_cast<double>(k) / (x.size().size(2, RA::IN) - 1);
-			u(0, i, j, k, FL::C, FL::C, FL::C) = x(0, i, j, k, FL::C, FL::C, FL::C) + x(1, i, j, k, FL::C, FL::C, FL::C) + x(2, i, j, k, FL::C, FL::C, FL::C);
-			u(1, i, j, k, FL::C, FL::C, FL::C) = x(0, i, j, k, FL::C, FL::C, FL::C)*x(1, i, j, k, FL::C, FL::C, FL::C)*x(2, i, j, k, FL::C, FL::C, FL::C);
+			x(0, i, j, k) = static_cast<double>(i) / (x.size().size(0, RA::IN) - 1);
+			x(1, i, j, k) = static_cast<double>(j) / (x.size().size(1, RA::IN) - 1);
+			x(2, i, j, k) = static_cast<double>(k) / (x.size().size(2, RA::IN) - 1);
+			u(0, i, j, k) = x(0, i, j, k) + x(1, i, j, k) + x(2, i, j, k);
+			u(1, i, j, k) = x(0, i, j, k)*x(1, i, j, k)*x(2, i, j, k);
 		});
 
 		tecfile.set_echo_mode("full", "full");

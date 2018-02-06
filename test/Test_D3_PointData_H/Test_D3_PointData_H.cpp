@@ -175,6 +175,10 @@ int main(int argc, char** argv)
 	liton_sp::debug::exec_except([&]() {out << x7(0, 0, 0, 0, FL::P, FL::C, FL::P) << endl; }, out, err);
 	liton_sp::debug::exec_except([&]() {out << x7(0, 0, 0, 0, FL::P, FL::P, FL::C) << endl; }, out, err);
 
+	const D3::PointData<double, 1, LO::half, LO::half, LO::center> xc(0, 1, 0, 0, 5, 0, 0, 10, 0);
+	liton_sp::debug::exec_except([&]() {out << xc(0, 0, 0, 0, FL::N, FL::N, FL::C) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << xc(0, 0, 0, 0) << endl; }, out, err);
+
 	out.close();
 	err.close();
 

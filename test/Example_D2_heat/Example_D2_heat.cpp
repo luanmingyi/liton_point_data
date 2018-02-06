@@ -64,8 +64,8 @@ int main(int argc, char** argv)
 		tecfile.Zones[0].Data.push_back(TEC_DATA(u.data_pt(1)));
 
 		D2::PD_For_2D(x.size().range(RA::IN, RA::IN), [&x, hx, x0, hy, y0]PD_F_ij(i, j) {
-			x(0, i, j, FL::C, FL::C) = x0 + static_cast<double>(i)*hx;
-			x(1, i, j, FL::C, FL::C) = y0 + static_cast<double>(j)*hy;
+			x(0, i, j) = x0 + static_cast<double>(i)*hx;
+			x(1, i, j) = y0 + static_cast<double>(j)*hy;
 		});
 
 		double dt = 0.1 / (a_hh_x > a_hh_y ? a_hh_x : a_hh_y);
@@ -81,24 +81,24 @@ int main(int argc, char** argv)
 			flowtime = 0;
 			time_next_print = 0;
 			D2::PD_For_2D(u.size().range(RA::IN,RA::IN), [&x, &u]PD_F_ij(i, j) {
-				u(0, i, j, FL::C, FL::C) = sin(x(0, i, j, FL::C, FL::C))*cos(x(1, i, j, FL::C, FL::C) / 2.0);
+				u(0, i, j) = sin(x(0, i, j))*cos(x(1, i, j) / 2.0);
 			});
 
 			for (;;)
 			{
-				D2::PD_For_2D(u.size().range(RA::IN, RA::N), [&u]PD_F_ij(i, j) { u(0, i, j, FL::C, FL::C) = u(0, i, u.size().mirror(1, FL::N, j), FL::C, FL::C); });
-				D2::PD_For_2D(u.size().range(RA::IN, RA::P), [&u]PD_F_ij(i, j) { u(0, i, j, FL::C, FL::C) = u(0, i, u.size().mirror(1, FL::P, j), FL::C, FL::C); });
-				D2::PD_For_2D(u.size().range(RA::N, RA::IN), [&u]PD_F_ij(i, j) { u(0, i, j, FL::C, FL::C) = -u(0, u.size().mirror(0, FL::N, i), j, FL::C, FL::C); });
-				D2::PD_For_2D(u.size().range(RA::P, RA::IN), [&u]PD_F_ij(i, j) { u(0, i, j, FL::C, FL::C) = -u(0, u.size().mirror(0, FL::P, i), j, FL::C, FL::C); });
+				D2::PD_For_2D(u.size().range(RA::IN, RA::N), [&u]PD_F_ij(i, j) { u(0, i, j) = u(0, i, u.size().mirror(1, FL::N, j)); });
+				D2::PD_For_2D(u.size().range(RA::IN, RA::P), [&u]PD_F_ij(i, j) { u(0, i, j) = u(0, i, u.size().mirror(1, FL::P, j)); });
+				D2::PD_For_2D(u.size().range(RA::N, RA::IN), [&u]PD_F_ij(i, j) { u(0, i, j) = -u(0, u.size().mirror(0, FL::N, i), j); });
+				D2::PD_For_2D(u.size().range(RA::P, RA::IN), [&u]PD_F_ij(i, j) { u(0, i, j) = -u(0, u.size().mirror(0, FL::P, i), j); });
 
 				D2::PD_For_2D(dudt.size().range(RA::IN, RA::IN), [&dudt, &u, a_hh_x]PD_F_ij(i, j) {
-					dudt(0, i, j, FL::C, FL::C) = a_hh_x*(u(0, i - 1, j, FL::C, FL::C) - 2 * u(0, i, j, FL::C, FL::C) + u(0, i + 1, j, FL::C, FL::C));
+					dudt(0, i, j) = a_hh_x*(u(0, i - 1, j) - 2 * u(0, i, j) + u(0, i + 1, j));
 				});
 				D2::PD_For_2D(dudt.size().range(RA::IN, RA::IN), [&dudt, &u, a_hh_y]PD_F_ij(i, j) {
-					dudt(0, i, j, FL::C, FL::C) += a_hh_y*(u(0, i, j - 1, FL::C, FL::C) - 2 * u(0, i, j, FL::C, FL::C) + u(0, i, j + 1, FL::C, FL::C));
+					dudt(0, i, j) += a_hh_y*(u(0, i, j - 1) - 2 * u(0, i, j) + u(0, i, j + 1));
 				});
 				D2::PD_For_2D(u.size().range(RA::IN, RA::IN), [&dudt, &u, dt]PD_F_ij(i, j) {
-					u(0, i, j, FL::C, FL::C) += dt*dudt(0, i, j, FL::C, FL::C);
+					u(0, i, j) += dt*dudt(0, i, j);
 				});
 
 				++step;
@@ -116,7 +116,7 @@ int main(int argc, char** argv)
 		});
 
 		D2::PD_For_2D(u.size().range(RA::IN, RA::IN), [&x, &u, ax, ay, time_stop]PD_F_ij(i, j) {
-			u(1, i, j, FL::C, FL::C) = exp(-(ax + ay / 4)*time_stop)*sin(x(0, i, j, FL::C, FL::C))*cos(x(1, i, j, FL::C, FL::C) / 2.0);
+			u(1, i, j) = exp(-(ax + ay / 4)*time_stop)*sin(x(0, i, j))*cos(x(1, i, j) / 2.0);
 		});
 
 		tecfile.set_echo_mode("full", "full");

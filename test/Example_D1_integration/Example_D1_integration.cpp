@@ -34,9 +34,9 @@ int main(int argc, char** argv)
 		D1::PointData<double, 2, LO::center> f(0, N, 0);
 		D1::PD_For_1D(x.size().range(RA::ALL), [&x, &f, &h]PD_F_i(i)
 		{
-			x(0, i, FL::C) = static_cast<double>(i) * h;
-			f(0, i, FL::C) = x(0, i, FL::C);
-			f(1, i, FL::C) = pow(x(0, i, FL::C), 0.5);
+			x(0, i) = static_cast<double>(i) * h;
+			f(0, i) = x(0, i);
+			f(1, i) = pow(x(0, i), 0.5);
 		});
 
 		out << "N = " << N << endl;
@@ -50,7 +50,7 @@ int main(int argc, char** argv)
 				D1::PD_Reduce_1D(f.size().range(RA::ALL),
 				sum[n],
 				[]PD_RF(double, x, xx) { xx += x; },
-				[&]PD_F_i(i)->double { return f(n, i, FL::C); });
+				[&]PD_F_i(i)->double { return f(n, i); });
 				sum[n] /= (N - 1);
 				out << "ans = " << sum[n] << endl;
 			});

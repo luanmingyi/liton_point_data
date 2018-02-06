@@ -178,8 +178,8 @@ namespace liton_pd
 
 			inline SizeT size() const { return _size; }
 
-			template<typename F0, typename F1>
-			inline _NUMT &operator()(const unsigned n, const int i, const int j, const F0 flag0, const F1 flag1)
+			template<typename F0 = FL::_C, typename F1 = FL::_C>
+			inline _NUMT &operator()(const unsigned n, const int i, const int j, const F0 flag0 = FL::C, const F1 flag1 = FL::C)
 			{
 				check_data();
 				check_n(n);
@@ -187,8 +187,15 @@ namespace liton_pd
 				_size.check_range(i, j);
 				return pt0[n][i + F0::offset][j + F1::offset];
 			}
-			template<typename F0, typename F1>
-			inline const _NUMT &operator()(const unsigned n, const int i, const int j, const F0 flag0, const F1 flag1) const { return *this(i, j, n, flag0, flag1); }
+			template<typename F0 = FL::_C, typename F1 = FL::_C>
+			inline const _NUMT &operator()(const unsigned n, const int i, const int j, const F0 flag0 = FL::C, const F1 flag1 = FL::C) const
+			{
+				check_data();
+				check_n(n);
+				check_flag(flag0, flag1);
+				_size.check_range(i, j);
+				return pt0[n][i + F0::offset][j + F1::offset];
+			}
 
 			inline const _NUMT* data_pt(const unsigned n) const { check_n(n); return pt0[n][-_size.n(0)] - _size.n(1); }
 		  protected:
@@ -205,7 +212,7 @@ namespace liton_pd
 			}
 
 			template<typename F0, typename F1>
-			inline void check_flag(const F0 flag0, const F1 flag1)
+			inline void check_flag(const F0 flag0, const F1 flag1) const
 			{
 #ifdef _CHECK_POINTDATA_RANGE
 				if (_LOC0 == LO::center && typeid(F0) != typeid(FL::_C))
@@ -227,7 +234,7 @@ namespace liton_pd
 #endif
 			}
 
-			inline void check_data()
+			inline void check_data() const
 			{
 #ifdef _CHECK_POINTDATA_RANGE
 				if (data == nullptr)
