@@ -35,6 +35,7 @@ int main(int argc, char** argv)
 	//x3 = x2;
 	out << endl;
 
+	liton_sp::debug::exec_except([&]() {out << x1(0, 0, FL::C) << endl; }, out, err);
 	liton_sp::debug::exec_except([&]() {x1.alloc(0, 0, 0); }, out, err);
 	liton_sp::debug::exec_except([&]() {x1.alloc(1, 0, 0); }, out, err);
 	out << 3 * 1024 / sizeof(float) / x1.N * 1024 * 1024  << endl;

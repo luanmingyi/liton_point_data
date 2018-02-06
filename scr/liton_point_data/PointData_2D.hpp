@@ -181,6 +181,7 @@ namespace liton_pd
 			template<typename F0, typename F1>
 			inline _NUMT &operator()(const unsigned n, const int i, const int j, const F0 flag0, const F1 flag1)
 			{
+				check_data();
 				check_n(n);
 				check_flag(flag0, flag1);
 				_size.check_range(i, j);
@@ -222,6 +223,16 @@ namespace liton_pd
 				if (_LOC1 == LO::half && typeid(F1) == typeid(FL::_C))
 				{
 					throw(std::runtime_error("dim[1]: flag must be [N] or [P] when location is [half]"));
+				}
+#endif
+			}
+
+			inline void check_data()
+			{
+#ifdef _CHECK_POINTDATA_RANGE
+				if (data == nullptr)
+				{
+					throw(std::runtime_error("data do not exist"));
 				}
 #endif
 			}

@@ -38,6 +38,7 @@ int main(int argc, char** argv)
 	out << endl;
 
 	out << "line: " << __LINE__ << endl;
+	liton_sp::debug::exec_except([&]() {out << x1(0, 0, -1, 0, FL::C, FL::C, FL::C) << endl; }, out, err);
 	liton_sp::debug::exec_except([&]() {x1.alloc(0, 0, 0, 0, 0, 0, 0, 0, 0); }, out, err);
 	liton_sp::debug::exec_except([&]() {x1.alloc(0, 0, 0, 0, 0, 0, 1, 0, 0); }, out, err);
 #ifndef __linux__
