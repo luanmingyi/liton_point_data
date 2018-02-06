@@ -133,48 +133,43 @@ int main(int argc, char** argv)
 
 	out << "line: " << __LINE__ << endl;
 	double max = 0;
-	D3::PD_Reduce_3D(x1.size().range(RA::IN, RA::IN, RA::IN), max,
-		[]PD_RF(double, x, xx) { xx = x > xx ? x : xx; },
+	D3::PD_Reduce_3D(x1.size().range(RA::IN, RA::IN, RA::IN), max, PD_RF_MAX(double),
 		[&x1]PD_F_ijk(i, j, k)->double { return x1(0, i, j, k); }
 	);
 	out << "max = " << max << endl;
 	max = 0;
-	D3::PD_Reduce_N_3D(0, x2.N, x2.size().range(RA::IN, RA::IN, RA::IN), max,
-		[]PD_RF(double, x, xx) { xx = x > xx ? x : xx; },
+	D3::PD_Reduce_N_3D(0, x2.N, x2.size().range(RA::IN, RA::IN, RA::IN), max, PD_RF_MAX_ABS(double),
 		[&x2]PD_F_n_ijk(n, i, j, k)->double { return x2(n, i, j, k); }
 	);
-	out << "max = " << max << endl;
+	out << "max_abs = " << max << endl;
 	out << endl;
 
 	out << "line: " << __LINE__ << endl;
 	D3::PD_For_2D(1, 2, x1.size().range(RA::ALL, RA::ALL, RA::ALL), [&x1]PD_F_ij(ii, jj) { x1(0, 0, ii, jj) = x1(0, 1, ii, jj); });
 	out << x1.disp_data() << endl;
-	max = 0;
-	D3::PD_Reduce_2D(1, 2, x1.size().range(RA::ALL, RA::ALL, RA::ALL), max,
-		[]PD_RF(double, x, xx) { xx = x > xx ? x : xx; },
+	max = 100000;
+	D3::PD_Reduce_2D(1, 2, x1.size().range(RA::ALL, RA::ALL, RA::ALL), max,	PD_RF_MIN(double),
 		[&x1]PD_F_ij(ii, jj)->double { return x1(0, 0, ii, jj); }
 	);
-	out << "max = " << max << endl;
+	out << "min = " << max << endl;
 	out << endl;
 
 	D3::PD_For_N_2D(0, x2.N, 1, 2, x2.size().range(RA::ALL, RA::ALL, RA::ALL), [&x2]PD_F_n_ij(n, ii, jj) {
 		x2(n, 0, ii, jj) = x2(n, 1, ii, jj);
 	});
 	out << x2.disp_data() << endl;
-	max = 0;
-	D3::PD_Reduce_N_2D(0, x2.N, 1, 2, x2.size().range(RA::ALL, RA::ALL, RA::ALL), max,
-		[]PD_RF(double, x, xx) { xx = x > xx ? x : xx; },
+	max = 100000;
+	D3::PD_Reduce_N_2D(0, x2.N, 1, 2, x2.size().range(RA::ALL, RA::ALL, RA::ALL), max, PD_RF_MIN_ABS(double),
 		[&x2]PD_F_n_ij(n, ii, jj)->double { return x2(n, 0, ii, jj); }
 	);
-	out << "max = " << max << endl;
+	out << "min_abs = " << max << endl;
 	out << endl;
 
 	out << "line: " << __LINE__ << endl;
 	D3::PD_For_1D(1, x1.size().range(RA::ALL, RA::ALL, RA::ALL), [&x1]PD_F_i(ii) { x1(0, 0, ii, 0) = x1(0, 0, ii, 1); });
 	out << x1.disp_data() << endl;
 	max = 0;
-	D3::PD_Reduce_1D(1, x1.size().range(RA::ALL, RA::ALL, RA::ALL), max,
-		[]PD_RF(double, x, xx) { xx = x > xx ? x : xx; },
+	D3::PD_Reduce_1D(1, x1.size().range(RA::ALL, RA::ALL, RA::ALL), max, PD_RF_MAX(double),
 		[&x1]PD_F_i(ii)->double { return x1(0, 0, ii, 0); }
 	);
 	out << "max = " << max << endl;
@@ -185,8 +180,7 @@ int main(int argc, char** argv)
 	});
 	out << x2.disp_data() << endl;
 	max = 0;
-	D3::PD_Reduce_N_1D(0, x2.N, 1, x2.size().range(RA::ALL, RA::ALL, RA::ALL), max,
-		[]PD_RF(double, x, xx) { xx = x > xx ? x : xx; },
+	D3::PD_Reduce_N_1D(0, x2.N, 1, x2.size().range(RA::ALL, RA::ALL, RA::ALL), max,	PD_RF_MAX(double),
 		[&x2]PD_F_n_i(n, ii)->double { return x2(n, 0, ii, 0); }
 	);
 	out << "max = " << max << endl;

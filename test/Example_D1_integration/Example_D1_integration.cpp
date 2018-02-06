@@ -49,7 +49,7 @@ int main(int argc, char** argv)
 			{
 				D1::PD_Reduce_1D(f.size().range(RA::ALL),
 				sum[n],
-				[]PD_RF(double, x, xx) { xx += x; },
+				PD_RF_SUM(double),
 				[&]PD_F_i(i)->double { return f(n, i); });
 				sum[n] /= (N - 1);
 				out << "ans = " << sum[n] << endl;
