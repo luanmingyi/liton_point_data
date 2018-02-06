@@ -62,6 +62,14 @@ namespace liton_pd
 #define PD_F_n_ijk(n_name, i_name, j_name, k_name) (const unsigned n_name, const int i_name, const int j_name, const int k_name)
 
 #define PD_RF(type, x_name, xx_name) (const type x_name, type &xx_name)
+#define PD_RF_SUM(type) [](const type x, type &xx){ xx += x; }
+#define PD_RF_SUM_ABS(type) [](const type x, type &xx){ xx += (x >= 0 ? x : -x); }
+#define PD_RF_PRO(type) [](const type x, type &xx){ xx *= x; }
+#define PD_RF_PRO_ABS(type) [](const type x, type &xx){ xx *= (x >= 0 ? x : -x); }
+#define PD_RF_MAX(type) [](const type x, type &xx){ xx = xx < x ? x : xx; }
+#define PD_RF_MAX_ABS(type) [](const type x, type &xx){ type x_abs = x >= 0 ? x : -x; xx = xx < x_abs ? x_abs : xx; }
+#define PD_RF_MIN(type) [](const type x, type &xx){ xx = xx > x ? x : xx; }
+#define PD_RF_MIN_ABS(type) [](const type x, type &xx){ type x_abs = x >= 0 ? x : -x; xx = xx > x_abs ? x_abs : xx; }
 
 #include "PointData_0D.hpp"
 #include "PointData_1D.hpp"
