@@ -157,6 +157,7 @@ namespace liton_pd
 			SizeT _size;
 			_NUMT* data = nullptr;
 			_NUMT** pt0[_N];
+			_NUMT** pt1 = nullptr;
 
 		  public:
 			PointData();
@@ -282,6 +283,19 @@ namespace liton_pd
 					{
 						data = new _NUMT[size_point * _N];
 						_size = s;
+
+						pt1 = new _NUMT*[N * (s.size(0, RA::ALL) + _LOC0)];
+						for (unsigned n = 0; n != _N; ++n)
+						{
+							pt0[n] = pt1 + n * (s.size(0, RA::ALL) + _LOC0);
+							for (unsigned ii = 0; ii != s.size(0, RA::ALL) + _LOC0; ++ii)
+							{
+								pt0[n][ii] = data + n * (s.size(0, RA::ALL) + _LOC0) * (s.size(1, RA::ALL) + _LOC1)
+									+ ii * (s.size(1, RA::ALL) + _LOC1);
+								pt0[n][ii] += s.n(1);
+							}
+							pt0[n] += s.n(0);
+						}
 					}
 					catch(const std::bad_alloc &)
 					{
@@ -291,15 +305,6 @@ namespace liton_pd
 				else
 				{
 					return;
-				}
-				for(unsigned n = 0; n != _N; ++n)
-				{
-					pt0[n] = new _NUMT*[s.size(0, RA::ALL) + _LOC0];
-					for (unsigned ii = 0; ii != s.size(0, RA::ALL) + _LOC0; ++ii)
-					{
-						pt0[n][ii] = data + n * size_point + ii * (s.size(1, RA::ALL) + _LOC1) + s.n(1);
-					}
-					pt0[n] += in0;
 				}
 			}
 		}
@@ -324,12 +329,8 @@ namespace liton_pd
 			{
 				delete[] data;
 				data = nullptr;
-				for(unsigned n = 0; n != _N; ++n)
-				{
-					pt0[n] -= _size.n(0);
-					delete[] pt0[n];
-					pt0[n] = nullptr;
-				}
+				delete[] pt1;
+				pt1 = nullptr;
 				_size = SizeT();
 			}
 		}

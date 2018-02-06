@@ -246,6 +246,11 @@ namespace liton_pd
 					{
 						data = new _NUMT[size_point * _N];
 						_size = s;
+
+						for (unsigned n = 0; n != _N; ++n)
+						{
+							pt0[n] = data + n * size_point + s.n(0);
+						}
 					}
 					catch(const std::bad_alloc &)
 					{
@@ -255,10 +260,6 @@ namespace liton_pd
 				else
 				{
 					return;
-				}
-				for(unsigned n = 0; n != _N; ++n)
-				{
-					pt0[n] = data + n * size_point + s.n(0);
 				}
 			}
 		}
