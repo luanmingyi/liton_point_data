@@ -6,7 +6,7 @@ using namespace std;
 #include "../dep/liton_cpp_snippets/lion_snippets.hpp"
 
 #ifdef _DEBUG
-	#define _CHECK_POINTDATA_RANGE
+#define _CHECK_POINTDATA_RANGE
 #endif
 #include "../../scr/liton_point_data/PointData.hpp"
 
@@ -23,9 +23,9 @@ int main(int argc, char** argv)
 	liton_sp::env::disp_env(out);
 	out << endl;
 
-	D1::RangeT a;
+	D3::RangeT a;
 	out << a.disp() << endl;
-	D1::RangeT b(2, 10);
+	D3::RangeT b(2, 6, 10, 1, 0, 20);
 	out << b.disp() << endl;
 	out << endl;
 
@@ -36,8 +36,14 @@ int main(int argc, char** argv)
 	liton_sp::debug::exec_except([&]() {out << b.begin(0) << endl; }, out, err);
 	liton_sp::debug::exec_except([&]() {out << b.end(0) << endl; }, out, err);
 	liton_sp::debug::exec_except([&]() {out << b.size(0) << endl; }, out, err);
-	out << endl;
+	liton_sp::debug::exec_except([&]() {out << b.begin(1) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << b.end(1) << endl; }, out, err);
 	liton_sp::debug::exec_except([&]() {out << b.size(1) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << b.begin(2) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << b.end(2) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << b.size(2) << endl; }, out, err);
+	out << endl;
+	liton_sp::debug::exec_except([&]() {out << b.size(3) << endl; }, out, err);
 
 	out.close();
 	err.close();

@@ -1,5 +1,5 @@
 CXX = g++
-proname = Example_D1_integration
+proname = Test_D2_RangeT
 
 %.o_debug:%.cpp
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $(@) $(<)
@@ -11,7 +11,7 @@ out: $(proname).o
 
 .PHONY: run
 run: out
-	./out
+	-./out
 	cat *.txt
 
 out_debug: CXXFLAGS = -std=c++11

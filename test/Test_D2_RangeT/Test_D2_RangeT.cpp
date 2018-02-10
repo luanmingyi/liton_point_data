@@ -23,9 +23,9 @@ int main(int argc, char** argv)
 	liton_sp::env::disp_env(out);
 	out << endl;
 
-	D1::RangeT a;
+	D2::RangeT a;
 	out << a.disp() << endl;
-	D1::RangeT b(2, 10);
+	D2::RangeT b(0, 2, 10, 6);
 	out << b.disp() << endl;
 	out << endl;
 
@@ -36,8 +36,11 @@ int main(int argc, char** argv)
 	liton_sp::debug::exec_except([&]() {out << b.begin(0) << endl; }, out, err);
 	liton_sp::debug::exec_except([&]() {out << b.end(0) << endl; }, out, err);
 	liton_sp::debug::exec_except([&]() {out << b.size(0) << endl; }, out, err);
-	out << endl;
+	liton_sp::debug::exec_except([&]() {out << b.begin(1) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << b.end(1) << endl; }, out, err);
 	liton_sp::debug::exec_except([&]() {out << b.size(1) << endl; }, out, err);
+	out << endl;
+	liton_sp::debug::exec_except([&]() {out << b.size(2) << endl; }, out, err);
 
 	out.close();
 	err.close();

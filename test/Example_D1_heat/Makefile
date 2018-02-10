@@ -1,5 +1,5 @@
 CXX = g++
-proname = Example_D1_integration
+proname = Example_D1_heat
 
 %.o_debug:%.cpp
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $(@) $(<)
@@ -34,6 +34,7 @@ clean:
 .PHONY: clean_run
 clean_run:
 	-rm *.txt
+	-rm *.dat
 
 .PHONY: clean_all
 clean_all: clean clean_run

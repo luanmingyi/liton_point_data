@@ -1,5 +1,5 @@
 CXX = g++
-proname = Example_D1_integration
+proname = Test_D2_PointData_C
 
 %.o_debug:%.cpp
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $(@) $(<)
@@ -11,7 +11,7 @@ out: $(proname).o
 
 .PHONY: run
 run: out
-	./out
+	-./out
 	cat *.txt
 
 out_debug: CXXFLAGS = -std=c++11
@@ -22,7 +22,7 @@ out_debug: $(proname).o_debug
 .PHONY: run_debug
 run_debug: out_debug
 	./out_debug
-	cat *.txt
+	-cat *.txt
 
 .PHONY: clean
 clean:

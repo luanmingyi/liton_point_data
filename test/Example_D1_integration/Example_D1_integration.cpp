@@ -2,22 +2,25 @@
 #include <fstream>
 #include <stdexcept>
 #include <cmath>
-#include<ctime>
+#include <ctime>
 using namespace std;
 #include "../dep/liton_cpp_snippets/lion_snippets.hpp"
 
 #ifdef _DEBUG
 	#define _CHECK_POINTDATA_RANGE
 #endif
-#include "../../scr/PointData.hpp"
+#include "../../scr/liton_point_data/PointData.hpp"
 
-using namespace liton;
+using namespace liton_pd;
 
 int main(int argc, char** argv)
 {
 	try
 	{
-		ofstream out("example.txt");
+		string name(__FILE__);
+		name.erase(name.find_last_of('.'));
+		cout << name << endl;
+		ofstream out((name + "_out.txt").c_str());
 
 		liton_sp::env::disp_env(out);
 		out << endl;
@@ -27,30 +30,32 @@ int main(int argc, char** argv)
 		double x1 = 1;
 		double h = (x1 - x0) / (N - 1);
 
-		D1::PointData_C<double> x(N, 0, 0);
-		D1::PointData_C<double, 2> f(N, 0, 0);
-		D1::For_PD_1D(x.size().range(RA::ALL), [&x, &f, &h]PD_F_i(i)
+		D1::PointData<double, 1, LO::center> x(0, N, 0);
+		D1::PointData<double, 2, LO::center> f(0, N, 0);
+		D1::PD_For_1D(x.size().range(RA::ALL), [&x, &f, &h]PD_F_i(i)
 		{
-			x(i, 0) = static_cast<double>(i) * h;
-			f(i, 0) = x(i, 0);
-			f(i, 1) = pow(x(i, 0), 0.5);
+			x(0, i) = static_cast<double>(i) * h;
+			f(0, i) = x(0, i);
+			f(1, i) = pow(x(0, i), 0.5);
 		});
 
 		out << "N = " << N << endl;
 
 		clock_t clock_begin = clock();
-		double sum[2] = { 0, 0 };
-		For_N(0, f.N, [&]PD_F_n(n)
+		double time = liton_sp::debug::exec_time(100, [&]()
 		{
-			D1::Reduce_PD_1D(f.size().range(RA::ALL),
-			[]PD_RF(double, x, xx) { xx += x; },
-			[&]PD_F_i(i)->double { return f(i, n); },
-			sum[n]);
-			sum[n] /= (N - 1);
-			out << "ans = " << sum[n] << endl;
+			double sum[2] = { 0, 0 };
+			PD_For_N(0, f.N, [&]PD_F_n(n)
+			{
+				D1::PD_Reduce_1D(f.size().range(RA::ALL),
+				sum[n],
+				PD_RF_SUM(double),
+				[&]PD_F_i(i)->double { return f(n, i); });
+				sum[n] /= (N - 1);
+				out << "ans = " << sum[n] << endl;
+			});
 		});
-		double time = double(clock() - clock_begin) / CLOCKS_PER_SEC;
-		out << "time used: " << time << endl;
+		out << "time used averaged: " << time << endl;
 
 		out.close();
 
