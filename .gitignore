@@ -6,7 +6,6 @@
 *.ipdb
 *.iobj
 *.opendb
-*.txt
 *.bat
 *.plt
 
