@@ -135,25 +135,24 @@ namespace liton_pd
 				}
 			}
 
-			inline void check_range(const int i, const int j, const int k) const
+			inline void check_range(const unsigned d, const LO::LOCATION loc, const int ii, const int offset) const
 			{
 #ifdef _CHECK_POINTDATA_RANGE
-				if (i < -_n[0] || i >= _in[0] + _p[0])
+				DIM::check_d(d);
+				if (ii < -_n[d] - offset || ii >= _in[d] + _p[d] + loc - offset)
 				{
+					char ijk_str[3][50] = { "i\0", "j\0", "k\0" };
 					std::ostringstream errlog;
-					errlog << "out of i range: " << i << " range:[" << -_n[0] << "," << _in[0] + _p[0] - 1 << "]";
-					throw(std::runtime_error(errlog.str()));
-				}
-				if (j < -_n[1] || j >= _in[1] + _p[1])
-				{
-					std::ostringstream errlog;
-					errlog << "out of j range: " << j << " range:[" << -_n[1] << "," << _in[1] + _p[1] - 1 << "]";
-					throw(std::runtime_error(errlog.str()));
-				}
-				if (k < -_n[2] || k >= _in[2] + _p[2])
-				{
-					std::ostringstream errlog;
-					errlog << "out of k range: " << k << " range:[" << -_n[2] << "," << _in[2] + _p[2] - 1 << "]";
+					if (loc == LO::center)
+					{
+						errlog << "out of " << ijk_str[d] << " range: " << ii << " range:[" << -_n[d] << "," << _in[d] + _p[d] - 1 << "]";
+					}
+					else
+					{
+						char flag_str[2][50] = { "N\0", "P\0" };
+						errlog << "out of " << ijk_str[d] << " range: " << ii << "(" << flag_str[offset] << ")"
+							<< " range:[" << -_n[d] - 1 << "(P)," << -_n[d] << "," << _in[d] + _p[d] - 1 << "," << _in[d] + _p[d] << "(N)]";
+					}
 					throw(std::runtime_error(errlog.str()));
 				}
 #endif
@@ -204,7 +203,9 @@ namespace liton_pd
 				check_data();
 				check_n(n);
 				check_flag(flag0, flag1, flag2);
-				_size.check_range(i, j, k);
+				_size.check_range(0, LOC0, i, F0::offset);
+				_size.check_range(1, LOC1, j, F1::offset);
+				_size.check_range(2, LOC2, k, F2::offset);
 				return pt0[n][i + F0::offset][j + F1::offset][k + F2::offset];
 			}
 			template<typename F0 = FL::_C, typename F1 = FL::_C, typename F2 = FL::_C>
@@ -213,7 +214,9 @@ namespace liton_pd
 				check_data();
 				check_n(n);
 				check_flag(flag0, flag1, flag2);
-				_size.check_range(i, j, k);
+				_size.check_range(0, LOC0, i, F0::offset);
+				_size.check_range(1, LOC1, j, F1::offset);
+				_size.check_range(2, LOC2, k, F2::offset);
 				return pt0[n][i + F0::offset][j + F1::offset][k + F2::offset];
 			}
 
