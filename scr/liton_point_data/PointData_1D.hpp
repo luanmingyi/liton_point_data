@@ -109,13 +109,24 @@ namespace liton_pd
 				}
 			}
 
-			inline void check_range(const int i) const
+			inline void check_range(const unsigned d, const LO::LOCATION loc, const int ii, const int offset) const
 			{
 #ifdef _CHECK_POINTDATA_RANGE
-				if(i < -_n || i >= _in + _p)
+				DIM::check_d(d);
+				if (ii < -_n - offset || ii >= _in + _p + loc - offset)
 				{
+					char ijk_str[3][50] = { "i\0", "j\0", "k\0" };
 					std::ostringstream errlog;
-					errlog << "out of i range: " << i << " range:[" << -_n << "," << _in + _p - 1 << "]";
+					if (loc == LO::center)
+					{
+						errlog << "out of " << ijk_str[d] << " range: " << ii << " range:[" << -_n << "," << _in + _p - 1 << "]";
+					}
+					else
+					{
+						char flag_str[2][50] = { "N\0", "P\0" };
+						errlog << "out of " << ijk_str[d] << " range: " << ii << "(" << flag_str[offset] << ")"
+							<< " range:[" << -_n - 1 << "(P)," << -_n << "," << _in + _p - 1 << "," << _in + _p << "(N)]";
+					}
 					throw(std::runtime_error(errlog.str()));
 				}
 #endif
@@ -156,7 +167,7 @@ namespace liton_pd
 				check_data();
 				check_n(n);
 				check_flag(flag0);
-				_size.check_range(i);
+				_size.check_range(0, LOC0, i, F0::offset);
 				return pt0[n][i + F0::offset];
 			}
 			template<typename F0 = FL::_C>
@@ -165,7 +176,7 @@ namespace liton_pd
 				check_data();
 				check_n(n);
 				check_flag(flag0);
-				_size.check_range(i);
+				_size.check_range(0, LOC0, i, F0::offset);
 				return pt0[n][i + F0::offset];
 			}
 

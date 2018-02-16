@@ -116,6 +116,10 @@ int main(int argc, char** argv)
 	const D2::PointData<double, 1, LO::center, LO::half> xc(0, 5, 0, 0, 10, 0);
 	liton_sp::debug::exec_except([&]() {out << xc(0, 0, 0, FL::C, FL::N) << endl; }, out, err);
 	liton_sp::debug::exec_except([&]() {out << xc(0, 0, 0) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x3(0, -2, 0, FL::N, FL::N) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x3(0, 7, 0, FL::P, FL::N) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x3(0, 0, -2, FL::N, FL::N) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x3(0, 0, 13, FL::N, FL::P) << endl; }, out, err);
 	out << endl;
 
 	double min = 10000;

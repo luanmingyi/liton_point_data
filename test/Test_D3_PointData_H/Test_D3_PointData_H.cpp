@@ -179,6 +179,19 @@ int main(int argc, char** argv)
 	liton_sp::debug::exec_except([&]() {out << xc(0, 0, 0, 0, FL::N, FL::N, FL::C) << endl; }, out, err);
 	liton_sp::debug::exec_except([&]() {out << xc(0, 0, 0, 0) << endl; }, out, err);
 
+	liton_sp::debug::exec_except([&]() {out << x7(0, -2, 0, 0, FL::N, FL::N, FL::N) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x7(0, -2, 0, 0, FL::P, FL::N, FL::N) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x7(0, 3, 0, 0, FL::N, FL::N, FL::N) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x7(0, 3, 0, 0, FL::P, FL::N, FL::N) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x7(0, 0, -2, 0, FL::N, FL::N, FL::N) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x7(0, 0, -2, 0, FL::N, FL::P, FL::N) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x7(0, 0, 7, 0, FL::N, FL::N, FL::N) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x7(0, 0, 7, 0, FL::N, FL::P, FL::N) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x7(0, 0, 0, -2, FL::N, FL::N, FL::N) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x7(0, 0, 0, -2, FL::N, FL::N, FL::P) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x7(0, 0, 0, 6, FL::N, FL::N, FL::N) << endl; }, out, err);
+	liton_sp::debug::exec_except([&]() {out << x7(0, 0, 0, 6, FL::N, FL::N, FL::P) << endl; }, out, err);
+
 	out.close();
 	err.close();
 
