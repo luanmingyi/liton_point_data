@@ -51,14 +51,31 @@ int main(int argc, char** argv)
 	out << s2.range(RA::P).disp() << endl;
 	out << endl;
 
+	out << s2.range(RA::ALL, true, false).disp() << endl;
+	out << s2.range(RA::IN, true, false).disp() << endl;
+	out << s2.range(RA::N, true, false).disp() << endl;
+	out << s2.range(RA::P, true, false).disp() << endl;
+	out << endl;
+
+	out << s2.range(RA::ALL, false, true).disp() << endl;
+	out << s2.range(RA::IN, false, true).disp() << endl;
+	out << s2.range(RA::N, false, true).disp() << endl;
+	out << s2.range(RA::P, false, true).disp() << endl;
+	out << endl;
+
 	liton_sp::debug::exec_except([&]() {s1.check(); }, out, err);
 	liton_sp::debug::exec_except([&]() {s2.check(); }, out, err);
 	liton_sp::debug::exec_except([&]() {D1::SizeT(1, 0, 0).check(); }, out, err);
 	out << endl;
 
-	liton_sp::debug::exec_except([&]() {s2.check_range(0); }, out, err);
-	liton_sp::debug::exec_except([&]() {s2.check_range(-3); }, out, err);
-	liton_sp::debug::exec_except([&]() {s2.check_range(13); }, out, err);
+	liton_sp::debug::exec_except([&]() {s2.check_range(0, 0); }, out, err);
+	liton_sp::debug::exec_except([&]() {s2.check_range(0, -3); }, out, err);
+	liton_sp::debug::exec_except([&]() {s2.check_range(0, 13); }, out, err);
+
+	liton_sp::debug::exec_except([&]() {s2.check_range(0, LO::half, -3, FL::N.offset); }, out, err);
+	liton_sp::debug::exec_except([&]() {s2.check_range(0, LO::half, -3, FL::P.offset); }, out, err);
+	liton_sp::debug::exec_except([&]() {s2.check_range(0, LO::half, 13, FL::N.offset); }, out, err);
+	liton_sp::debug::exec_except([&]() {s2.check_range(0, LO::half, 13, FL::P.offset); }, out, err);
 
 	out.close();
 	err.close();

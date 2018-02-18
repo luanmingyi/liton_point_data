@@ -56,9 +56,8 @@ int main(int argc, char** argv)
 	out << endl;
 
 	D1::PD_For_1D(x1.size().range(RA::IN), [&x1]PD_F_i(i) { x1(0, i, FL::N) = static_cast<float>(i); });
-	D1::PD_For_1D(x1.size().range(RA::N), [&x1]PD_F_i(i) { x1(0, i, FL::N) = static_cast<float>(i - 5); });
-	D1::PD_For_1D(x1.size().range(RA::P), [&x1]PD_F_i(i) { x1(0, i, FL::N) = static_cast<float>(i + 6); });
-	x1(0, x1.size().last(0,RA::ALL), FL::P) = -10;
+	D1::PD_For_1D(x1.size().range(RA::N), [&x1]PD_F_i(i) { x1(0, i, FL::N) = static_cast<float>(i - 100); });
+	D1::PD_For_1D(x1.size().range(RA::P, false, true), [&x1]PD_F_i(i) { x1(0, i, FL::N) = static_cast<float>(i + 200); });
 	out << x1.disp_data() << endl;
 
 	liton_sp::debug::exec_except([&]() {out << x1(0, -1, FL::N) << endl; }, out, err);
@@ -88,18 +87,12 @@ int main(int argc, char** argv)
 
 	double sum = 0;
 	double max = -100;
-	auto lam_sum = []PD_RF(double, x, xx) { xx += x; };
-	auto lam_max = []PD_RF(double, x, xx) { xx = x > xx ? x : xx; };
-	D1::PD_Reduce_1D(x3.size().range(RA::IN),
-	                 sum,
-	                 lam_sum,
+	D1::PD_Reduce_1D(x3.size().range(RA::IN, false, true),
+	                 sum, PD_RF_SUM(double),
 	                 [&x3]PD_F_i(i)->double { return x3(0, i, FL::N); });
-	lam_sum(x3(0, x3.size().last(0, RA::IN), FL::P), sum);
-	D1::PD_Reduce_N_1D(0, x3.N, x3.size().range(RA::ALL),
-	                   max,
-	                   lam_max,
+	D1::PD_Reduce_N_1D(0, x3.N, x3.size().range(RA::ALL, false, true),
+	                   max, PD_RF_MAX(double),
 	                   [&x3]PD_F_n_i(n, i)->double { return x3(n, i, FL::N); });
-	PD_Reduce_N(0, x3.N, max, lam_max, [&x3]PD_F_n(n)->double { return x3(n, x3.size().last(0, RA::ALL), FL::P); });
 	out << sum << endl;
 	out << max << endl;
 

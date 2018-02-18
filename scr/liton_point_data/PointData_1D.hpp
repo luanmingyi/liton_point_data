@@ -92,7 +92,12 @@ namespace liton_pd
 			inline int mirror(const unsigned d, FL::_P fl, int ii) const { return 2 * last(d, RA::IN) - ii; }
 
 			template<typename T0>
-			inline RangeT range(T0 r) const { return RangeT(begin(0, r), size(0, r)); }
+			inline RangeT range(T0 r0, bool s0, bool e0) const
+			{
+				return RangeT(begin(0, r0) + static_cast<int>(s0), size(0, r0) - static_cast<int>(s0) + static_cast<int>(e0));
+			}
+			template<typename T0>
+			inline RangeT range(T0 r0) const { return range(r0, false, false); }
 
 			std::string disp() const
 			{
@@ -125,12 +130,13 @@ namespace liton_pd
 					{
 						char flag_str[2][50] = { "N\0", "P\0" };
 						errlog << "out of " << ijk_str[d] << " range: " << ii << "(" << flag_str[offset] << ")"
-							<< " range:[" << -_n - 1 << "(P)," << -_n << "," << _in + _p - 1 << "," << _in + _p << "(N)]";
+						       << " range:[" << -_n - 1 << "(P)," << -_n << "," << _in + _p - 1 << "," << _in + _p << "(N)]";
 					}
 					throw(std::runtime_error(errlog.str()));
 				}
 #endif
 			}
+			inline void check_range(const unsigned d, const int ii) const { check_range(d, LO::center, ii, 0); }
 		};
 
 		template <typename _NUMT, unsigned _N, LO::LOCATION _LOC0>
@@ -162,7 +168,7 @@ namespace liton_pd
 			inline SizeT size() const { return _size; }
 
 			template<typename F0 = FL::_C>
-			inline _NUMT &operator()(const unsigned n, const int i, const F0 flag0 = FL::C)
+			inline _NUMT & operator()(const unsigned n, const int i, const F0 flag0 = FL::C)
 			{
 				check_data();
 				check_n(n);
@@ -171,7 +177,7 @@ namespace liton_pd
 				return pt0[n][i + F0::offset];
 			}
 			template<typename F0 = FL::_C>
-			inline const _NUMT &operator()(const unsigned n, const int i, const F0 flag0 = FL::C) const
+			inline const _NUMT & operator()(const unsigned n, const int i, const F0 flag0 = FL::C) const
 			{
 				check_data();
 				check_n(n);

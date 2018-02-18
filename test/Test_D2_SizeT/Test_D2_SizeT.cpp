@@ -53,9 +53,21 @@ int main(int argc, char** argv)
 	out << endl;
 
 	out << s2.range(RA::ALL, RA::ALL).disp() << endl;
-	out << s2.range(RA::IN, RA::P).disp() << endl;
+	out << s2.range(RA::IN, RA::N).disp() << endl;
 	out << s2.range(RA::N, RA::ALL).disp() << endl;
 	out << s2.range(RA::P, RA::IN).disp() << endl;
+	out << endl;
+
+	out << s2.range(RA::ALL, true, false, RA::ALL, true, false).disp() << endl;
+	out << s2.range(RA::IN, true, false, RA::N, true, false).disp() << endl;
+	out << s2.range(RA::N, true, false, RA::ALL, true, false).disp() << endl;
+	out << s2.range(RA::P, true, false, RA::IN, true, false).disp() << endl;
+	out << endl;
+
+	out << s2.range(RA::ALL, false, true, RA::ALL, false, true).disp() << endl;
+	out << s2.range(RA::IN, false, true, RA::N, false, true).disp() << endl;
+	out << s2.range(RA::N, false, true, RA::ALL, false, true).disp() << endl;
+	out << s2.range(RA::P, false, true, RA::IN, false, true).disp() << endl;
 	out << endl;
 
 	liton_sp::debug::exec_except([&]() {s1.check(); }, out, err);
