@@ -104,7 +104,13 @@ namespace liton_pd
 			inline int mirror(const unsigned d, FL::_P fl, int ii) const { return 2 * last(d, RA::IN) - ii; }
 
 			template<typename T0, typename T1>
-			inline RangeT range(T0 r0, T1 r1) const { return RangeT(begin(0, r0), size(0, r0), begin(1, r1), size(1, r1)); }
+			inline RangeT range(T0 r0, bool s0, bool e0, T1 r1, bool s1, bool e1) const
+			{
+				return RangeT(begin(0, r0) + static_cast<int>(s0), size(0, r0) - static_cast<int>(s0) + static_cast<int>(e0),
+				              begin(1, r1) + static_cast<int>(s1), size(1, r1) - static_cast<int>(s1) + static_cast<int>(e1));
+			}
+			template<typename T0, typename T1>
+			inline RangeT range(T0 r0, T1 r1) const { return range(r0, false, false, r1, false, false); }
 
 			std::string disp() const
 			{
@@ -142,12 +148,13 @@ namespace liton_pd
 					{
 						char flag_str[2][50] = { "N\0", "P\0" };
 						errlog << "out of " << ijk_str[d] << " range: " << ii << "(" << flag_str[offset] << ")"
-							<< " range:[" << -_n[d] - 1 << "(P)," << -_n[d] << "," << _in[d] + _p[d] - 1 << "," << _in[d] + _p[d] << "(N)]";
+						       << " range:[" << -_n[d] - 1 << "(P)," << -_n[d] << "," << _in[d] + _p[d] - 1 << "," << _in[d] + _p[d] << "(N)]";
 					}
 					throw(std::runtime_error(errlog.str()));
 				}
 #endif
 			}
+			inline void check_range(const unsigned d, const int ii) const { check_range(d, LO::center, ii, 0); }
 		};
 
 		template <typename _NUMT, unsigned _N, LO::LOCATION _LOC0, LO::LOCATION _LOC1>
@@ -184,7 +191,7 @@ namespace liton_pd
 			inline SizeT size() const { return _size; }
 
 			template<typename F0 = FL::_C, typename F1 = FL::_C>
-			inline _NUMT &operator()(const unsigned n, const int i, const int j, const F0 flag0 = FL::C, const F1 flag1 = FL::C)
+			inline _NUMT & operator()(const unsigned n, const int i, const int j, const F0 flag0 = FL::C, const F1 flag1 = FL::C)
 			{
 				check_data();
 				check_n(n);
@@ -194,7 +201,7 @@ namespace liton_pd
 				return pt0[n][i + F0::offset][j + F1::offset];
 			}
 			template<typename F0 = FL::_C, typename F1 = FL::_C>
-			inline const _NUMT &operator()(const unsigned n, const int i, const int j, const F0 flag0 = FL::C, const F1 flag1 = FL::C) const
+			inline const _NUMT & operator()(const unsigned n, const int i, const int j, const F0 flag0 = FL::C, const F1 flag1 = FL::C) const
 			{
 				check_data();
 				check_n(n);
@@ -316,7 +323,7 @@ namespace liton_pd
 							for (unsigned ii = 0; ii != s.size(0, RA::ALL) + _LOC0; ++ii)
 							{
 								pt0[n][ii] = data + n * (s.size(0, RA::ALL) + _LOC0) * (s.size(1, RA::ALL) + _LOC1)
-									+ ii * (s.size(1, RA::ALL) + _LOC1);
+								             + ii * (s.size(1, RA::ALL) + _LOC1);
 								pt0[n][ii] += s.n(1);
 							}
 							pt0[n] += s.n(0);
