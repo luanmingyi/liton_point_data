@@ -107,6 +107,8 @@ namespace liton_pd
 			inline int last(const unsigned d, T0 r) const { return end(d, r) - 1; }
 			inline int mirror(const unsigned d, FL::_N fl, int ii) const { return 2 * begin(d, RA::IN) - ii; }
 			inline int mirror(const unsigned d, FL::_P fl, int ii) const { return 2 * last(d, RA::IN) - ii; }
+			inline int periodic(const unsigned d, FL::_N fl, int ii) const { return last(d, RA::IN) + ii; }
+			inline int periodic(const unsigned d, FL::_P fl, int ii) const { return ii - last(d, RA::IN); }
 
 			template<typename T0, typename T1, typename T2>
 			inline RangeT range(T0 r0, bool s0, bool e0, T1 r1, bool s1, bool e1, T2 r2, bool s2, bool e2) const
