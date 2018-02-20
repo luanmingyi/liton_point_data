@@ -76,6 +76,13 @@ int main(int argc, char** argv)
 	liton_sp::debug::exec_except([&]() {s2.check_range(0, LO::half, -3, FL::P.offset); }, out, err);
 	liton_sp::debug::exec_except([&]() {s2.check_range(0, LO::half, 13, FL::N.offset); }, out, err);
 	liton_sp::debug::exec_except([&]() {s2.check_range(0, LO::half, 13, FL::P.offset); }, out, err);
+	out << endl;
+
+	out << s2.disp() << endl;
+	out << s2.mirror(0, FL::N, -2) << endl;
+	out << s2.mirror(0, FL::P, 11) << endl;
+	out << s2.periodic(0, FL::N, -2) << endl;
+	out << s2.periodic(0, FL::P, 11) << endl;
 
 	out.close();
 	err.close();
