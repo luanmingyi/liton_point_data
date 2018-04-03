@@ -231,6 +231,7 @@ namespace liton_pd
 				return pt0[n][i + F0::offset][j + F1::offset][k + F2::offset];
 			}
 
+			inline _NUMT* data_pt(const unsigned n) { check_n(n); return pt0[n][-_size.n(0)][-_size.n(1)] - _size.n(2); }
 			inline const _NUMT* data_pt(const unsigned n) const { check_n(n); return pt0[n][-_size.n(0)][-_size.n(1)] - _size.n(2); }
 		  protected:
 			inline void check_n(const unsigned n) const
