@@ -17,8 +17,7 @@ int main(int argc, char** argv)
 {
 	try
 	{
-		string name(__FILE__);
-		name.erase(name.find_last_of('.'));
+		string name("test");
 		cout << name << endl;
 		ofstream out((name + "_out.txt").c_str());
 
