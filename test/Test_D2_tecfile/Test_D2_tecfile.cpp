@@ -3,9 +3,9 @@
 #include <string>
 #include <stdexcept>
 using namespace std;
-#include "../dep/liton_cpp_snippets/lion_snippets.hpp"
+#include "../../scr/liton_cpp_snippets/lion_snippets.hpp"
 #define _CRT_SECURE_NO_WARNINGS
-#include "../dep/liton_ordered_tec/ordered_tec.h"
+#include "../../scr/liton_ordered_tec/ordered_tec.h"
 
 #ifdef _DEBUG
 #define _CHECK_POINTDATA_RANGE

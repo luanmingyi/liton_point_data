@@ -5,8 +5,8 @@
 #include <ctime>
 using namespace std;
 
-#include "../dep/liton_cpp_snippets/lion_snippets.hpp"
-#include "../dep/liton_ordered_tec/ordered_tec.h"
+#include "../../scr/liton_cpp_snippets/lion_snippets.hpp"
+#include "../../scr/liton_ordered_tec/ordered_tec.h"
 using namespace liton_ot;
 
 #ifdef _DEBUG

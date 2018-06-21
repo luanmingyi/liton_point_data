@@ -3,7 +3,7 @@
 #include <string>
 #include <stdexcept>
 using namespace std;
-#include "../dep/liton_cpp_snippets/lion_snippets.hpp"
+#include "../../scr/liton_cpp_snippets/lion_snippets.hpp"
 
 #ifdef _DEBUG
 	#define _CHECK_POINTDATA_RANGE
