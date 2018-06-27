@@ -6,6 +6,11 @@
 #include <string>
 #include <sstream>
 
+#ifdef PD_OT
+	#include "../liton_ordered_tec/ordered_tec.h"
+	#include <algorithm>
+#endif
+
 namespace liton_pd
 {
 	namespace D1
@@ -28,7 +33,7 @@ namespace liton_pd
 #endif
 			}
 		};
-
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class RangeT
 		{
 		  public:
@@ -83,7 +88,61 @@ namespace liton_pd
 				return displog.str();
 			}
 		};
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		template <typename Function>
+		inline void PD_For_1D(const RangeT r, const Function fun)
+		{
+			const int begin = r.begin(0);
+			const int end = r.end(0);
+			for (int i = begin; i != end; ++i)
+			{
+				fun(i);
+			}
+		}
 
+		template <typename Function>
+		inline void PD_For_N_1D(const unsigned N_b, const unsigned N_e, const RangeT r, const Function fun)
+		{
+			const int begin = r.begin(0);
+			const int end = r.end(0);
+			for (unsigned n = N_b; n != N_e; ++n)
+			{
+				for (int i = begin; i != end; ++i)
+				{
+					fun(n, i);
+				}
+			}
+		}
+
+		template <typename T, typename Reducer, typename Function>
+		inline void PD_Reduce_1D(const RangeT r, T &ans, const Reducer reduce, const Function fun)
+		{
+			T temp = ans;
+			int begin = r.begin(0);
+			int end = r.end(0);
+			for (int i = begin; i != end; ++i)
+			{
+				reduce(fun(i), temp);
+			}
+			reduce(temp, ans);
+		}
+
+		template <typename T, typename Reducer, typename Function>
+		inline void PD_Reduce_N_1D(const unsigned N_b, const unsigned N_e, const RangeT r, T &ans, const Reducer reduce, const Function fun)
+		{
+			T temp = ans;
+			int begin = r.begin(0);
+			int end = r.end(0);
+			for (unsigned n = N_b; n != N_e; ++n)
+			{
+				for (int i = begin; i != end; ++i)
+				{
+					reduce(fun(n, i), temp);
+				}
+			}
+			reduce(temp, ans);
+		}
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class SizeT
 		{
 		  public:
@@ -160,7 +219,7 @@ namespace liton_pd
 			}
 			inline void check_range(const unsigned d, const int ii) const { check_range(d, LO::center, ii, 0); }
 		};
-
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		template <typename _NUMT, unsigned _N, LO::LOCATION _LOC0>
 		class PointData
 		{
@@ -211,32 +270,7 @@ namespace liton_pd
 			inline _NUMT* data_pt(const unsigned n) { check_n(n); return pt0[n] - _size.n(0); }
 			inline const _NUMT* data_pt(const unsigned n) const { check_n(n); return pt0[n] - _size.n(0); }
 
-			inline void copy_from(const PointData<_NUMT, _N, _LOC0> &pd, const RangeT R, const RangeT r_, int I, int i)
-			{
-#ifdef _CHECK_POINTDATA_RANGE
-				if(&pd == this)
-				{
-					if(R.is_overlap(r_))
-					{
-						throw(std::runtime_error("copy and write zone overlap"));
-					}
-				}
-#endif
-				RangeT r = r_;
-				RangeT overlap = R.overlap(r.tran(I - i));
-				overlap.cut_tail(-static_cast<int>(_LOC0));
-				int dd = i - I;
-				int begin0 = overlap.begin(0);
-				int end0 = overlap.end(0);
-
-				for (int II = begin0; II != end0; ++II)
-				{
-					for (unsigned n = 0; n != N; ++n)
-					{
-						pt0[n][II] = pd.pt0[n][II + dd];
-					}
-				}
-			}
+			void copy_from(const PointData<_NUMT, _N, _LOC0> &pd, const RangeT R, const RangeT r_, int I, int i);
 			template<typename _R, typename _r>
 			inline void copy_from(const PointData<_NUMT, _N, _LOC0> &pd, _R R, _r r, int I, int i)
 			{copy_from(pd, _size.range(R), pd.size().range(r), I, i);}
@@ -247,6 +281,12 @@ namespace liton_pd
 			template<typename _R, typename _r, typename _FL>
 			inline void copy_from(const PointData<_NUMT, _N, _LOC0> &pd, _R R, _r r, _FL fl)
 			{copy_from(pd, _size.range(R), pd.size().range(r), fl);}
+
+#ifdef PD_OT
+			void read_plt(const std::string &root, const liton_ot::TEC_FILE_LOG &teclog,
+			              unsigned zone, const std::string &name, unsigned nn);
+#endif
+
 		  protected:
 			inline void check_n(const unsigned n) const
 			{
@@ -415,62 +455,94 @@ namespace liton_pd
 			return displog.str();
 		}
 
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-		template <typename Function>
-		inline void PD_For_1D(const RangeT r, const Function fun)
+		template<typename _NUMT, unsigned _N, LO::LOCATION _LOC0>
+		void PointData<_NUMT, _N, _LOC0>::copy_from(const PointData<_NUMT, _N, _LOC0> &pd, const RangeT R, const RangeT r_, int I, int i)
 		{
-			const int begin = r.begin(0);
-			const int end = r.end(0);
-			for (int i = begin; i != end; ++i)
+#ifdef _CHECK_POINTDATA_RANGE
+			if(&pd == this)
 			{
-				fun(i);
-			}
-		}
-
-		template <typename Function>
-		inline void PD_For_N_1D(const unsigned N_b, const unsigned N_e, const RangeT r, const Function fun)
-		{
-			const int begin = r.begin(0);
-			const int end = r.end(0);
-			for (unsigned n = N_b; n != N_e; ++n)
-			{
-				for (int i = begin; i != end; ++i)
+				if(R.is_overlap(r_))
 				{
-					fun(n, i);
+					throw(std::runtime_error("copy and write zone overlap"));
+				}
+			}
+#endif
+			RangeT r = r_;
+			RangeT overlap = R.overlap(r.tran(I - i));
+			overlap.cut_tail(-static_cast<int>(_LOC0));
+			int dd = i - I;
+			int begin0 = overlap.begin(0);
+			int end0 = overlap.end(0);
+
+			for (int II = begin0; II != end0; ++II)
+			{
+				for (unsigned n = 0; n != N; ++n)
+				{
+					pt0[n][II] = pd.pt0[n][II + dd];
 				}
 			}
 		}
 
-		template <typename T, typename Reducer, typename Function>
-		inline void PD_Reduce_1D(const RangeT r, T &ans, const Reducer reduce, const Function fun)
+#ifdef PD_OT
+		template<typename _NUMT, unsigned _N, LO::LOCATION _LOC0>
+		void PointData<_NUMT, _N, _LOC0>::read_plt(const std::string &root, const liton_ot::TEC_FILE_LOG &teclog,
+		        unsigned zone, const std::string &name, unsigned nn)
 		{
-			T temp = ans;
-			int begin = r.begin(0);
-			int end = r.end(0);
-			for (int i = begin; i != end; ++i)
+			check_n(nn);
+			if(zone >= teclog.Zones.size())
 			{
-				reduce(fun(i), temp);
+				throw(std::runtime_error("zone number is too big"));
 			}
-			reduce(temp, ans);
-		}
 
-		template <typename T, typename Reducer, typename Function>
-		inline void PD_Reduce_N_1D(const unsigned N_b, const unsigned N_e, const RangeT r, T &ans, const Reducer reduce, const Function fun)
-		{
-			T temp = ans;
-			int begin = r.begin(0);
-			int end = r.end(0);
-			for (unsigned n = N_b; n != N_e; ++n)
+			unsigned N_file = teclog.Zones[zone].Real_Max[0];
+			if(N_file > _size._in)
 			{
-				for (int i = begin; i != end; ++i)
+				throw(std::runtime_error("too big data size"));
+			}
+			int vv = std::find(teclog.Variables.begin(), teclog.Variables.end(), name) - teclog.Variables.begin();
+			if (vv == teclog.Variables.size())
+			{
+				throw(std::runtime_error("error when finding variables " + name + " in: " + teclog.FileName));
+			}
+
+			std::string plt_file_name = root + "/" + teclog.FileName + ".plt";
+			std::ifstream data_in;
+			data_in.open(plt_file_name.c_str(), std::ios::binary);
+			if (!data_in)
+			{
+				throw(std::runtime_error("error when opening grid file: " + plt_file_name));
+			}
+			data_in.seekg(teclog.Zones[zone].Data[vv].file_pt);
+			PointData<char, 1, liton_pd::LO::center> buf(0, N_file * teclog.Zones[zone].Data[vv].size, 0);
+			data_in.read(buf.data_pt(0), N_file * teclog.Zones[zone].Data[vv].size);
+			if (!data_in)
+			{
+				throw(std::runtime_error("error when reading grid file " + plt_file_name));
+			}
+			data_in.close();
+
+			if (teclog.Zones[zone].Data[vv].type == 1)
+			{
+				float* temp = reinterpret_cast<float*>(buf.data_pt(0));
+				for(unsigned ii = 0; ii != N_file; ++ii)
 				{
-					reduce(fun(n, i), temp);
+					pt0[nn][ii] = temp[ii];
 				}
 			}
-			reduce(temp, ans);
+			else if (teclog.Zones[zone].Data[vv].type == 2)
+			{
+				double* temp = reinterpret_cast<double*>(buf.data_pt(0));
+				for(unsigned ii = 0; ii != N_file; ++ii)
+				{
+					pt0[nn][ii] = temp[ii];
+				}
+			}
+			else
+			{
+				throw(std::runtime_error("grid tec_file data type error"));
+			}
 		}
+#endif
 	}
 }
-
 #endif
