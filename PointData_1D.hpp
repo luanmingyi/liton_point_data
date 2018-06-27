@@ -31,35 +31,62 @@ namespace liton_pd
 
 		class RangeT
 		{
-		  protected:
+		  public:
 			int _begin = 0;
-			int _end = 0;
 			int _size = 0;
 
 		  public:
 			RangeT() = default;
-			RangeT(const int b, const unsigned s): _begin(b), _size(static_cast<int>(s)) { _end = _begin + _size; }
+			RangeT(const int b, const unsigned s): _begin(b), _size(static_cast<int>(s)) {}
 
 			inline int begin(const unsigned d) const { DIM::check_d(d); return _begin; }
-			inline int end(const unsigned d) const { DIM::check_d(d); return _end; }
 			inline int size(const unsigned d) const { DIM::check_d(d); return _size; }
+			inline int end(const unsigned d) const { return begin(d) + size(d); }
+			inline int last(const unsigned d) const { return end(d) - 1; }
+
+			inline RangeT &cut_head(int a) { _begin += a; _size -= a; return *this; }
+			inline RangeT &cut_tail(int a) { _size -= a; return *this; }
+			inline RangeT &tran(int a) { _begin += a; return *this; }
+
+			inline RangeT overlap(const RangeT r) const
+			{
+#ifdef _CHECK_POINTDATA_RANGE
+				if(!is_overlap(r))
+				{
+					throw(std::runtime_error("overlap not found"));
+				}
+#endif
+				int __begin = begin(0) > r.begin(0) ? begin(0) : r.begin(0);
+				int __end = end(0) < r.end(0) ? end(0) : r.end(0);
+				return RangeT(__begin, __end - __begin);
+			}
+			inline bool is_overlap(const RangeT r) const
+			{
+				if(begin(0) >= r.end(0) || end(0) <= r.begin(0))
+				{
+					return false;
+				}
+				else
+				{
+					return true;
+				}
+			}
 
 			inline const int* begin_pt() const { return &_begin; }
-			inline const int* end_pt() const { return &_end; }
 			inline const int* size_pt() const { return &_size; }
 
 			inline std::string disp() const
 			{
 				std::ostringstream displog;
-				displog << "range[0] = [" << _begin << " , " << _end << "]  "
-				        << "size[0] = " << _size;
+				displog << "range[0] = [" << begin(0) << " , " << last(0) << "]  "
+				        << "size[0] = " << size(0);
 				return displog.str();
 			}
 		};
 
 		class SizeT
 		{
-		  protected:
+		  public:
 			int _in = 0;
 			int _n = 0;
 			int _p = 0;
@@ -75,31 +102,24 @@ namespace liton_pd
 
 			inline int begin(const unsigned d, RA::_ALL r) const { DIM::check_d(d); return -_n; }
 			inline int end(const unsigned d, RA::_ALL r) const { DIM::check_d(d); return _in + _p; }
-			inline int size(const unsigned d, RA::_ALL r) const { DIM::check_d(d); return _in + _n + _p; }
 			inline int begin(const unsigned d, RA::_IN r) const { DIM::check_d(d); return 0; }
 			inline int end(const unsigned d, RA::_IN r) const { DIM::check_d(d); return _in; }
-			inline int size(const unsigned d, RA::_IN r) const { DIM::check_d(d); return _in; }
 			inline int begin(const unsigned d, RA::_N r) const { DIM::check_d(d); return -_n; }
 			inline int end(const unsigned d, RA::_N r) const { DIM::check_d(d); return 0; }
-			inline int size(const unsigned d, RA::_N r) const { DIM::check_d(d); return _n; }
 			inline int begin(const unsigned d, RA::_P r) const { DIM::check_d(d); return _in; }
 			inline int end(const unsigned d, RA::_P r) const { DIM::check_d(d); return _in + _p; }
-			inline int size(const unsigned d, RA::_P r) const { DIM::check_d(d); return _p; }
-
 			template<typename T0>
-			inline int last(const unsigned d, T0 r) const { return end(d, r) - 1; }
+			inline unsigned int size(const unsigned d, T0 r) const { return end(d, r) - begin(d, r); }
+			template<typename T0>
+			inline unsigned int last(const unsigned d, T0 r) const { return end(d, r) - 1; }
+
 			inline int mirror(const unsigned d, FL::_N fl, int ii) const { return 2 * begin(d, RA::IN) - ii; }
 			inline int mirror(const unsigned d, FL::_P fl, int ii) const { return 2 * last(d, RA::IN) - ii; }
 			inline int periodic(const unsigned d, FL::_N fl, int ii) const { return last(d, RA::IN) + ii; }
 			inline int periodic(const unsigned d, FL::_P fl, int ii) const { return ii - last(d, RA::IN); }
 
 			template<typename T0>
-			inline RangeT range(T0 r0, bool s0, bool e0) const
-			{
-				return RangeT(begin(0, r0) + static_cast<int>(s0), size(0, r0) - static_cast<int>(s0) + static_cast<int>(e0));
-			}
-			template<typename T0>
-			inline RangeT range(T0 r0) const { return range(r0, false, false); }
+			inline RangeT range(T0 r0) const { return RangeT(begin(0, r0), size(0, r0)); }
 
 			std::string disp() const
 			{
@@ -191,6 +211,42 @@ namespace liton_pd
 			inline _NUMT* data_pt(const unsigned n) { check_n(n); return pt0[n] - _size.n(0); }
 			inline const _NUMT* data_pt(const unsigned n) const { check_n(n); return pt0[n] - _size.n(0); }
 
+			inline void copy_from(const PointData<_NUMT, _N, _LOC0> &pd, const RangeT R, const RangeT r_, int I, int i)
+			{
+#ifdef _CHECK_POINTDATA_RANGE
+				if(&pd == this)
+				{
+					if(R.is_overlap(r_))
+					{
+						throw(std::runtime_error("copy and write zone overlap"));
+					}
+				}
+#endif
+				RangeT r = r_;
+				RangeT overlap = R.overlap(r.tran(I - i));
+				overlap.cut_tail(-static_cast<int>(_LOC0));
+				int dd = i - I;
+				int begin0 = overlap.begin(0);
+				int end0 = overlap.end(0);
+
+				for (int II = begin0; II != end0; ++II)
+				{
+					for (unsigned n = 0; n != N; ++n)
+					{
+						pt0[n][II] = pd.pt0[n][II + dd];
+					}
+				}
+			}
+			template<typename _R, typename _r>
+			inline void copy_from(const PointData<_NUMT, _N, _LOC0> &pd, _R R, _r r, int I, int i)
+			{copy_from(pd, _size.range(R), pd.size().range(r), I, i);}
+			inline void copy_from(const PointData<_NUMT, _N, _LOC0> &pd, const RangeT R, const RangeT r, FL::_N fl)
+			{copy_from(pd, R, r, R.begin(0), r.begin(0));}
+			inline void copy_from(const PointData<_NUMT, _N, _LOC0> &pd, const RangeT R, const RangeT r, FL::_P fl)
+			{copy_from(pd, R, r, R.end(0), r.end(0));}
+			template<typename _R, typename _r, typename _FL>
+			inline void copy_from(const PointData<_NUMT, _N, _LOC0> &pd, _R R, _r r, _FL fl)
+			{copy_from(pd, _size.range(R), pd.size().range(r), fl);}
 		  protected:
 			inline void check_n(const unsigned n) const
 			{
