@@ -1,4 +1,5 @@
 test/_build/
+.vscode/
 
 push.log
 pull.log

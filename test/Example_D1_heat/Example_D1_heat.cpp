@@ -5,10 +5,6 @@
 #include <ctime>
 using namespace std;
 #include "../../scr/liton_cpp_snippets/lion_snippets.hpp"
-
-#ifdef _DEBUG
-#define _CHECK_POINTDATA_RANGE
-#endif
 #include "../../scr/liton_point_data/PointData.hpp"
 
 using namespace liton_pd;
@@ -44,7 +40,7 @@ int main(int argc, char** argv)
 
 		unsigned step;
 		double flowtime;
-		double time_next_print;		
+		double time_next_print;
 
 		double usingtime = liton_sp::debug::exec_time(2, [&]() {
 			step = 0;

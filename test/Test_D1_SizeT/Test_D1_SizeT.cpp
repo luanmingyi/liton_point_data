@@ -4,10 +4,6 @@
 #include <stdexcept>
 using namespace std;
 #include "../../scr/liton_cpp_snippets/lion_snippets.hpp"
-
-#ifdef _DEBUG
-	#define _CHECK_POINTDATA_RANGE
-#endif
 #include "../../scr/liton_point_data/PointData.hpp"
 
 using namespace liton_pd;
@@ -50,16 +46,10 @@ int main(int argc, char** argv)
 	out << s2.range(RA::P).disp() << endl;
 	out << endl;
 
-	out << s2.range(RA::ALL, true, false).disp() << endl;
-	out << s2.range(RA::IN, true, false).disp() << endl;
-	out << s2.range(RA::N, true, false).disp() << endl;
-	out << s2.range(RA::P, true, false).disp() << endl;
+	D1::SizeT s3(1, 5, 1);
+	out << s2.disp() << endl;
 	out << endl;
-
-	out << s2.range(RA::ALL, false, true).disp() << endl;
-	out << s2.range(RA::IN, false, true).disp() << endl;
-	out << s2.range(RA::N, false, true).disp() << endl;
-	out << s2.range(RA::P, false, true).disp() << endl;
+	out << s3.disp() << endl;
 	out << endl;
 
 	liton_sp::debug::exec_except([&]() {s1.check(); }, out, err);

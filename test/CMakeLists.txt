@@ -16,6 +16,7 @@ target_link_libraries(ordered_tec tinyxml)
 
 add_library(point_data INTERFACE)
 target_include_directories(point_data INTERFACE "../scr/liton_point_data")
+target_compile_definitions(point_data INTERFACE "$<$<CONFIG:DEBUG>:_CHECK_POINTDATA_RANGE>")
 
 enable_testing()
 

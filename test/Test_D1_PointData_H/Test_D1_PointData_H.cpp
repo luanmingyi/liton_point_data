@@ -4,10 +4,6 @@
 #include <stdexcept>
 using namespace std;
 #include "../../scr/liton_cpp_snippets/lion_snippets.hpp"
-
-#ifdef _DEBUG
-	#define _CHECK_POINTDATA_RANGE
-#endif
 #include "../../scr/liton_point_data/PointData.hpp"
 
 using namespace liton_pd;
@@ -56,7 +52,7 @@ int main(int argc, char** argv)
 
 	D1::PD_For_1D(x1.size().range(RA::IN), [&x1]PD_F_i(i) { x1(0, i, FL::N) = static_cast<float>(i); });
 	D1::PD_For_1D(x1.size().range(RA::N), [&x1]PD_F_i(i) { x1(0, i, FL::N) = static_cast<float>(i - 100); });
-	D1::PD_For_1D(x1.size().range(RA::P, false, true), [&x1]PD_F_i(i) { x1(0, i, FL::N) = static_cast<float>(i + 200); });
+	D1::PD_For_1D(x1.size().range(RA::P).cut_tail(-1), [&x1]PD_F_i(i) { x1(0, i, FL::N) = static_cast<float>(i + 200); });
 	out << x1.disp_data() << endl;
 
 	liton_sp::debug::exec_except([&]() {out << x1(0, -1, FL::N) << endl; }, out, err);
@@ -86,14 +82,24 @@ int main(int argc, char** argv)
 
 	double sum = 0;
 	double max = -100;
-	D1::PD_Reduce_1D(x3.size().range(RA::IN, false, true),
+	D1::PD_Reduce_1D(x3.size().range(RA::IN).cut_tail(-1),
 	                 sum, PD_RF_SUM(double),
 	                 [&x3]PD_F_i(i)->double { return x3(0, i, FL::N); });
-	D1::PD_Reduce_N_1D(0, x3.N, x3.size().range(RA::ALL, false, true),
+	D1::PD_Reduce_N_1D(0, x3.N, x3.size().range(RA::ALL).cut_tail(-1),
 	                   max, PD_RF_MAX(double),
 	                   [&x3]PD_F_n_i(n, i)->double { return x3(n, i, FL::N); });
 	out << sum << endl;
 	out << max << endl;
+
+	out << endl;
+	liton_sp::debug::exec_except([&]() {x3.copy_from(x2, RA::ALL, RA::ALL, 10, 0);}, out, err);
+	out << x3.disp_data() << endl;
+	liton_sp::debug::exec_except([&]() {x3.copy_from(x2, RA::ALL, RA::ALL, 0, 10);}, out, err);
+	out << x3.disp_data() << endl;
+	liton_sp::debug::exec_except([&]() {x3.copy_from(x2, RA::IN, RA::N, 0, -2);}, out, err);
+	out << x3.disp_data() << endl;
+	liton_sp::debug::exec_except([&]() {x3.copy_from(x2, RA::IN, RA::P, 9, 12);}, out, err);
+	out << x3.disp_data() << endl;
 
 	out.close();
 	err.close();
