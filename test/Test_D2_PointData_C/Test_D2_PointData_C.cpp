@@ -4,10 +4,6 @@
 #include <stdexcept>
 using namespace std;
 #include "../../scr/liton_cpp_snippets/lion_snippets.hpp"
-
-#ifdef _DEBUG
-	#define _CHECK_POINTDATA_RANGE
-#endif
 #include "../../scr/liton_point_data/PointData.hpp"
 
 using namespace liton_pd;
@@ -163,6 +159,12 @@ int main(int argc, char** argv)
 	[&x2]PD_F_n_i(n, i)->double { return x2(n, -1, i) + x2(n, 0, i); }
 	                  );
 	out << "sum_2 " << sum_2 << endl;
+
+	out << endl;
+	out << x2.disp() << endl;
+	out << x2.disp_data() << endl;
+	liton_sp::debug::exec_except([&]() {x2.copy_from(x2, RA::IN, RA::IN, RA::IN, RA::P, FL::P, FL::P);}, out, err);
+	out << x2.disp_data() << endl;
 
 	out.close();
 	err.close();

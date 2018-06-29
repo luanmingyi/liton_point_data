@@ -4,10 +4,6 @@
 #include <stdexcept>
 using namespace std;
 #include "../../scr/liton_cpp_snippets/lion_snippets.hpp"
-
-#ifdef _DEBUG
-	#define _CHECK_POINTDATA_RANGE
-#endif
 #include "../../scr/liton_point_data/PointData.hpp"
 
 using namespace liton_pd;
@@ -123,31 +119,37 @@ int main(int argc, char** argv)
 
 	double min = 10000;
 	D2::PD_Reduce_2D(x1.size().range(RA::IN, RA::IN), min,
-		[]PD_RF(double, x, xx) { xx = x < xx ? x : xx; },
-		[&x1]PD_F_ij(i, j)->double { return x1(0, i, j, FL::C, FL::P) - 10; }
-	);
+	[]PD_RF(double, x, xx) { xx = x < xx ? x : xx; },
+	[&x1]PD_F_ij(i, j)->double { return x1(0, i, j, FL::C, FL::P) - 10; }
+	                );
 	out << "min " << min << endl;
 
 	double max = 0;
 	D2::PD_Reduce_N_2D(0, x3.N, x3.size().range(RA::IN, RA::IN), max,
-		[]PD_RF(double, x, xx) { xx = x > xx ? x : xx; },
-		[&x3]PD_F_n_ij(n, i, j)->double { return x3(n, i, j, FL::P, FL::P); }
-	);
+	[]PD_RF(double, x, xx) { xx = x > xx ? x : xx; },
+	[&x3]PD_F_n_ij(n, i, j)->double { return x3(n, i, j, FL::P, FL::P); }
+	                  );
 	out << "max " << max << endl;
 
 	double sum_1 = 0;
 	D2::PD_Reduce_1D(1, x2.size().range(RA::IN, RA::IN), sum_1,
-		[]PD_RF(double, x, xx) { xx += x; },
-		[&x2]PD_F_i(i)->double { return x2(0, 0, i, FL::N, FL::C) + x2(0, 0, i, FL::P, FL::C); }
-	);
+	[]PD_RF(double, x, xx) { xx += x; },
+	[&x2]PD_F_i(i)->double { return x2(0, 0, i, FL::N, FL::C) + x2(0, 0, i, FL::P, FL::C); }
+	                );
 	out << "sum_1 " << sum_1 << endl;
 
 	double sum_2 = 0;
 	D2::PD_Reduce_N_1D(0, x3.N, 1, x3.size().range(RA::ALL, RA::ALL), sum_2,
-		[]PD_RF(double, x, xx) { xx += x; },
-		[&x3]PD_F_n_i(n, i)->double { return x3(n, -1, i, FL::N, FL::N) + x3(n, -1, i, FL::N, FL::P); }
-	);
+	[]PD_RF(double, x, xx) { xx += x; },
+	[&x3]PD_F_n_i(n, i)->double { return x3(n, -1, i, FL::N, FL::N) + x3(n, -1, i, FL::N, FL::P); }
+	                  );
 	out << "sum_2 " << sum_2 << endl;
+
+	out << x2.disp() << endl;
+	out << x2.disp_data() << endl;
+	liton_sp::debug::exec_except([&]() {x2.copy_from(x2, RA::IN, RA::IN, RA::P, RA::IN, FL::P, FL::P);}, out, err);
+	liton_sp::debug::exec_except([&]() {x2.copy_from(x2, RA::IN, RA::IN, RA::P, RA::IN, FL::N, FL::P);}, out, err);
+	out << x2.disp_data() << endl;
 
 	out.close();
 	err.close();
