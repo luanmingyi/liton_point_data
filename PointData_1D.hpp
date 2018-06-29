@@ -471,17 +471,21 @@ namespace liton_pd
 		template<typename _NUMT, unsigned _N, LO::LOCATION _LOC0>
 		void PointData<_NUMT, _N, _LOC0>::copy_from(const PointData<_NUMT, _N, _LOC0> &pd, const RangeT R, const RangeT r_, int I, int i)
 		{
+			RangeT r = r_;
+			RangeT overlap = R.overlap(r.tran(I - i));
 #ifdef _CHECK_POINTDATA_RANGE
+			RangeT RR = R;
+			RR.tran(i - I);
+			RR.cut_tail(-static_cast<int>(_LOC0));
+			RR.cut_head(-static_cast<int>(_LOC0));
 			if(&pd == this)
 			{
-				if(R.is_overlap(r_))
+				if(RR.is_overlap(overlap))
 				{
 					throw(std::runtime_error("copy and write zone overlap"));
 				}
 			}
 #endif
-			RangeT r = r_;
-			RangeT overlap = R.overlap(r.tran(I - i));
 			overlap.cut_tail(-static_cast<int>(_LOC0));
 			int dd = i - I;
 			int begin0 = overlap.begin(0);
@@ -507,10 +511,10 @@ namespace liton_pd
 				throw(std::runtime_error("zone number is too big"));
 			}
 
-			unsigned N_file = teclog.Zones[zone].Real_Max_C(DIM::D, 0);
-			if(N_file > _size._in)
+			unsigned N0_file = teclog.Zones[zone].Real_Max_C(DIM::D, 0);
+			if(N0_file > _size._in || N0_file==0)
 			{
-				throw(std::runtime_error("too big data size"));
+				throw(std::runtime_error("N0_file is bigger than N_in or equal to 0"));
 			}
 			int vv = std::find(teclog.Variables.begin(), teclog.Variables.end(), name) - teclog.Variables.begin();
 			if (vv == teclog.Variables.size())
@@ -521,39 +525,52 @@ namespace liton_pd
 			std::string plt_file_name = root + "/" + teclog.FileName + ".plt";
 			std::ifstream data_in;
 			data_in.open(plt_file_name.c_str(), std::ios::binary);
+			data_in.seekg(teclog.Zones[zone].Data[vv].file_pt);
 			if (!data_in)
 			{
 				throw(std::runtime_error("error when opening file: " + plt_file_name));
 			}
-			data_in.seekg(teclog.Zones[zone].Data[vv].file_pt);
-			PointData<char, 1, liton_pd::LO::center> buf(0, N_file * teclog.Zones[zone].Data[vv].size, 0);
-			data_in.read(buf.data_pt(0), N_file * teclog.Zones[zone].Data[vv].size);
+			char* buf = nullptr;
+			try
+			{
+				buf = new char[N0_file * teclog.Zones[zone].Data[vv].size];
+			}
+			catch (const std::bad_alloc &)
+			{
+				data_in.close();
+				throw(std::runtime_error("no more memory for allocating"));
+			}
+			data_in.read(buf, N0_file * teclog.Zones[zone].Data[vv].size);
 			if (!data_in)
 			{
+				data_in.close();
+				delete []buf;
 				throw(std::runtime_error("error when reading file " + plt_file_name));
 			}
 			data_in.close();
 
 			if (teclog.Zones[zone].Data[vv].type == 1)
 			{
-				float* temp = reinterpret_cast<float*>(buf.data_pt(0));
-				for(unsigned ii = 0; ii != N_file; ++ii)
+				float* temp = reinterpret_cast<float*>(buf);
+				for(unsigned ii = 0; ii != N0_file; ++ii)
 				{
 					pt0[nn][ii] = temp[ii];
 				}
 			}
 			else if (teclog.Zones[zone].Data[vv].type == 2)
 			{
-				double* temp = reinterpret_cast<double*>(buf.data_pt(0));
-				for(unsigned ii = 0; ii != N_file; ++ii)
+				double* temp = reinterpret_cast<double*>(buf);
+				for(unsigned ii = 0; ii != N0_file; ++ii)
 				{
 					pt0[nn][ii] = temp[ii];
 				}
 			}
 			else
 			{
+				delete []buf;
 				throw(std::runtime_error("tec_file data type error"));
 			}
+			delete []buf;
 		}
 #endif
 	}
