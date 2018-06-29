@@ -57,6 +57,12 @@ int main(int argc, char** argv)
 		liton_sp::debug::exec_except([&]() {z.read_plt(".", tecfile.last_log, 0, "y2", 3);}, out, out);
 		liton_sp::debug::exec_except([&]() {z.read_plt(".", tecfile.last_log, 0, "xxx", 0);}, out, out);
 		liton_sp::debug::exec_except([&]() {z.read_plt("aaa", tecfile.last_log, 0, "y2", 0);}, out, out);
+		z.realloc(0, 101, 0);
+		liton_sp::debug::exec_except([&]() {z.read_plt(".", tecfile.last_log, 0, "y2", 2);}, out, out);
+		z.realloc(0, 99, 0);
+		liton_sp::debug::exec_except([&]() {z.read_plt(".", tecfile.last_log, 0, "y2", 2);}, out, out);
+		z.realloc(1, 100, 1);
+		liton_sp::debug::exec_except([&]() {z.read_plt(".", tecfile.last_log, 0, "y2", 2);}, out, out);
 
 		out.close();
 	}
