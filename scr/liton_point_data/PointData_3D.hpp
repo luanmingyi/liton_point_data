@@ -805,9 +805,9 @@ namespace liton_pd
 			unsigned N0_file = teclog.Zones[zone].Real_Max_C(DIM::D, 0);
 			unsigned N1_file = teclog.Zones[zone].Real_Max_C(DIM::D, 1);
 			unsigned N2_file = teclog.Zones[zone].Real_Max_C(DIM::D, 2);
-			if(N0_file > _size._in[0] || N0_file == 0
-			        || N1_file > _size._in[1] || N1_file == 0
-			        || N2_file > _size._in[2] || N2_file == 0)
+			if(N0_file > static_cast<unsigned>(_size._in[0]) || N0_file == 0
+			        || N1_file > static_cast<unsigned>(_size._in[1]) || N1_file == 0
+			        || N2_file > static_cast<unsigned>(_size._in[2]) || N2_file == 0)
 			{
 				throw(std::runtime_error("N_file is bigger than N_in or equal to 0"));
 			}
