@@ -3,19 +3,14 @@
 #include <string>
 #include <stdexcept>
 using namespace std;
-#include "../dep/liton_cpp_snippets/lion_snippets.hpp"
-
-#ifdef _DEBUG
-#define _CHECK_POINTDATA_RANGE
-#endif
+#include "../../scr/liton_cpp_snippets/lion_snippets.hpp"
 #include "../../scr/liton_point_data/PointData.hpp"
 
 using namespace liton_pd;
 
 int main(int argc, char** argv)
 {
-	string name(__FILE__);
-	name.erase(name.find_last_of('.'));
+	string name("tset");
 	cout << name << endl;
 	ofstream out((name + "_out.txt").c_str());
 	ofstream err((name + "_err.txt").c_str());
@@ -62,9 +57,9 @@ int main(int argc, char** argv)
 	out << "line: " << __LINE__ << endl;
 	out << x3.size().disp() << endl;
 	out << endl;
-	
+
 	out << "line: " << __LINE__ << endl;
-	
+
 	D3::PD_For_3D(x1.size().range(RA::N, RA::IN, RA::IN), [&x1]PD_F_ijk(i, j, k) { x1(0, i, j, k) = 122; });
 	D3::PD_For_3D(x1.size().range(RA::N, RA::N, RA::N), [&x1]PD_F_ijk(i, j, k) { x1(0, i, j, k) = 111; });
 	D3::PD_For_3D(x1.size().range(RA::N, RA::N, RA::P), [&x1]PD_F_ijk(i, j, k) { x1(0, i, j, k) = 113; });
@@ -96,7 +91,7 @@ int main(int argc, char** argv)
 	D3::PD_For_3D(x1.size().range(RA::P, RA::IN, RA::P), [&x1]PD_F_ijk(i, j, k) { x1(0, i, j, k) = 323; });
 	out << x1.disp_data() << endl;
 	out << endl;
-	
+
 	out << "line: " << __LINE__ << endl;
 	D3::PD_For_3D(x1.size().range(RA::IN, RA::IN, RA::N), [&x1]PD_F_ijk(i, j, k) { x1(0, i, j, k) = -x1(0, i, j, x1.size().mirror(2, FL::N, k)); });
 	D3::PD_For_3D(x1.size().range(RA::IN, RA::IN, RA::P), [&x1]PD_F_ijk(i, j, k) { x1(0, i, j, k) = -x1(0, i, j, x1.size().mirror(2, FL::P, k)); });
@@ -125,7 +120,8 @@ int main(int argc, char** argv)
 	out << endl;
 
 	out << "line: " << __LINE__ << endl;
-	D3::PD_For_N_3D(0, x2.N, x2.size().range(RA::ALL, RA::ALL, RA::ALL), [&x2]PD_F_n_ijk(n, i, j, k) {
+	D3::PD_For_N_3D(0, x2.N, x2.size().range(RA::ALL, RA::ALL, RA::ALL), [&x2]PD_F_n_ijk(n, i, j, k)
+	{
 		x2(n, i, j, k) = static_cast<int>(n) * 1000 + i * 100 + j * 10 + k;
 	});
 	out << x2.disp_data() << endl;
@@ -134,13 +130,13 @@ int main(int argc, char** argv)
 	out << "line: " << __LINE__ << endl;
 	double max = 0;
 	D3::PD_Reduce_3D(x1.size().range(RA::IN, RA::IN, RA::IN), max, PD_RF_MAX(double),
-		[&x1]PD_F_ijk(i, j, k)->double { return x1(0, i, j, k); }
-	);
+	                 [&x1]PD_F_ijk(i, j, k)->double { return x1(0, i, j, k); }
+	                );
 	out << "max = " << max << endl;
 	max = 0;
 	D3::PD_Reduce_N_3D(0, x2.N, x2.size().range(RA::IN, RA::IN, RA::IN), max, PD_RF_MAX_ABS(double),
-		[&x2]PD_F_n_ijk(n, i, j, k)->double { return x2(n, i, j, k); }
-	);
+	                   [&x2]PD_F_n_ijk(n, i, j, k)->double { return x2(n, i, j, k); }
+	                  );
 	out << "max_abs = " << max << endl;
 	out << endl;
 
@@ -149,19 +145,20 @@ int main(int argc, char** argv)
 	out << x1.disp_data() << endl;
 	max = 100000;
 	D3::PD_Reduce_2D(1, 2, x1.size().range(RA::ALL, RA::ALL, RA::ALL), max,	PD_RF_MIN(double),
-		[&x1]PD_F_ij(ii, jj)->double { return x1(0, 0, ii, jj); }
-	);
+	                 [&x1]PD_F_ij(ii, jj)->double { return x1(0, 0, ii, jj); }
+	                );
 	out << "min = " << max << endl;
 	out << endl;
 
-	D3::PD_For_N_2D(0, x2.N, 1, 2, x2.size().range(RA::ALL, RA::ALL, RA::ALL), [&x2]PD_F_n_ij(n, ii, jj) {
+	D3::PD_For_N_2D(0, x2.N, 1, 2, x2.size().range(RA::ALL, RA::ALL, RA::ALL), [&x2]PD_F_n_ij(n, ii, jj)
+	{
 		x2(n, 0, ii, jj) = x2(n, 1, ii, jj);
 	});
 	out << x2.disp_data() << endl;
 	max = 100000;
 	D3::PD_Reduce_N_2D(0, x2.N, 1, 2, x2.size().range(RA::ALL, RA::ALL, RA::ALL), max, PD_RF_MIN_ABS(double),
-		[&x2]PD_F_n_ij(n, ii, jj)->double { return x2(n, 0, ii, jj); }
-	);
+	                   [&x2]PD_F_n_ij(n, ii, jj)->double { return x2(n, 0, ii, jj); }
+	                  );
 	out << "min_abs = " << max << endl;
 	out << endl;
 
@@ -170,21 +167,27 @@ int main(int argc, char** argv)
 	out << x1.disp_data() << endl;
 	max = 0;
 	D3::PD_Reduce_1D(1, x1.size().range(RA::ALL, RA::ALL, RA::ALL), max, PD_RF_MAX(double),
-		[&x1]PD_F_i(ii)->double { return x1(0, 0, ii, 0); }
-	);
+	                 [&x1]PD_F_i(ii)->double { return x1(0, 0, ii, 0); }
+	                );
 	out << "max = " << max << endl;
 	out << endl;
 
-	D3::PD_For_N_1D(0, x2.N, 1, x2.size().range(RA::ALL, RA::ALL, RA::ALL), [&x2]PD_F_n_i(n, ii) {
+	D3::PD_For_N_1D(0, x2.N, 1, x2.size().range(RA::ALL, RA::ALL, RA::ALL), [&x2]PD_F_n_i(n, ii)
+	{
 		x2(n, 0, ii, 0) = x2(n, 0, ii, 1);
 	});
 	out << x2.disp_data() << endl;
 	max = 0;
 	D3::PD_Reduce_N_1D(0, x2.N, 1, x2.size().range(RA::ALL, RA::ALL, RA::ALL), max,	PD_RF_MAX(double),
-		[&x2]PD_F_n_i(n, ii)->double { return x2(n, 0, ii, 0); }
-	);
+	                   [&x2]PD_F_n_i(n, ii)->double { return x2(n, 0, ii, 0); }
+	                  );
 	out << "max = " << max << endl;
 	out << endl;
+
+	out << x2.disp() << endl;
+	out << x2.disp_data() << endl;
+	liton_sp::debug::exec_except([&]() {x2.copy_from(x2, RA::IN, RA::IN, RA::IN, RA::IN, RA::P, RA::IN, FL::N, FL::N, FL::N);}, out, err);
+	out << x2.disp_data() << endl;
 
 	out.close();
 	err.close();

@@ -6,6 +6,11 @@
 #include <string>
 #include <sstream>
 
+#ifdef PD_OT
+	#include "../liton_ordered_tec/ordered_tec.h"
+	#include <algorithm>
+#endif
+
 namespace liton_pd
 {
 	namespace D1
@@ -21,45 +26,152 @@ namespace liton_pd
 				if (d >= D)
 				{
 					std::ostringstream errlog;
-					errlog << "out of DIM range: " << d << " range:[" << 0 << "," << static_cast<int>
+					errlog << "DIM is out of range: " << d << " range:[" << 0 << "," << static_cast<int>
 					       (D) - 1 << "]";
 					throw(std::runtime_error(errlog.str()));
 				}
 #endif
 			}
 		};
-
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class RangeT
 		{
-		  protected:
+		  public:
 			int _begin = 0;
-			int _end = 0;
 			int _size = 0;
 
 		  public:
 			RangeT() = default;
-			RangeT(const int b, const unsigned s): _begin(b), _size(static_cast<int>(s)) { _end = _begin + _size; }
-
-			inline int begin(const unsigned d) const { DIM::check_d(d); return _begin; }
-			inline int end(const unsigned d) const { DIM::check_d(d); return _end; }
-			inline int size(const unsigned d) const { DIM::check_d(d); return _size; }
+			RangeT(const int b, const unsigned s): _begin(b), _size(static_cast<int>(s)) {}
 
 			inline const int* begin_pt() const { return &_begin; }
-			inline const int* end_pt() const { return &_end; }
 			inline const int* size_pt() const { return &_size; }
+
+			inline int begin(const unsigned d) const { DIM::check_d(d); return _begin; }
+			inline int size(const unsigned d) const { DIM::check_d(d); return _size; }
+			inline int end(const unsigned d) const { return begin(d) + size(d); }
+			inline int last(const unsigned d) const { return end(d) - 1; }
+			inline int bound(const unsigned d, FL::_N fl) const { return begin(d); }
+			inline int bound(const unsigned d, FL::_P fl) const { return last(d); }
+
+			inline RangeT &cut_head(int i) { _begin += i; _size -= i; return *this; }
+			inline RangeT &cut_tail(int i) { _size -= i; return *this; }
+			inline RangeT &tran(int i) { _begin += i; return *this; }
+
+			inline bool is_overlap(const RangeT r) const
+			{
+				if(begin(0) >= r.end(0) || end(0) <= r.begin(0))
+				{
+					return false;
+				}
+				else
+				{
+					return true;
+				}
+			}
+			inline RangeT overlap(const RangeT r) const
+			{
+#ifdef _CHECK_POINTDATA_RANGE
+				if(!is_overlap(r))
+				{
+					throw(std::runtime_error("overlap not found"));
+				}
+#endif
+				int __begin = begin(0) > r.begin(0) ? begin(0) : r.begin(0);
+				int __end = end(0) < r.end(0) ? end(0) : r.end(0);
+				return RangeT(__begin, __end - __begin);
+			}
+
+			inline void check_range(const unsigned d, const LO::LOCATION loc, const int ii, const int offset) const
+			{
+#ifdef _CHECK_POINTDATA_RANGE
+				DIM::check_d(d);
+				if (ii < begin(d) - offset || ii >= end(d) + loc - offset)
+				{
+					char ijk_str[3][50] = { "i\0", "j\0", "k\0" };
+					std::ostringstream errlog;
+					if (loc == LO::center)
+					{
+						errlog << ijk_str[d] << " is out of range: " << ii << " range:[" << begin(d) << "," << last(d) << "]";
+					}
+					else
+					{
+						char flag_str[2][50] = { "N\0", "P\0" };
+						errlog << ijk_str[d] << " is out of range: " << ii << "(" << flag_str[offset] << ")"
+						       << " range:[" << begin(d) - 1 << "(P)," << begin(d) << "," << last(d) << "," << end(d) << "(N)]";
+					}
+					throw(std::runtime_error(errlog.str()));
+				}
+#endif
+			}
+			inline void check_range(const unsigned d, const int ii) const { check_range(d, LO::center, ii, 0); }
 
 			inline std::string disp() const
 			{
 				std::ostringstream displog;
-				displog << "range[0] = [" << _begin << " , " << _end << "]  "
-				        << "size[0] = " << _size;
+				displog << "range[0] = [" << begin(0) << " , " << last(0) << "]  "
+				        << "size[0] = " << size(0);
 				return displog.str();
 			}
 		};
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		template <typename Function>
+		inline void PD_For_1D(const RangeT r, const Function fun)
+		{
+			const int begin = r.begin(0);
+			const int end = r.end(0);
+			for (int i = begin; i != end; ++i)
+			{
+				fun(i);
+			}
+		}
 
+		template <typename Function>
+		inline void PD_For_N_1D(const unsigned N_b, const unsigned N_e, const RangeT r, const Function fun)
+		{
+			const int begin = r.begin(0);
+			const int end = r.end(0);
+			for (unsigned n = N_b; n != N_e; ++n)
+			{
+				for (int i = begin; i != end; ++i)
+				{
+					fun(n, i);
+				}
+			}
+		}
+
+		template <typename T, typename Reducer, typename Function>
+		inline void PD_Reduce_1D(const RangeT r, T &ans, const Reducer reduce, const Function fun)
+		{
+			T temp = ans;
+			int begin = r.begin(0);
+			int end = r.end(0);
+			for (int i = begin; i != end; ++i)
+			{
+				reduce(fun(i), temp);
+			}
+			reduce(temp, ans);
+		}
+
+		template <typename T, typename Reducer, typename Function>
+		inline void PD_Reduce_N_1D(const unsigned N_b, const unsigned N_e, const RangeT r, T &ans, const Reducer reduce, const Function fun)
+		{
+			T temp = ans;
+			int begin = r.begin(0);
+			int end = r.end(0);
+			for (unsigned n = N_b; n != N_e; ++n)
+			{
+				for (int i = begin; i != end; ++i)
+				{
+					reduce(fun(n, i), temp);
+				}
+			}
+			reduce(temp, ans);
+		}
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class SizeT
 		{
-		  protected:
+		  public:
 			int _in = 0;
 			int _n = 0;
 			int _p = 0;
@@ -75,24 +187,28 @@ namespace liton_pd
 
 			inline int begin(const unsigned d, RA::_ALL r) const { DIM::check_d(d); return -_n; }
 			inline int end(const unsigned d, RA::_ALL r) const { DIM::check_d(d); return _in + _p; }
-			inline int size(const unsigned d, RA::_ALL r) const { DIM::check_d(d); return _in + _n + _p; }
 			inline int begin(const unsigned d, RA::_IN r) const { DIM::check_d(d); return 0; }
 			inline int end(const unsigned d, RA::_IN r) const { DIM::check_d(d); return _in; }
-			inline int size(const unsigned d, RA::_IN r) const { DIM::check_d(d); return _in; }
 			inline int begin(const unsigned d, RA::_N r) const { DIM::check_d(d); return -_n; }
 			inline int end(const unsigned d, RA::_N r) const { DIM::check_d(d); return 0; }
-			inline int size(const unsigned d, RA::_N r) const { DIM::check_d(d); return _n; }
 			inline int begin(const unsigned d, RA::_P r) const { DIM::check_d(d); return _in; }
 			inline int end(const unsigned d, RA::_P r) const { DIM::check_d(d); return _in + _p; }
-			inline int size(const unsigned d, RA::_P r) const { DIM::check_d(d); return _p; }
-
+			template<typename T0>
+			inline unsigned int size(const unsigned d, T0 r) const { return end(d, r) - begin(d, r); }
 			template<typename T0>
 			inline int last(const unsigned d, T0 r) const { return end(d, r) - 1; }
-			inline int mirror(const unsigned d, FL::_N fl, int ii) const { return 2 * begin(d, RA::IN) - ii; }
-			inline int mirror(const unsigned d, FL::_P fl, int ii) const { return 2 * last(d, RA::IN) - ii; }
+			template<typename T0>
+			inline int bound(const unsigned d, T0 r, FL::_N fl) const { return begin(d, r); }
+			template<typename T0>
+			inline int bound(const unsigned d, T0 r, FL::_P fl) const { return last(d, r); }
+
+			template<typename _FL>
+			inline int mirror(const unsigned d, _FL fl, int ii) const { return 2 * bound(d, RA::IN, fl) - ii; }
+			template<typename _FL>
+			inline int periodic(const unsigned d, _FL fl, int ii) const { return -_FL::sign * last(d, RA::IN) + ii; }
 
 			template<typename T0>
-			inline RangeT range(T0 r) const { return RangeT(begin(0, r), size(0, r)); }
+			inline RangeT range(T0 r0) const { return RangeT(begin(0, r0), size(0, r0)); }
 
 			std::string disp() const
 			{
@@ -108,20 +224,8 @@ namespace liton_pd
 					throw(std::runtime_error("dim[0]: size_in can not be zero when size_n or size_p is non-zero"));
 				}
 			}
-
-			inline void check_range(const int i) const
-			{
-#ifdef _CHECK_POINTDATA_RANGE
-				if(i < -_n || i >= _in + _p)
-				{
-					std::ostringstream errlog;
-					errlog << "out of i range: " << i << " range:[" << -_n << "," << _in + _p - 1 << "]";
-					throw(std::runtime_error(errlog.str()));
-				}
-#endif
-			}
 		};
-
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		template <typename _NUMT, unsigned _N, LO::LOCATION _LOC0>
 		class PointData
 		{
@@ -151,25 +255,50 @@ namespace liton_pd
 			inline SizeT size() const { return _size; }
 
 			template<typename F0 = FL::_C>
-			inline _NUMT &operator()(const unsigned n, const int i, const F0 flag0 = FL::C)
+			inline _NUMT & operator()(const unsigned n, const int i, const F0 flag0 = FL::C)
 			{
 				check_data();
 				check_n(n);
 				check_flag(flag0);
-				_size.check_range(i);
+				_size.range(RA::ALL).check_range(0, LOC0, i, F0::offset);
 				return pt0[n][i + F0::offset];
 			}
 			template<typename F0 = FL::_C>
-			inline const _NUMT &operator()(const unsigned n, const int i, const F0 flag0 = FL::C) const
+			inline const _NUMT & operator()(const unsigned n, const int i, const F0 flag0 = FL::C) const
 			{
 				check_data();
 				check_n(n);
 				check_flag(flag0);
-				_size.check_range(i);
+				_size.range(RA::ALL).check_range(0, LOC0, i, F0::offset);
 				return pt0[n][i + F0::offset];
 			}
 
+			inline _NUMT* data_pt(const unsigned n) { check_n(n); return pt0[n] - _size.n(0); }
 			inline const _NUMT* data_pt(const unsigned n) const { check_n(n); return pt0[n] - _size.n(0); }
+
+			void copy_from(const PointData<_NUMT, _N, _LOC0> &pd,
+			               const RangeT R, const RangeT r_,
+			               int I, int i);
+			template<typename _R0, typename _r0>
+			inline void copy_from(const PointData<_NUMT, _N, _LOC0> &pd,
+			                      _R0 R0, _r0 r0,
+			                      int I, int i)
+			{copy_from(pd, _size.range(R0), pd.size().range(r0), I, i);}
+			template<typename _FL0>
+			inline void copy_from(const PointData<_NUMT, _N, _LOC0> &pd,
+			                      const RangeT R, const RangeT r_,
+			                      _FL0 fl0)
+			{copy_from(pd, R, r_, R.bound(0, fl0), r_.bound(0, fl0));}
+			template<typename _R0, typename _r0, typename _FL0>
+			inline void copy_from(const PointData<_NUMT, _N, _LOC0> &pd,
+			                      _R0 R0, _r0 r0,
+			                      _FL0 fl0)
+			{copy_from(pd, _size.range(R0), pd.size().range(r0), _size.bound(0, R0, fl0), pd.size().bound(0, r0, fl0));}
+
+#ifdef PD_OT
+			void read_plt(const std::string &root, const liton_ot::TEC_FILE_LOG &teclog,
+			              unsigned zone, const std::string &name, unsigned nn);
+#endif
 
 		  protected:
 			inline void check_n(const unsigned n) const
@@ -178,7 +307,7 @@ namespace liton_pd
 				if(n >= _N)
 				{
 					std::ostringstream errlog;
-					errlog << "out of N range: " << n << " range:[" << 0 << "," << static_cast<int>(_N) - 1 << "]";
+					errlog << "N is out of range: " << n << " range:[" << 0 << "," << static_cast<int>(_N) - 1 << "]";
 					throw(std::runtime_error(errlog.str()));
 				}
 #endif
@@ -339,62 +468,111 @@ namespace liton_pd
 			return displog.str();
 		}
 
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-		template <typename Function>
-		inline void PD_For_1D(const RangeT r, const Function fun)
+		template<typename _NUMT, unsigned _N, LO::LOCATION _LOC0>
+		void PointData<_NUMT, _N, _LOC0>::copy_from(const PointData<_NUMT, _N, _LOC0> &pd, const RangeT R, const RangeT r_, int I, int i)
 		{
-			const int begin = r.begin(0);
-			const int end = r.end(0);
-			for (int i = begin; i != end; ++i)
+			RangeT r = r_;
+			RangeT overlap = R.overlap(r.tran(I - i));
+#ifdef _CHECK_POINTDATA_RANGE
+			RangeT RR = R;
+			RR.tran(i - I);
+			RR.cut_tail(-static_cast<int>(_LOC0));
+			RR.cut_head(-static_cast<int>(_LOC0));
+			if(&pd == this)
 			{
-				fun(i);
-			}
-		}
-
-		template <typename Function>
-		inline void PD_For_N_1D(const unsigned N_b, const unsigned N_e, const RangeT r, const Function fun)
-		{
-			const int begin = r.begin(0);
-			const int end = r.end(0);
-			for (unsigned n = N_b; n != N_e; ++n)
-			{
-				for (int i = begin; i != end; ++i)
+				if(RR.is_overlap(overlap))
 				{
-					fun(n, i);
+					throw(std::runtime_error("copy and write zone overlap"));
+				}
+			}
+#endif
+			overlap.cut_tail(-static_cast<int>(_LOC0));
+			int dd = i - I;
+			int begin0 = overlap.begin(0);
+			int end0 = overlap.end(0);
+
+			for (int II = begin0; II != end0; ++II)
+			{
+				for (unsigned n = 0; n != N; ++n)
+				{
+					pt0[n][II] = pd.pt0[n][II + dd];
 				}
 			}
 		}
 
-		template <typename T, typename Reducer, typename Function>
-		inline void PD_Reduce_1D(const RangeT r, T &ans, const Reducer reduce, const Function fun)
+#ifdef PD_OT
+		template<typename _NUMT, unsigned _N, LO::LOCATION _LOC0>
+		void PointData<_NUMT, _N, _LOC0>::read_plt(const std::string &root, const liton_ot::TEC_FILE_LOG &teclog,
+		        unsigned zone, const std::string &name, unsigned nn)
 		{
-			T temp = ans;
-			int begin = r.begin(0);
-			int end = r.end(0);
-			for (int i = begin; i != end; ++i)
+			check_n(nn);
+			if(zone >= teclog.Zones.size())
 			{
-				reduce(fun(i), temp);
+				throw(std::runtime_error("zone number is too big"));
 			}
-			reduce(temp, ans);
-		}
 
-		template <typename T, typename Reducer, typename Function>
-		inline void PD_Reduce_N_1D(const unsigned N_b, const unsigned N_e, const RangeT r, T &ans, const Reducer reduce, const Function fun)
-		{
-			T temp = ans;
-			int begin = r.begin(0);
-			int end = r.end(0);
-			for (unsigned n = N_b; n != N_e; ++n)
+			unsigned N0_file = teclog.Zones[zone].Real_Max_C(DIM::D, 0);
+			if(N0_file > static_cast<unsigned>(_size._in) || N0_file==0)
 			{
-				for (int i = begin; i != end; ++i)
+				throw(std::runtime_error("N_file is bigger than N_in or equal to 0"));
+			}
+			int vv = std::find(teclog.Variables.begin(), teclog.Variables.end(), name) - teclog.Variables.begin();
+			if (vv == teclog.Variables.size())
+			{
+				throw(std::runtime_error("error when finding variables " + name + " in: " + teclog.FileName));
+			}
+
+			std::string plt_file_name = root + "/" + teclog.FileName + ".plt";
+			std::ifstream data_in;
+			data_in.open(plt_file_name.c_str(), std::ios::binary);
+			data_in.seekg(teclog.Zones[zone].Data[vv].file_pt);
+			if (!data_in)
+			{
+				throw(std::runtime_error("error when opening file: " + plt_file_name));
+			}
+			char* buf = nullptr;
+			try
+			{
+				buf = new char[N0_file * teclog.Zones[zone].Data[vv].size];
+			}
+			catch (const std::bad_alloc &)
+			{
+				data_in.close();
+				throw(std::runtime_error("no more memory for allocating"));
+			}
+			data_in.read(buf, N0_file * teclog.Zones[zone].Data[vv].size);
+			if (!data_in)
+			{
+				data_in.close();
+				delete []buf;
+				throw(std::runtime_error("error when reading file " + plt_file_name));
+			}
+			data_in.close();
+
+			if (teclog.Zones[zone].Data[vv].type == 1)
+			{
+				float* temp = reinterpret_cast<float*>(buf);
+				for(unsigned ii = 0; ii != N0_file; ++ii)
 				{
-					reduce(fun(n, i), temp);
+					pt0[nn][ii] = temp[ii];
 				}
 			}
-			reduce(temp, ans);
+			else if (teclog.Zones[zone].Data[vv].type == 2)
+			{
+				double* temp = reinterpret_cast<double*>(buf);
+				for(unsigned ii = 0; ii != N0_file; ++ii)
+				{
+					pt0[nn][ii] = temp[ii];
+				}
+			}
+			else
+			{
+				delete []buf;
+				throw(std::runtime_error("tec_file data type error"));
+			}
+			delete []buf;
 		}
+#endif
 	}
 }
-
 #endif

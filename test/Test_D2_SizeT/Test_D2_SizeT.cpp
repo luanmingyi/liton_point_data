@@ -3,19 +3,14 @@
 #include <string>
 #include <stdexcept>
 using namespace std;
-#include "../dep/liton_cpp_snippets/lion_snippets.hpp"
-
-#ifdef _DEBUG
-	#define _CHECK_POINTDATA_RANGE
-#endif
+#include "../../scr/liton_cpp_snippets/lion_snippets.hpp"
 #include "../../scr/liton_point_data/PointData.hpp"
 
 using namespace liton_pd;
 
 int main(int argc, char** argv)
 {
-	string name(__FILE__);
-	name.erase(name.find_last_of('.'));
+	string name("test");
 	cout << name << endl;
 	ofstream out((name + "_out.txt").c_str());
 	ofstream err((name + "_err.txt").c_str());
@@ -53,7 +48,7 @@ int main(int argc, char** argv)
 	out << endl;
 
 	out << s2.range(RA::ALL, RA::ALL).disp() << endl;
-	out << s2.range(RA::IN, RA::P).disp() << endl;
+	out << s2.range(RA::IN, RA::N).disp() << endl;
 	out << s2.range(RA::N, RA::ALL).disp() << endl;
 	out << s2.range(RA::P, RA::IN).disp() << endl;
 	out << endl;
@@ -63,9 +58,11 @@ int main(int argc, char** argv)
 	liton_sp::debug::exec_except([&]() {D2::SizeT(0, 5, 0, 1, 0, 0).check(); }, out, err);
 	out << endl;
 
-	liton_sp::debug::exec_except([&]() {s2.check_range(0, 0); }, out, err);
-	liton_sp::debug::exec_except([&]() {s2.check_range(-3, -1); }, out, err);
-	liton_sp::debug::exec_except([&]() {s2.check_range(1, 18); }, out, err);
+	out << s2.disp() << endl;
+	out << s2.mirror(1, FL::N, -2) << endl;
+	out << s2.mirror(1, FL::P, 11) << endl;
+	out << s2.periodic(1, FL::N, -2) << endl;
+	out << s2.periodic(1, FL::P, 11) << endl;
 
 	out.close();
 	err.close();

@@ -4,11 +4,7 @@
 #include <cmath>
 #include <ctime>
 using namespace std;
-#include "../dep/liton_cpp_snippets/lion_snippets.hpp"
-
-#ifdef _DEBUG
-	#define _CHECK_POINTDATA_RANGE
-#endif
+#include "../../scr/liton_cpp_snippets/lion_snippets.hpp"
 #include "../../scr/liton_point_data/PointData.hpp"
 
 using namespace liton_pd;
@@ -17,8 +13,7 @@ int main(int argc, char** argv)
 {
 	try
 	{
-		string name(__FILE__);
-		name.erase(name.find_last_of('.'));
+		string name("test");
 		cout << name << endl;
 		ofstream out((name + "_out.txt").c_str());
 

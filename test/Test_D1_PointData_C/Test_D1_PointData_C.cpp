@@ -3,19 +3,14 @@
 #include <string>
 #include <stdexcept>
 using namespace std;
-#include "../dep/liton_cpp_snippets/lion_snippets.hpp"
-
-#ifdef _DEBUG
-	#define _CHECK_POINTDATA_RANGE
-#endif
+#include "../../scr/liton_cpp_snippets/lion_snippets.hpp"
 #include "../../scr/liton_point_data/PointData.hpp"
 
 using namespace liton_pd;
 
 int main(int argc, char** argv)
 {
-	string name(__FILE__);
-	name.erase(name.find_last_of('.'));
+	string name("test");
 	cout << name << endl;
 	ofstream out((name + "_out.txt").c_str());
 	ofstream err((name + "_err.txt").c_str());
@@ -95,6 +90,22 @@ int main(int argc, char** argv)
 	[&x3]PD_F_n_i(n, i)->double { return x3(n, i); });
 	out << sum << endl;
 	out << max << endl;
+
+	out << endl;
+	liton_sp::debug::exec_except([&]() {x3.copy_from(x2, RA::ALL, RA::ALL, 10, 0);}, out, err);
+	out << x3.disp_data() << endl;
+	liton_sp::debug::exec_except([&]() {x3.copy_from(x2, RA::ALL, RA::ALL, 0, 10);}, out, err);
+	out << x3.disp_data() << endl;
+	liton_sp::debug::exec_except([&]() {x3.copy_from(x2, RA::IN, RA::N, 0, -2);}, out, err);
+	out << x3.disp_data() << endl;
+	liton_sp::debug::exec_except([&]() {x3.copy_from(x2, RA::IN, RA::P, 9, 12);}, out, err);
+	out << x3.disp_data() << endl;
+	liton_sp::debug::exec_except([&]() {x3.copy_from(x3, RA::N, RA::P, 0, 12);}, out, err);
+	out << x3.disp_data() << endl;
+	liton_sp::debug::exec_except([&]() {x3.copy_from(x3, RA::ALL, RA::IN, 0, 0);}, out, err);
+	out << x3.disp_data() << endl;
+	liton_sp::debug::exec_except([&]() {x3.copy_from(x3, RA::IN, RA::P, FL::P);}, out, err);
+	out << x3.disp_data() << endl;
 
 	out.close();
 	err.close();
