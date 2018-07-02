@@ -22,15 +22,41 @@ namespace liton_pd
 	}
 	namespace RA
 	{
-		class _N {public: _N() {} _N(FL::_N fl) {}};
-		class _P {public: _P() {} _P(FL::_P fl) {}};
-		class _IN {public: _IN() {} _IN(FL::_C fl) {}};
+		class _N {};
+		class _P {};
+		class _IN {};
 		class _ALL {};
 		const _N N;
 		const _P P;
 		const _IN IN;
 		const _ALL ALL;
 	}
+
+	class flra
+	{
+	  public:
+		static FL::_P f_c(FL::_N) {return FL::P;}
+		static FL::_N f_c(FL::_P) {return FL::N;}
+		static FL::_C f_c(FL::_C) {return FL::C;}
+
+		static RA::_P r_c(RA::_N) {return RA::P;}
+		static RA::_N r_c(RA::_P) {return RA::N;}
+		static RA::_IN r_c(RA::_IN) {return RA::IN;}
+
+		static RA::_N f_r(FL::_N) {return RA::N;}
+		static RA::_P f_r(FL::_P) {return RA::P;}
+		static RA::_IN f_r(FL::_C) {return RA::IN;}
+		static RA::_P f_r_c(FL::_N) {return RA::P;}
+		static RA::_N f_r_c(FL::_P) {return RA::N;}
+		static RA::_IN f_r_c(FL::_C) {return RA::IN;}
+
+		static FL::_N r_f(RA::_N) {return FL::N;}
+		static FL::_P r_f(RA::_P) {return FL::P;}
+		static FL::_C r_f(RA::_IN) {return FL::C;}
+		static FL::_P r_f_c(RA::_N) {return FL::P;}
+		static FL::_N r_f_c(RA::_P) {return FL::N;}
+		static FL::_C r_f_c(RA::_IN) {return FL::C;}
+	};
 
 	template <typename Function>
 	inline void PD_For_N(const unsigned N_b, const unsigned N_e, const Function fun)
