@@ -10,21 +10,25 @@ namespace liton_pd
 {
 	namespace D0
 	{
-		static const int DIM = 0;
-
-		inline void check_d(const unsigned &d)
+		class DIM
 		{
-#ifdef _CHECK_POINTDATA_RANGE
-			if(d >= DIM)
-			{
-				std::ostringstream errlog;
-				errlog << "out of DIM range: d:[" << d << "] range:[" << 0 << "," << static_cast<int>
-				       (DIM) - 1 << "]";
-				throw(std::runtime_error(errlog.str()));
-			}
-#endif
-		}
+		  public:
+			static const int D = 0;
 
+			inline static void check_d(const unsigned d)
+			{
+#ifdef _CHECK_POINTDATA_RANGE
+				if (d >= D)
+				{
+					std::ostringstream errlog;
+					errlog << "out of DIM range: " << d << " range:[" << 0 << "," << static_cast<int>
+					       (D) - 1 << "]";
+					throw(std::runtime_error(errlog.str()));
+				}
+#endif
+			}
+		};
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		template <typename _NUMT, unsigned _N>
 		class PointData
 		{
@@ -42,21 +46,25 @@ namespace liton_pd
 			std::string disp() const;
 			std::string disp_data() const;
 
-			inline _NUMT &operator()(const unsigned &n)
+			inline _NUMT &operator()(const unsigned n)
 			{
-				this->check_n(n);
+				check_n(n);
 				return pt0[n];
 			}
-			inline const _NUMT &operator()(const unsigned &n) const { return *this(n); }
+			inline const _NUMT &operator()(const unsigned n) const
+			{
+				check_n(n);
+				return pt0[n];
+			}
 
 		  protected:
-			inline void check_n(const unsigned &n) const
+			inline void check_n(const unsigned n) const
 			{
 #ifdef _CHECK_POINTDATA_RANGE
 				if(n >= _N)
 				{
 					std::ostringstream errlog;
-					errlog << "out of N range: n:[" << n << "] range:[" << 0 << "," << static_cast<int>(_N) - 1 << "]";
+					errlog << "out of N range: " << n << " range:[" << 0 << "," << static_cast<int>(_N) - 1 << "]";
 					throw(std::runtime_error(errlog.str()));
 				}
 #endif
@@ -76,7 +84,7 @@ namespace liton_pd
 		inline std::string PointData<_NUMT, _N>::disp() const
 		{
 			std::ostringstream displog;
-			displog << "dimension:" << DIM
+			displog << "dimension:" << DIM::D
 			        << "  type:[" << typeid(_NUMT).name() << "]"
 			        << "  N = " << _N;
 			return displog.str();
