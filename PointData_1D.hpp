@@ -548,6 +548,20 @@ namespace liton_pd
 			default:
 				break;
 			}
+#endif
+			overlap.cut_tail(-static_cast<int>(_LOC0));
+			int dd = i - I;
+			switch (_LOC0)
+			{
+			case LO::center:
+				PD_For_1D(overlap, [&]PD_F_i(II) {pt0[N][II] = static_cast<_NUMT>(pd(n, II + dd));});
+				break;
+			case LO::half:
+				PD_For_1D(overlap, [&]PD_F_i(II) {pt0[N][II] = static_cast<_NUMT>(pd(n, II + dd, FL::N));});
+				break;
+			default:
+				break;
+			}
 		}
 
 #ifdef PD_OT
