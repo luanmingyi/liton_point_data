@@ -506,28 +506,47 @@ namespace liton_pd
 				pt0[n][i] = pd.pt0[n][i];
 			});
 		}
+	}
 
-		template<typename _NUMT, unsigned _N, LO::LOCATION _LOC0>
-		template<typename __NUMT, unsigned __N>
-		void PointData<_NUMT, _N, _LOC0>::copy_from(const PointData<__NUMT, __N, _LOC0> &pd,
-		        const RangeT R, const RangeT r_,
-		        unsigned N, unsigned n, int I, int i)
-		{
-			check_n(N);
-			pd.check_n(n);
-			RangeT r = r_;
-			RangeT overlap = R.overlap(r.tran(I - i));
+	template<typename _NUMT, unsigned _N, LO::LOCATION _LOC0>
+	template<typename __NUMT, unsigned __N>
+	void PointData<_NUMT, _N, _LOC0>::copy_from(const PointData<__NUMT, __N, _LOC0> &pd,
+	        const RangeT R, const RangeT r_,
+	        unsigned N, unsigned n, int I, int i)
+	{
+		check_n(N);
+		pd.check_n(n);
+		RangeT r = r_;
+		RangeT overlap = R.overlap(r.tran(I - i));
 #ifdef _CHECK_POINTDATA_RANGE
-			if(reinterpret_cast<const void*>(&pd) == reinterpret_cast<const void*>(this))
+		if(reinterpret_cast<const void*>(&pd) == reinterpret_cast<const void*>(this))
+		{
+			RangeT RR = overlap;
+			RR.tran(i - I);
+			RR.cut_tail(-static_cast<int>(_LOC0));
+			RR.cut_head(-static_cast<int>(_LOC0));
+			if(RR.is_overlap(overlap))
 			{
-				RangeT RR = overlap;
-				RR.tran(i - I);
-				RR.cut_tail(-static_cast<int>(_LOC0));
-				RR.cut_head(-static_cast<int>(_LOC0));
-				if(RR.is_overlap(overlap))
-				{
-					throw(std::runtime_error("copy and write zone overlap"));
-				}
+				throw(std::runtime_error("copy and write zone overlap"));
+			}
+			int vv = std::find(teclog.Variables.begin(), teclog.Variables.end(), name) - teclog.Variables.begin();
+			if (vv == teclog.Variables.size())
+			{
+				throw(std::runtime_error("error when finding variables " + name + " in: " + teclog.FileName));
+			}
+#endif
+			overlap.cut_tail(-static_cast<int>(_LOC0));
+			int dd = i - I;
+			switch (_LOC0)
+			{
+			case LO::center:
+				PD_For_1D(overlap, [&]PD_F_i(II) {pt0[N][II] = static_cast<_NUMT>(pd(n, II + dd));});
+				break;
+			case LO::half:
+				PD_For_1D(overlap, [&]PD_F_i(II) {pt0[N][II] = static_cast<_NUMT>(pd(n, II + dd, FL::N));});
+				break;
+			default:
+				break;
 			}
 #endif
 			overlap.cut_tail(-static_cast<int>(_LOC0));
@@ -549,8 +568,8 @@ namespace liton_pd
 		template<typename _NUMT, unsigned _N, LO::LOCATION _LOC0>
 		template<typename _R0, typename _FL0>
 		void PointData<_NUMT, _N, _LOC0>::read_plt(
-		    const std::string &root, const liton_ot::TEC_FILE_LOG &teclog,
-		    unsigned zone, const std::string &name,
+		    const std::string & root, const liton_ot::TEC_FILE_LOG & teclog,
+		    unsigned zone, const std::string & name,
 		    _R0 R0, unsigned nn, _FL0 fl0)
 		{
 			check_n(nn);
