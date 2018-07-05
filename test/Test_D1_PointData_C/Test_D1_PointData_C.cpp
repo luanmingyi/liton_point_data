@@ -92,19 +92,21 @@ int main(int argc, char** argv)
 	out << max << endl;
 
 	out << endl;
-	liton_sp::debug::exec_except([&]() {x3.copy_from(x2, RA::ALL, RA::ALL, 10, 0);}, out, err);
+	liton_sp::debug::exec_except([&]() {x3.copy_from(x2, RA::ALL, RA::ALL, 0, 0, FL::N);}, out, err);
 	out << x3.disp_data() << endl;
-	liton_sp::debug::exec_except([&]() {x3.copy_from(x2, RA::ALL, RA::ALL, 0, 10);}, out, err);
+	liton_sp::debug::exec_except([&]() {x3.copy_from(x2, RA::ALL, RA::ALL, 0, 0, FL::P);}, out, err);
 	out << x3.disp_data() << endl;
-	liton_sp::debug::exec_except([&]() {x3.copy_from(x2, RA::IN, RA::N, 0, -2);}, out, err);
+	liton_sp::debug::exec_except([&]() {x3.copy_from(x2, RA::IN, RA::N, 0, 0, FL::N);}, out, err);
 	out << x3.disp_data() << endl;
-	liton_sp::debug::exec_except([&]() {x3.copy_from(x2, RA::IN, RA::P, 9, 12);}, out, err);
+	liton_sp::debug::exec_except([&]() {x3.copy_from(x2, RA::IN, RA::P, 0, 0, FL::P);}, out, err);
 	out << x3.disp_data() << endl;
-	liton_sp::debug::exec_except([&]() {x3.copy_from(x3, RA::N, RA::P, 0, 12);}, out, err);
+	liton_sp::debug::exec_except([&]() {x3.copy_from(x2);}, out, err);
 	out << x3.disp_data() << endl;
-	liton_sp::debug::exec_except([&]() {x3.copy_from(x3, RA::ALL, RA::IN, 0, 0);}, out, err);
+	liton_sp::debug::exec_except([&]() {x3.copy_from(x3, RA::N, RA::P, 0, 0, FL::N);}, out, err);
 	out << x3.disp_data() << endl;
-	liton_sp::debug::exec_except([&]() {x3.copy_from(x3, RA::IN, RA::P, FL::P);}, out, err);
+	liton_sp::debug::exec_except([&]() {x3.copy_from(x3, RA::ALL, RA::IN, 0, 0, FL::P);}, out, err);
+	out << x3.disp_data() << endl;
+	liton_sp::debug::exec_except([&]() {x3.copy_from(x3, RA::IN, RA::P, 1, 1, FL::P);}, out, err);
 	out << x3.disp_data() << endl;
 
 	out.close();

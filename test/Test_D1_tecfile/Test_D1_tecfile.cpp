@@ -49,20 +49,22 @@ int main(int argc, char** argv)
 		tecfile.last_log.write_xml();
 
 		D1::PointData<double, 3, LO::center> z(0, 100, 0);
-		z.read_plt(".", tecfile.last_log, 0, "x", 0);
-		z.read_plt(".", tecfile.last_log, 0, "y1", 1);
-		z.read_plt(".", tecfile.last_log, 0, "y2", 2);
+		z.read_plt(".", tecfile.last_log, 0, "x", RA::IN, 0, FL::N);
+		z.read_plt(".", tecfile.last_log, 0, "y1", RA::IN, 1, FL::N);
+		z.read_plt(".", tecfile.last_log, 0, "y2", RA::IN, 2, FL::N);
 		out << z.disp_data() << endl;
 
-		liton_sp::debug::exec_except([&]() {z.read_plt(".", tecfile.last_log, 0, "y2", 3);}, out, out);
-		liton_sp::debug::exec_except([&]() {z.read_plt(".", tecfile.last_log, 0, "xxx", 0);}, out, out);
-		liton_sp::debug::exec_except([&]() {z.read_plt("aaa", tecfile.last_log, 0, "y2", 0);}, out, out);
+		liton_sp::debug::exec_except([&]() {z.read_plt(".", tecfile.last_log, 0, "y2", RA::IN, 3, FL::N);}, out, out);
+		liton_sp::debug::exec_except([&]() {z.read_plt(".", tecfile.last_log, 0, "xxx", RA::IN, 0, FL::N);}, out, out);
+		liton_sp::debug::exec_except([&]() {z.read_plt("aaa", tecfile.last_log, 0, "y2", RA::IN, 0, FL::N);}, out, out);
 		z.realloc(0, 101, 0);
-		liton_sp::debug::exec_except([&]() {z.read_plt(".", tecfile.last_log, 0, "y2", 2);}, out, out);
+		liton_sp::debug::exec_except([&]() {z.read_plt(".", tecfile.last_log, 0, "y2", RA::IN, 2, FL::N);}, out, out);
 		z.realloc(0, 99, 0);
-		liton_sp::debug::exec_except([&]() {z.read_plt(".", tecfile.last_log, 0, "y2", 2);}, out, out);
-		z.realloc(1, 100, 1);
-		liton_sp::debug::exec_except([&]() {z.read_plt(".", tecfile.last_log, 0, "y2", 2);}, out, out);
+		liton_sp::debug::exec_except([&]() {z.read_plt(".", tecfile.last_log, 0, "y2", RA::IN, 2, FL::N);}, out, out);
+		z.realloc(10, 100, 10);
+		D1::PD_For_N_1D(0, 3, z.size().range(RA::ALL), [&]PD_F_n_i(n, i) {z(n, i) = 0;});
+		liton_sp::debug::exec_except([&]() {z.read_plt(".", tecfile.last_log, 0, "y2", RA::N, 2, FL::P);}, out, out);
+		out << z.disp_data() << endl;
 
 		out.close();
 	}
