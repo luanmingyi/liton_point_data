@@ -275,6 +275,8 @@ namespace liton_pd
 
 			inline _NUMT* data_pt(const unsigned n) { check_n(n); return pt0[n] - _size.n(0); }
 			inline const _NUMT* data_pt(const unsigned n) const { check_n(n); return pt0[n] - _size.n(0); }
+			inline _NUMT* _pt0(const unsigned n) { check_n(n); return pt0[n]; }
+			inline const _NUMT* _pt0(const unsigned n) const { check_n(n); return const_cast<const _NUMT* >(pt0[n]); }
 
 			void copy_from(const PointData<_NUMT, _N, _LOC0> &pd);
 			template<typename __NUMT, unsigned __N>
@@ -451,11 +453,10 @@ namespace liton_pd
 		inline std::string PointData<_NUMT, _N, _LOC0>::disp_data() const
 		{
 			std::ostringstream displog;
-			int begin0, end0;
-			int dln = 10;
+			const int dln = 10;
+			const int begin0 = _size.begin(0, RA::ALL);
+			const int end0 = _size.end(0, RA::ALL) + _LOC0;
 			for(int ii = 0; ii != dln * N; ++ii) { displog << "="; } displog << std::endl;
-			begin0 = _size.begin(0, RA::N);
-			end0 = _size.end(0, RA::N) + _LOC0;
 			for (int i = begin0; i != end0; ++i)
 			{
 				for (unsigned n = 0; n != N; ++n)
@@ -463,28 +464,9 @@ namespace liton_pd
 					displog << pt0[n][i] << ", ";
 				}
 				displog << std::endl;
-			}
-			for(int ii = 0; ii != dln * N; ++ii) { displog << "-"; } displog << std::endl;
-			begin0 = _size.begin(0, RA::IN);
-			end0 = _size.end(0, RA::IN) + _LOC0;
-			for (int i = begin0; i != end0; ++i)
-			{
-				for (unsigned n = 0; n != N; ++n)
-				{
-					displog << pt0[n][i] << ", ";
-				}
-				displog << std::endl;
-			}
-			for(int ii = 0; ii != dln * N; ++ii) { displog << "-"; } displog << std::endl;
-			begin0 = _size.begin(0, RA::P);
-			end0 = _size.end(0, RA::P) + _LOC0;
-			for (int i = begin0; i != end0; ++i)
-			{
-				for (unsigned n = 0; n != N; ++n)
-				{
-					displog << pt0[n][i] << ", ";
-				}
-				displog << std::endl;
+				if(i == _size.last(0, RA::N)
+				        || i == _size.last(0, RA::IN))
+				{for(int ii = 0; ii != dln * N; ++ii) { displog << "-"; } displog << std::endl;}
 			}
 			for(int ii = 0; ii != dln * N; ++ii) { displog << "="; } displog << std::endl;
 			return displog.str();
@@ -531,18 +513,8 @@ namespace liton_pd
 			}
 #endif
 			overlap.cut_tail(-static_cast<int>(_LOC0));
-			int dd = i - I;
-			switch (_LOC0)
-			{
-			case LO::center:
-				PD_For_1D(overlap, [&]PD_F_i(II) {pt0[N][II] = static_cast<_NUMT>(pd(n, II + dd));});
-				break;
-			case LO::half:
-				PD_For_1D(overlap, [&]PD_F_i(II) {pt0[N][II] = static_cast<_NUMT>(pd(n, II + dd, FL::N));});
-				break;
-			default:
-				break;
-			}
+			int ddi = i - I;
+			PD_For_1D(overlap, [&]PD_F_i(II) {pt0[N][II] = static_cast<_NUMT>(pd._pt0(n)[II + ddi]);});
 		}
 
 #ifdef PD_OT
