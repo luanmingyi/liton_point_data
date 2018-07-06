@@ -381,37 +381,35 @@ namespace liton_pd
 
 			inline _NUMT* data_pt(const unsigned n) { check_n(n); return pt0[n][-_size.n(0)] - _size.n(1); }
 			inline const _NUMT* data_pt(const unsigned n) const { check_n(n); return pt0[n][-_size.n(0)] - _size.n(1); }
+			inline _NUMT** _pt0(const unsigned n) { check_n(n); return pt0[n]; }
+			inline const _NUMT** _pt0(const unsigned n) const { check_n(n); return const_cast<const _NUMT** >(pt0[n]); }
 
-			void copy_from(const PointData<_NUMT, _N, _LOC0, _LOC1> &pd,
+			void copy_from(const PointData<_NUMT, _N, _LOC0, _LOC1> &pd);
+			template<typename __NUMT, unsigned __N>
+			void copy_from(const PointData<__NUMT, __N, _LOC0, _LOC1> &pd,
 			               const RangeT R, const RangeT r_,
-			               int I, int J, int i, int j);
-			template<typename _R0, typename _R1, typename _r0, typename _r1>
-			inline void copy_from(const PointData<_NUMT, _N, _LOC0, _LOC1> &pd,
+			               unsigned N, unsigned n, int I, int J, int i, int j);
+			template<typename __NUMT, unsigned __N,
+			         typename _R0, typename _R1, typename _r0, typename _r1,
+			         typename _FL0, typename _FL1>
+			inline void copy_from(const PointData<__NUMT, __N, _LOC0, _LOC1> &pd,
 			                      _R0 R0, _R1 R1, _r0 r0, _r1 r1,
-			                      int I, int J, int i, int j)
-			{copy_from(pd, _size.range(R0, R1), pd.size().range(r0, r1), I, J, i, j);}
-			template<typename _FL0, typename _FL1>
-			inline void copy_from(const PointData<_NUMT, _N, _LOC0, _LOC1> &pd,
-			                      const RangeT R, const RangeT r_,
-			                      _FL0 fl0, _FL1 fl1)
-			{copy_from(pd, R, r_, R.bound(0, fl0), R.bound(1, fl1), r_.bound(0, fl0), r_.bound(1, fl1));}
-			template<typename _R0, typename _R1, typename _r0, typename _r1, typename _FL0, typename _FL1>
-			inline void copy_from(const PointData<_NUMT, _N, _LOC0, _LOC1> &pd,
-			                      _R0 R0, _R1 R1, _r0 r0, _r1 r1,
-			                      _FL0 fl0, _FL1 fl1)
+			                      unsigned N, unsigned n, _FL0 fl0, _FL1 fl1)
 			{
 				copy_from(pd,
 				          _size.range(R0, R1), pd.size().range(r0, r1),
+				          N, n,
 				          _size.bound(0, R0, fl0), _size.bound(1, R1, fl1),
 				          pd.size().bound(0, r0, fl0), pd.size().bound(1, r1, fl1));
 			}
 
 #ifdef PD_OT
+			template<typename _R0, typename _R1, typename _FL0, typename _FL1>
 			void read_plt(const std::string &root, const liton_ot::TEC_FILE_LOG &teclog,
-			              unsigned zone, const std::string &name, unsigned nn);
+			              unsigned zone, const std::string &name,
+			              _R0 R0, _R1 R1, unsigned nn, _FL0 fl0, _FL1 fl1);
 #endif
 
-		  protected:
 			inline void check_n(const unsigned n) const
 			{
 #ifdef _CHECK_POINTDATA_RANGE
@@ -583,40 +581,69 @@ namespace liton_pd
 		inline std::string PointData<_NUMT, _N, _LOC0, _LOC1>::disp_data() const
 		{
 			std::ostringstream displog;
+			const int dln = 10;
 			const int begin0 = _size.begin(0, RA::ALL);
 			const int end0 = _size.end(0, RA::ALL) + _LOC0;
 			const int begin1 = _size.begin(1, RA::ALL);
-			const int end1 = _size.end(1, RA::ALL) + _LOC1;;
+			const int end1 = _size.end(1, RA::ALL) + _LOC1;
 			for (unsigned n = 0; n != _N; ++n)
 			{
 				displog << "N = " << n << std::endl;
+				for(int ii = 0; ii != dln * _size.size(1, RA::ALL); ++ii) { displog << "="; } displog << std::endl;
 				for (int i = begin0; i != end0; ++i)
 				{
 					for (int j = begin1; j != end1; ++j)
 					{
-						displog << pt0[n][i][j] << ", ";
+						displog << pt0[n][i][j];
+						if (j != _size.last(1, RA::N)
+						        && j != _size.last(1, RA::IN))
+						{displog << ", ";}
+						else {displog << " | ";}
 					}
 					displog << std::endl;
+					if (i == _size.last(0, RA::N)
+					        || i == _size.last(0, RA::IN))
+					{for(int ii = 0; ii != dln * _size.size(1, RA::ALL); ++ii) { displog << "-"; } displog << std::endl;}
 				}
-				displog << std::endl;
+				for(int ii = 0; ii != dln * _size.size(1, RA::ALL); ++ii) { displog << "="; } displog << std::endl;
 			}
 			return displog.str();
 		}
 
 		template <typename _NUMT, unsigned _N, LO::LOCATION _LOC0, LO::LOCATION _LOC1>
-		void PointData<_NUMT, _N, _LOC0, _LOC1>::copy_from(const PointData<_NUMT, _N, _LOC0, _LOC1> &pd,
-		        const RangeT R, const RangeT r_,
-		        int I, int J, int i, int j)
+		void PointData<_NUMT, _N, _LOC0, _LOC1>::copy_from(const PointData<_NUMT, _N, _LOC0, _LOC1> &pd)
 		{
+#ifdef _CHECK_POINTDATA_RANGE
+			if(&pd == this)
+			{
+				throw(std::runtime_error("copy from self"));
+			}
+#endif
+			RangeT overlap = _size.range(RA::ALL, RA::ALL).overlap(pd.size().range(RA::ALL, RA::ALL));
+			overlap.cut_tail(-static_cast<int>(_LOC0), -static_cast<int>(_LOC1));
+			PD_For_N_2D(0, N, overlap, [&]PD_F_n_ij(n, i, j)
+			{
+				pt0[n][i][j] = pd.pt0[n][i][j];
+			});
+		}
+
+		template <typename _NUMT, unsigned _N, LO::LOCATION _LOC0, LO::LOCATION _LOC1>
+		template <typename __NUMT, unsigned __N>
+		void PointData<_NUMT, _N, _LOC0, _LOC1>::copy_from(const PointData<__NUMT, __N, _LOC0, _LOC1> &pd,
+		        const RangeT R, const RangeT r_,
+		        unsigned N, unsigned n, int I, int J, int i, int j)
+		{
+			check_n(N);
+			pd.check_n(n);
 			RangeT r = r_;
 			RangeT overlap = R.overlap(r.tran(I - i, J - j));
 #ifdef _CHECK_POINTDATA_RANGE
-			RangeT RR = R;
-			RR.tran(i - I, j - J);
-			RR.cut_tail(-static_cast<int>(_LOC0), -static_cast<int>(_LOC1));
-			RR.cut_head(-static_cast<int>(_LOC0), -static_cast<int>(_LOC1));
-			if(&pd == this)
+			if(reinterpret_cast<const void*>(&pd) == reinterpret_cast<const void*>(this))
 			{
+				RangeT RR = overlap;
+				RR.tran(i - I, j - J);
+				RR.cut_tail(-static_cast<int>(_LOC0), -static_cast<int>(_LOC1));
+				RR.cut_head(-static_cast<int>(_LOC0), -static_cast<int>(_LOC1));
 				if(RR.is_overlap(overlap))
 				{
 					throw(std::runtime_error("copy and write zone overlap"));
@@ -625,27 +652,15 @@ namespace liton_pd
 #endif
 			overlap.cut_tail(-static_cast<int>(_LOC0), -static_cast<int>(_LOC1));
 			int ddi = i - I, ddj = j - J;
-			int begin0 = overlap.begin(0);
-			int end0 = overlap.end(0);
-			int begin1 = overlap.begin(1);
-			int end1 = overlap.end(1);
-
-			for (int II = begin0; II != end0; ++II)
-			{
-				for (int JJ = begin1; JJ != end1; ++JJ)
-				{
-					for (unsigned n = 0; n != N; ++n)
-					{
-						pt0[n][II][JJ] = pd.pt0[n][II + ddi][JJ + ddj];
-					}
-				}
-			}
+			PD_For_2D(overlap, [&]PD_F_ij(II, JJ) {pt0[N][II][JJ] = static_cast<_NUMT>(pd._pt0(n)[II + ddi][JJ + ddj]);});
 		}
 
 #ifdef PD_OT
 		template <typename _NUMT, unsigned _N, LO::LOCATION _LOC0, LO::LOCATION _LOC1>
+		template<typename _R0, typename _R1, typename _FL0, typename _FL1>
 		void PointData<_NUMT, _N, _LOC0, _LOC1>::read_plt(const std::string &root, const liton_ot::TEC_FILE_LOG &teclog,
-		        unsigned zone, const std::string &name, unsigned nn)
+		        unsigned zone, const std::string &name,
+		        _R0 R0, _R1 R1, unsigned nn, _FL0 fl0, _FL1 fl1)
 		{
 			check_n(nn);
 			if(zone >= teclog.Zones.size())
@@ -655,10 +670,9 @@ namespace liton_pd
 
 			unsigned N0_file = teclog.Zones[zone].Real_Max_C(DIM::D, 0);
 			unsigned N1_file = teclog.Zones[zone].Real_Max_C(DIM::D, 1);
-			if(N0_file > static_cast<unsigned>(_size._in[0]) || N0_file == 0
-			        || N1_file > static_cast<unsigned>(_size._in[1]) || N1_file == 0)
+			if(N0_file == 0 || N1_file == 0)
 			{
-				throw(std::runtime_error("N_file is bigger than N_in or equal to 0"));
+				throw(std::runtime_error("N_file is equal to 0"));
 			}
 			int vv = std::find(teclog.Variables.begin(), teclog.Variables.end(), name) - teclog.Variables.begin();
 			if (vv == teclog.Variables.size())
@@ -674,53 +688,35 @@ namespace liton_pd
 			{
 				throw(std::runtime_error("error when opening file: " + plt_file_name));
 			}
-			char* buf = nullptr;
-			try
-			{
-				buf = new char[N0_file * N1_file * teclog.Zones[zone].Data[vv].size];
-			}
-			catch (const std::bad_alloc &)
-			{
-				data_in.close();
-				throw(std::runtime_error("no more memory for allocating"));
-			}
-			data_in.read(buf, N0_file * N1_file * teclog.Zones[zone].Data[vv].size);
-			if (!data_in)
-			{
-				data_in.close();
-				delete []buf;
-				throw(std::runtime_error("error when reading file " + plt_file_name));
-			}
-			data_in.close();
 
 			if (teclog.Zones[zone].Data[vv].type == 1)
 			{
-				float* temp = reinterpret_cast<float*>(buf);
-				for(unsigned ii = 0; ii != N0_file; ++ii)
+				PointData<float, 1, LO::center, LO::center> buf(0, N0_file, 0, 0, N1_file, 0);
+				data_in.read(reinterpret_cast<char*>(buf.data_pt(0)), N0_file * N1_file * teclog.Zones[zone].Data[vv].size);
+				if (!data_in)
 				{
-					for(unsigned jj = 0; jj != N1_file; ++jj)
-					{
-						pt0[nn][ii][jj] = temp[ii * N1_file + jj];
-					}
+					data_in.close();
+					throw(std::runtime_error("error when reading file " + plt_file_name));
 				}
+				data_in.close();
+				copy_from(buf, R0, R1, RA::IN, RA::IN, nn, 0, fl0, fl1);
 			}
 			else if (teclog.Zones[zone].Data[vv].type == 2)
 			{
-				double* temp = reinterpret_cast<double*>(buf);
-				for(unsigned ii = 0; ii != N0_file; ++ii)
+				PointData<double, 1, LO::center, LO::center> buf(0, N0_file, 0, 0, N1_file, 0);
+				data_in.read(reinterpret_cast<char*>(buf.data_pt(0)), N0_file * N1_file * teclog.Zones[zone].Data[vv].size);
+				if (!data_in)
 				{
-					for(unsigned jj = 0; jj != N1_file; ++jj)
-					{
-						pt0[nn][ii][jj] = temp[ii * N1_file + jj];
-					}
+					data_in.close();
+					throw(std::runtime_error("error when reading file " + plt_file_name));
 				}
+				data_in.close();
+				copy_from(buf, R0, R1, RA::IN, RA::IN, nn, 0, fl0, fl1);
 			}
 			else
 			{
-				delete []buf;
 				throw(std::runtime_error("tec_file data type error"));
 			}
-			delete []buf;
 		}
 #endif
 	}

@@ -55,10 +55,10 @@ int main(int argc, char** argv)
 		tecfile.last_log.write_echo(out);
 
 		D2::PointData<double, 4, LO::center, LO::center> uu(0, 100, 0, 0, 50, 0);
-		uu.read_plt(".", tecfile.last_log, 0, "x", 0);
-		uu.read_plt(".", tecfile.last_log, 0, "y", 1);
-		uu.read_plt(".", tecfile.last_log, 0, "u1", 2);
-		uu.read_plt(".", tecfile.last_log, 0, "u2", 3);
+		uu.read_plt(".", tecfile.last_log, 0, "x", RA::IN, RA::IN, 0, FL::N, FL::N);
+		uu.read_plt(".", tecfile.last_log, 0, "y", RA::IN, RA::IN, 1, FL::N, FL::N);
+		uu.read_plt(".", tecfile.last_log, 0, "u1", RA::IN, RA::IN, 2, FL::N, FL::N);
+		uu.read_plt(".", tecfile.last_log, 0, "u2", RA::IN, RA::IN, 3, FL::N, FL::N);
 		out << uu.disp_data() << endl;
 
 		out.close();

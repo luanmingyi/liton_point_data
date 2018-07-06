@@ -147,8 +147,8 @@ int main(int argc, char** argv)
 
 	out << x2.disp() << endl;
 	out << x2.disp_data() << endl;
-	liton_sp::debug::exec_except([&]() {x2.copy_from(x2, RA::IN, RA::IN, RA::P, RA::IN, FL::P, FL::P);}, out, err);
-	liton_sp::debug::exec_except([&]() {x2.copy_from(x2, RA::IN, RA::IN, RA::P, RA::IN, FL::N, FL::P);}, out, err);
+	liton_sp::debug::exec_except([&]() {x2.copy_from(x2, RA::IN, RA::IN, RA::P, RA::IN, 0, 0, FL::P, FL::P);}, out, err);
+	liton_sp::debug::exec_except([&]() {x2.copy_from(x2, RA::IN, RA::IN, RA::P, RA::IN, 0, 0, FL::N, FL::P);}, out, err);
 	out << x2.disp_data() << endl;
 
 	out.close();
