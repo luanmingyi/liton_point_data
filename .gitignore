@@ -1,3 +1,2 @@
-_build_win32/
-
-test/_build_win32/
+*_build_win32/
+*_build_unix*/

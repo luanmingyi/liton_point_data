@@ -4,6 +4,9 @@
 #include <stdexcept>
 using namespace std;
 #include "lion_snippets.hpp"
+#ifdef _DEBUG
+	#define _CHECK_POINTDATA_RANGE
+#endif
 #include "PointData.hpp"
 
 using namespace liton_pd;
