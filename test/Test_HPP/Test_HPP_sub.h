@@ -1,14 +1,14 @@
 #ifndef TEST_HPP_SUB_H
 #define TEST_HPP_SUB_H
 
-#include "../../scr/liton_point_data/PointData.hpp"
+#include "PointData.hpp"
 using namespace liton_pd;
 
 class test_hpp
 {
-public:
+  public:
 	D1::PointData<double, 1, LO::center> x;
-public:
+  public:
 	void init_and_disp();
 };
 

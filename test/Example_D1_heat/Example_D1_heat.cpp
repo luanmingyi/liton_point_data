@@ -4,8 +4,8 @@
 #include <cmath>
 #include <ctime>
 using namespace std;
-#include "../../scr/liton_cpp_snippets/lion_snippets.hpp"
-#include "../../scr/liton_point_data/PointData.hpp"
+#include "lion_snippets.hpp"
+#include "PointData.hpp"
 
 using namespace liton_pd;
 
@@ -32,7 +32,7 @@ int main(int argc, char** argv)
 		D1::PointData<double, 2, LO::center> u(1, N, 1);
 		D1::PointData<double, 1, LO::center> dudt(0, N, 0);
 
-		D1::PD_For_1D(x.size().range(RA::IN), [&x, &h, &x0]PD_F_i(i) { x(0, i) = x0 + static_cast<double>(i)*h; });
+		D1::PD_For_1D(x.size().range(RA::IN), [&x, &h, &x0]PD_F_i(i) { x(0, i) = x0 + static_cast<double>(i) * h; });
 
 		double dt = 0.1 / a_hh;
 		double tiem_stop = 0.5;
@@ -42,7 +42,8 @@ int main(int argc, char** argv)
 		double flowtime;
 		double time_next_print;
 
-		double usingtime = liton_sp::debug::exec_time(2, [&]() {
+		double usingtime = liton_sp::debug::exec_time(2, [&]()
+		{
 			step = 0;
 			flowtime = 0;
 			time_next_print = 0;
@@ -53,11 +54,13 @@ int main(int argc, char** argv)
 				D1::PD_For_1D(u.size().range(RA::N), [&u]PD_F_i(i) { u(0, i) = u(0, u.size().mirror(0, FL::N, i)); });
 				D1::PD_For_1D(u.size().range(RA::P), [&u]PD_F_i(i) { u(0, i) = u(0, u.size().mirror(0, FL::P, i)); });
 
-				D1::PD_For_1D(dudt.size().range(RA::IN), [&dudt, &u, &a_hh]PD_F_i(i) {
-					dudt(0, i) = a_hh*(u(0, i - 1) - 2 * u(0, i) + u(0, i + 1));
+				D1::PD_For_1D(dudt.size().range(RA::IN), [&dudt, &u, &a_hh]PD_F_i(i)
+				{
+					dudt(0, i) = a_hh * (u(0, i - 1) - 2 * u(0, i) + u(0, i + 1));
 				});
-				D1::PD_For_1D(u.size().range(RA::IN), [&dudt, &u, &dt]PD_F_i(i) {
-					u(0, i) = u(0, i) + dt*dudt(0, i);
+				D1::PD_For_1D(u.size().range(RA::IN), [&dudt, &u, &dt]PD_F_i(i)
+				{
+					u(0, i) = u(0, i) + dt * dudt(0, i);
 				});
 
 				++step;
@@ -74,7 +77,7 @@ int main(int argc, char** argv)
 			}
 		});
 
-		D1::PD_For_1D(u.size().range(RA::IN), [&x, &u, &a, &tiem_stop]PD_F_i(i) { u(1, i) = exp(-a*tiem_stop)*cos(x(0, i)); });
+		D1::PD_For_1D(u.size().range(RA::IN), [&x, &u, &a, &tiem_stop]PD_F_i(i) { u(1, i) = exp(-a * tiem_stop) * cos(x(0, i)); });
 
 		ofstream out_data((name + "_data.dat").c_str());
 		out_data << u.disp_data() << endl;

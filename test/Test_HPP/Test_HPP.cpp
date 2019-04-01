@@ -2,13 +2,13 @@
 using namespace std;
 
 #ifdef _DEBUG
-#define _CHECK_POINTDATA_RANGE
+	#define _CHECK_POINTDATA_RANGE
 #endif
-#include "../../scr/liton_point_data/PointData.hpp"
+#include "PointData.hpp"
 
 #include "Test_HPP_sub.h"
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
 	liton_pd::D1::DIM::check_d(0);
 	cout << liton_pd::D1::DIM::D << endl;

@@ -7,7 +7,7 @@
 #include <sstream>
 
 #ifdef PD_OT
-	#include "../liton_ordered_tec/ordered_tec.h"
+	#include "ordered_tec.h"
 	#include <algorithm>
 #endif
 

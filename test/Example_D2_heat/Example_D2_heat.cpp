@@ -5,14 +5,10 @@
 #include <ctime>
 using namespace std;
 
-#include "../../scr/liton_cpp_snippets/lion_snippets.hpp"
-#include "../../scr/liton_ordered_tec/ordered_tec.h"
+#include "lion_snippets.hpp"
+#include "ordered_tec.h"
 using namespace liton_ot;
-
-#ifdef _DEBUG
-#define _CHECK_POINTDATA_RANGE
-#endif
-#include "../../scr/liton_point_data/PointData.hpp"
+#include "PointData.hpp"
 using namespace liton_pd;
 
 int main(int argc, char** argv)
@@ -62,9 +58,10 @@ int main(int argc, char** argv)
 		tecfile.Zones[0].Data.push_back(TEC_DATA(u.data_pt(0)));
 		tecfile.Zones[0].Data.push_back(TEC_DATA(u.data_pt(1)));
 
-		D2::PD_For_2D(x.size().range(RA::IN, RA::IN), [&x, hx, x0, hy, y0]PD_F_ij(i, j) {
-			x(0, i, j) = x0 + static_cast<double>(i)*hx;
-			x(1, i, j) = y0 + static_cast<double>(j)*hy;
+		D2::PD_For_2D(x.size().range(RA::IN, RA::IN), [&x, hx, x0, hy, y0]PD_F_ij(i, j)
+		{
+			x(0, i, j) = x0 + static_cast<double>(i) * hx;
+			x(1, i, j) = y0 + static_cast<double>(j) * hy;
 		});
 
 		double dt = 0.1 / (a_hh_x > a_hh_y ? a_hh_x : a_hh_y);
@@ -75,12 +72,14 @@ int main(int argc, char** argv)
 		double flowtime;
 		double time_next_print;
 
-		double usingtime = liton_sp::debug::exec_time(1, [&]() {
+		double usingtime = liton_sp::debug::exec_time(1, [&]()
+		{
 			step = 0;
 			flowtime = 0;
 			time_next_print = 0;
-			D2::PD_For_2D(u.size().range(RA::IN,RA::IN), [&x, &u]PD_F_ij(i, j) {
-				u(0, i, j) = sin(x(0, i, j))*cos(x(1, i, j) / 2.0);
+			D2::PD_For_2D(u.size().range(RA::IN, RA::IN), [&x, &u]PD_F_ij(i, j)
+			{
+				u(0, i, j) = sin(x(0, i, j)) * cos(x(1, i, j) / 2.0);
 			});
 
 			for (;;)
@@ -90,14 +89,17 @@ int main(int argc, char** argv)
 				D2::PD_For_2D(u.size().range(RA::N, RA::IN), [&u]PD_F_ij(i, j) { u(0, i, j) = -u(0, u.size().mirror(0, FL::N, i), j); });
 				D2::PD_For_2D(u.size().range(RA::P, RA::IN), [&u]PD_F_ij(i, j) { u(0, i, j) = -u(0, u.size().mirror(0, FL::P, i), j); });
 
-				D2::PD_For_2D(dudt.size().range(RA::IN, RA::IN), [&dudt, &u, a_hh_x]PD_F_ij(i, j) {
-					dudt(0, i, j) = a_hh_x*(u(0, i - 1, j) - 2 * u(0, i, j) + u(0, i + 1, j));
+				D2::PD_For_2D(dudt.size().range(RA::IN, RA::IN), [&dudt, &u, a_hh_x]PD_F_ij(i, j)
+				{
+					dudt(0, i, j) = a_hh_x * (u(0, i - 1, j) - 2 * u(0, i, j) + u(0, i + 1, j));
 				});
-				D2::PD_For_2D(dudt.size().range(RA::IN, RA::IN), [&dudt, &u, a_hh_y]PD_F_ij(i, j) {
-					dudt(0, i, j) += a_hh_y*(u(0, i, j - 1) - 2 * u(0, i, j) + u(0, i, j + 1));
+				D2::PD_For_2D(dudt.size().range(RA::IN, RA::IN), [&dudt, &u, a_hh_y]PD_F_ij(i, j)
+				{
+					dudt(0, i, j) += a_hh_y * (u(0, i, j - 1) - 2 * u(0, i, j) + u(0, i, j + 1));
 				});
-				D2::PD_For_2D(u.size().range(RA::IN, RA::IN), [&dudt, &u, dt]PD_F_ij(i, j) {
-					u(0, i, j) += dt*dudt(0, i, j);
+				D2::PD_For_2D(u.size().range(RA::IN, RA::IN), [&dudt, &u, dt]PD_F_ij(i, j)
+				{
+					u(0, i, j) += dt * dudt(0, i, j);
 				});
 
 				++step;
@@ -114,8 +116,9 @@ int main(int argc, char** argv)
 			}
 		});
 
-		D2::PD_For_2D(u.size().range(RA::IN, RA::IN), [&x, &u, ax, ay, time_stop]PD_F_ij(i, j) {
-			u(1, i, j) = exp(-(ax + ay / 4)*time_stop)*sin(x(0, i, j))*cos(x(1, i, j) / 2.0);
+		D2::PD_For_2D(u.size().range(RA::IN, RA::IN), [&x, &u, ax, ay, time_stop]PD_F_ij(i, j)
+		{
+			u(1, i, j) = exp(-(ax + ay / 4) * time_stop) * sin(x(0, i, j)) * cos(x(1, i, j) / 2.0);
 		});
 
 		tecfile.set_echo_mode("full", "full");

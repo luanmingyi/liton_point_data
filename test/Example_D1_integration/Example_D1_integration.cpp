@@ -4,8 +4,8 @@
 #include <cmath>
 #include <ctime>
 using namespace std;
-#include "../../scr/liton_cpp_snippets/lion_snippets.hpp"
-#include "../../scr/liton_point_data/PointData.hpp"
+#include "lion_snippets.hpp"
+#include "PointData.hpp"
 
 using namespace liton_pd;
 
@@ -43,9 +43,9 @@ int main(int argc, char** argv)
 			PD_For_N(0, f.N, [&]PD_F_n(n)
 			{
 				D1::PD_Reduce_1D(f.size().range(RA::ALL),
-				sum[n],
-				PD_RF_SUM(double),
-				[&]PD_F_i(i)->double { return f(n, i); });
+				                 sum[n],
+				                 PD_RF_SUM(double),
+				                 [&]PD_F_i(i)->double { return f(n, i); });
 				sum[n] /= (N - 1);
 				out << "ans = " << sum[n] << endl;
 			});

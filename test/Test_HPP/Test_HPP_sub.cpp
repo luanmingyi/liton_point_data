@@ -2,9 +2,9 @@
 #include <iostream>
 
 #ifdef _DEBUG
-#define _CHECK_POINTDATA_RANGE
+	#define _CHECK_POINTDATA_RANGE
 #endif
-#include "../../scr/liton_point_data/PointData.hpp"
+#include "PointData.hpp"
 using namespace liton_pd;
 
 void test_hpp::init_and_disp()

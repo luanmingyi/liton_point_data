@@ -3,10 +3,10 @@
 #include <string>
 #include <stdexcept>
 using namespace std;
-#include "../../scr/liton_cpp_snippets/lion_snippets.hpp"
-#include "../../scr/liton_ordered_tec/ordered_tec.h"
+#include "lion_snippets.hpp"
+#include "ordered_tec.h"
 #define PD_OT
-#include "../../scr/liton_point_data/PointData.hpp"
+#include "PointData.hpp"
 
 using namespace liton_pd;
 using namespace liton_ot;
